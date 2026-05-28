@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alpha Automotriz | Diagnóstico Automotriz Premium en Huánuco, Perú</title>
+<meta name="description" content="Alpha Automotriz: Diagnóstico computarizado, mantenimiento mayor y afinamiento electrónico en Huánuco. Técnicos con +10 años de experiencia. ¡Agenda tu cita hoy!">
+<meta name="keywords" content="taller automotriz Huánuco, diagnóstico computarizado, mantenimiento mayor, afinamiento electrónico, mecánica Huánuco, Alpha Automotriz">
+<meta name="author" content="Alpha Automotriz S.A.C.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://alphaautomotriz.com/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="business.business">
+<meta property="og:title" content="Alpha Automotriz | Diagnóstico Premium en Huánuco">
+<meta property="og:description" content="Diagnóstico computarizado, mantenimiento mayor y afinamiento electrónico. Técnicos con +10 años de experiencia en Huánuco, Perú.">
+<meta property="og:url" content="https://alphaautomotriz.com/">
+<meta property="og:locale" content="es_PE">
+<meta property="og:site_name" content="Alpha Automotriz">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Alpha Automotriz | Diagnóstico Premium en Huánuco">
+<meta name="twitter:description" content="Diagnóstico computarizado, mantenimiento mayor y afinamiento electrónico en Huánuco, Perú.">
+
+<!-- Preconnect para rendimiento -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AutoRepair",
+  "name": "Alpha Automotriz S.A.C.",
+  "description": "Diagnóstico computarizado, mantenimiento mayor y afinamiento electrónico en Huánuco, Perú.",
+  "url": "https://alphaautomotriz.com/",
+  "telephone": "+51964989341",
+  "email": "taller@alphaautomotriz.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Av. Los Próceres 123",
+    "addressLocality": "Huánuco",
+    "addressCountry": "PE"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -9.948674,
+    "longitude": -76.254519
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+      "opens": "08:00",
+      "closes": "19:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Saturday","Sunday"],
+      "opens": "08:00",
+      "closes": "17:00"
+    }
+  ],
+  "priceRange": "$$",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5",
+    "reviewCount": "3000"
+  }
+}
+</script>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #050608;
+  --bg2: #080B0F;
+  --card: #0C1018;
+  --accent: #3DEA24;
+  --accent2: #2FC41B;
+  --glow: rgba(61, 234, 36, 0.55);
+  --glass: rgba(8, 12, 20, 0.72);
+  --border: rgba(61, 234, 36, 0.22);
+  --border-h: rgba(61, 234, 36, 0.6);
+  --text: #EDF2F9;
+  --muted: #7A8699;
+  --dim: #3E4550;
+  --fh: 'Orbitron', monospace;
+  --fb: 'Poppins', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--fb);
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: overlay;
+}
+
+/* Cursor personalizado */
+#cur {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px var(--glow);
+  transition: transform 0.1s, background 0.2s;
+}
+#curR {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-h);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s;
+}
+/* Ocultar cursor personalizado en móvil */
+@media (max-width: 820px) {
+  #cur, #curR { display: none; }
+  body { cursor: auto; }
+}
+
+/* Layout */
+.wrap {
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 1;
+}
+.section { padding: 6rem 0; }
+.section-sm { padding: 3.5rem 0; }
+
+/* Reveal animations */
+.sr, .srl, .srr {
+  opacity: 0;
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+.sr { transform: translateY(40px); }
+.srl { transform: translateX(-50px); }
+.srr { transform: translateX(50px); }
+.sr.in, .srl.in, .srr.in {
+  opacity: 1;
+  transform: none;
+}
+.d1 { transition-delay: 0.08s; }
+.d2 { transition-delay: 0.16s; }
+.d3 { transition-delay: 0.24s; }
+.d4 { transition-delay: 0.32s; }
+
+/* HEADER */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background: rgba(5, 6, 8, 0.9);
+  backdrop-filter: blur(24px) saturate(200%);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+header.sc { box-shadow: 0 4px 40px rgba(61, 234, 36, 0.08); }
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 0;
+  gap: 1rem;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.logo-wolf {
+  width: 44px;
+  height: 44px;
+  background: var(--accent);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px var(--glow);
+  flex-shrink: 0;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.logo-wolf:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 32px var(--glow);
+}
+.logo-alpha {
+  font-family: var(--fh);
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: linear-gradient(120deg, #fff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.logo-sub {
+  font-size: 0.58rem;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.nav-links {
+  display: flex;
+  gap: 1.8rem;
+  list-style: none;
+}
+.nav-links a {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  position: relative;
+  transition: color 0.2s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.25s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  background: var(--accent);
+  color: #000 !important;
+  font-family: var(--fh);
+  font-size: 0.88rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 1px !important;
+  padding: 0.6rem 1.5rem;
+  border-radius: 99px;
+  transition: box-shadow 0.25s, transform 0.2s !important;
+}
+.nav-cta::after { display: none !important; }
+.nav-cta:hover {
+  box-shadow: 0 0 24px var(--glow) !important;
+  transform: translateY(-2px) !important;
+}
+.hbg {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 7px;
+  cursor: pointer;
+}
+.hbg span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: 0.3s;
+}
+.hbg.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hbg.open span:nth-child(2) { opacity: 0; }
+.hbg.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+.mob {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 6, 8, 0.97);
+  backdrop-filter: blur(24px);
+  z-index: 450;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+}
+.mob.open { display: flex; }
+.mob a {
+  font-family: var(--fh);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 2px;
+  transition: color 0.2s;
+}
+.mob a:hover { color: var(--accent); }
+
+/* HERO */
+.hero {
+  padding: 4.5rem 0 3rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+}
+.hero-gbg {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(61, 234, 36, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61, 234, 36, 0.035) 1px, transparent 1px);
+  background-size: 70px 70px;
+  animation: gm 25s linear infinite;
+  pointer-events: none;
+}
+@keyframes gm { from { transform: translateY(0); } to { transform: translateY(70px); } }
+.hero-ghost {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--fh);
+  font-size: min(22vw, 260px);
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(61, 234, 36, 0.04);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+.hero-orb {
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(61, 234, 36, 0.08) 0%, transparent 65%);
+  pointer-events: none;
+  animation: op 6s ease-in-out infinite alternate;
+}
+@keyframes op { from { transform: scale(1); opacity: 0.7; } to { transform: scale(1.12); opacity: 1; } }
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: center;
+  gap: 4rem;
+  position: relative;
+  z-index: 1;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(61, 234, 36, 0.1);
+  border: 1px solid rgba(61, 234, 36, 0.4);
+  border-radius: 99px;
+  padding: 5px 16px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  font-family: var(--fh);
+}
+.bdot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: blink 1.8s ease infinite;
+}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+.hero-title {
+  font-family: var(--fh);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -1.5px;
+  margin-bottom: 1.5rem;
+}
+.hero-title .accent {
+  color: var(--accent);
+  text-shadow: 0 0 30px rgba(61, 234, 36, 0.35);
+  display: block;
+}
+.hero-title .outline {
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
+  color: transparent;
+  display: block;
+}
+.hero-desc {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 480px;
+  margin-bottom: 2.5rem;
+}
+.hero-btns {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+.btn-p {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--accent);
+  color: #000;
+  font-family: var(--fh);
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  padding: 0.95rem 2.2rem;
+  border-radius: 99px;
+  text-decoration: none;
+  transition: box-shadow 0.25s, transform 0.2s;
+}
+.btn-p:hover {
+  box-shadow: 0 0 30px var(--glow), 0 8px 30px rgba(0, 0, 0, 0.5);
+  transform: translateY(-3px);
+}
+.btn-g {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--fh);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  padding: 0.95rem 2.2rem;
+  border-radius: 99px;
+  border: 1px solid rgba(61, 234, 36, 0.4);
+  text-decoration: none;
+  transition: background 0.25s, border-color 0.25s, transform 0.2s;
+}
+.btn-g:hover {
+  background: rgba(61, 234, 36, 0.1);
+  border-color: rgba(61, 234, 36, 0.7);
+  transform: translateY(-3px);
+}
+.stats-row {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  background: rgba(8, 12, 20, 0.5);
+  width: fit-content;
+}
+.stat {
+  padding: 1.2rem 2rem;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.stat:last-child { border-right: none; }
+.stat-n {
+  font-family: var(--fh);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+  text-shadow: 0 0 14px rgba(61, 234, 36, 0.4);
+}
+.stat-l {
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* Hero right - Sistema orbital */
+.hero-right {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 600px;
+}
+.orbital-system {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1 / 1;
+}
+
+/* Difuminado verde pulsante detrás del auto */
+.center-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(calc(-50% + 1px), calc(-50% + 4px));
+  width: 75%;
+  height: 75%;
+  background: radial-gradient(circle, rgba(61, 234, 36, 0.35) 0%, rgba(61, 234, 36, 0.1) 60%, transparent 90%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(25px);
+  animation: pulseGlowFluid 4s ease-in-out infinite alternate;
+}
+@keyframes pulseGlowFluid {
+  0% { opacity: 0.4; transform: translate(calc(-50% + 1px), calc(-50% + 4px)) scale(0.9); }
+  100% { opacity: 1; transform: translate(calc(-50% + 1px), calc(-50% + 4px)) scale(1.1); }
+}
+
+/* Contenedor central de la imagen */
+.car-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(calc(-50% + 1px), calc(-50% + 4px));
+  width: 62%;
+  z-index: 15;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 30px rgba(61, 234, 36, 0.3));
+  animation: floatCar 3.5s ease-in-out infinite alternate;
+}
+.car-center img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+@keyframes floatCar {
+  0% { transform: translate(calc(-50% + 1px), calc(-50% + 4px)) translateY(0); }
+  100% { transform: translate(calc(-50% + 1px), calc(-50% + 4px)) translateY(-15px); }
+}
+
+/* Placeholder cuando no hay imagen del auto */
+.car-placeholder {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--accent);
+  opacity: 0.5;
+  font-family: var(--fh);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+}
+.car-placeholder i { font-size: 4rem; }
+
+/* Burbujas planetarias */
+.planet-bubble {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(61, 234, 36, 0.7);
+  border-radius: 99px;
+  padding: 8px 20px;
+  font-family: var(--fh);
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #FFFFFF;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  box-shadow: 0 0 18px rgba(61, 234, 36, 0.6), 0 6px 20px rgba(0, 0, 0, 0.6);
+  cursor: default;
+  z-index: 20;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  text-shadow: none;
+}
+.planet-bubble i {
+  color: var(--accent);
+  margin-right: 6px;
+  font-size: 0.8rem;
+  text-shadow: none;
+}
+.planet-bubble:hover {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0 28px var(--glow);
+  transform: scale(1.08);
+}
+.planet-bubble:hover i { color: #000; }
+
+@keyframes orbitSingle {
+  0% { transform: rotate(0deg) translateX(260px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(260px) rotate(-360deg); }
+}
+.planet1 { animation: orbitSingle 48s linear infinite; }
+.planet2 { animation: orbitSingle 48s linear infinite; animation-delay: -8s; }
+.planet3 { animation: orbitSingle 48s linear infinite; animation-delay: -16s; }
+.planet4 { animation: orbitSingle 48s linear infinite; animation-delay: -24s; }
+.planet5 { animation: orbitSingle 48s linear infinite; animation-delay: -32s; }
+.planet6 { animation: orbitSingle 48s linear infinite; animation-delay: -40s; }
+
+@media (max-width: 1100px) {
+  @keyframes orbitSingle {
+    0% { transform: rotate(0deg) translateX(190px) rotate(0deg); }
+    100% { transform: rotate(360deg) translateX(190px) rotate(-360deg); }
+  }
+  .center-glow { transform: translate(calc(-50% - 4px), calc(-50% + 3px)); }
+  @keyframes pulseGlowFluid {
+    0% { opacity: 0.4; transform: translate(calc(-50% - 4px), calc(-50% + 3px)) scale(0.9); }
+    100% { opacity: 1; transform: translate(calc(-50% - 4px), calc(-50% + 3px)) scale(1.1); }
+  }
+  .car-center { transform: translate(calc(-50% - 4px), calc(-50% + 3px)); }
+  @keyframes floatCar {
+    0% { transform: translate(calc(-50% - 4px), calc(-50% + 3px)) translateY(0); }
+    100% { transform: translate(calc(-50% - 4px), calc(-50% + 3px)) translateY(-12px); }
+  }
+}
+@media (max-width: 820px) { .hero-right { display: none; } }
+
+/* Ticker */
+.tkw {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: rgba(61, 234, 36, 0.04);
+  padding: 0.9rem 0;
+  position: relative;
+  z-index: 1;
+}
+.tkt {
+  display: flex;
+  width: max-content;
+  animation: tk 32s linear infinite;
+}
+.tkt:hover { animation-play-state: paused; }
+@keyframes tk { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ti {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 2.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  font-family: var(--fh);
+}
+.ti i { font-size: 0.7rem; opacity: 0.7; }
+.tdot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.4; flex-shrink: 0; }
+
+/* Bento servicios */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 1.2rem;
+}
+.bento-l {
+  grid-column: 1;
+  grid-row: 1/3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 2rem;
+}
+.bento-l h2 {
+  font-family: var(--fh);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.2rem;
+}
+.bento-l h2 span { color: var(--accent); }
+.bento-l p {
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+.sc2 {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 24px;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.3s, transform 0.3s;
+  cursor: default;
+}
+.sc2:hover {
+  border-color: var(--border-h);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(61, 234, 36, 0.08);
+}
+.sc2-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  filter: brightness(0.55) saturate(0.7);
+  transition: filter 0.35s;
+  display: block;
+}
+.sc2:hover .sc2-img { filter: brightness(0.7) saturate(0.9); }
+.sc2-body { padding: 1.4rem 1.5rem 1.6rem; }
+.sc2-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(61, 234, 36, 0.12);
+  border: 1px solid rgba(61, 234, 36, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.9rem;
+  font-size: 1.1rem;
+  color: var(--accent);
+  transition: background 0.3s;
+}
+.sc2:hover .sc2-icon { background: var(--accent); }
+.sc2:hover .sc2-icon i { color: #000; }
+.sc2-body h3 {
+  font-family: var(--fh);
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.3px;
+}
+.sc2-body p { font-size: 0.83rem; color: var(--muted); line-height: 1.6; }
+.sc2-tag {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(5, 6, 8, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-h);
+  border-radius: 99px;
+  padding: 3px 12px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+  font-family: var(--fh);
+}
+
+/* Why choose us */
+.why-hdr { text-align: center; margin-bottom: 4rem; }
+.why-hdr h2 {
+  font-family: var(--fh);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 900;
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+}
+.why-hdr h2 span { color: var(--accent); }
+.why-hdr p {
+  font-size: 0.95rem;
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.wyc {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 28px;
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.wyc::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.wyc:hover::before { opacity: 1; }
+.wyc:hover {
+  border-color: var(--border);
+  transform: translateY(-8px);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45), 0 0 24px rgba(61, 234, 36, 0.07);
+}
+.wyn {
+  font-family: var(--fh);
+  font-size: 4.5rem;
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: 0 0 15px var(--glow);
+  line-height: 1;
+  margin-bottom: 1.2rem;
+  opacity: 0.9;
+}
+.wyc h3 {
+  font-family: var(--fh);
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.2px;
+}
+.wyc p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+/* Systems section */
+.sys-sec {
+  background: var(--bg2);
+  position: relative;
+  overflow: hidden;
+}
+.sys-sec::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(61, 234, 36, 0.04) 0%, transparent 65%);
+  pointer-events: none;
+}
+.sys-hdr { text-align: center; margin-bottom: 4rem; }
+.sys-hdr h2 {
+  font-family: var(--fh);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.5rem;
+}
+.sys-hdr h2 span { color: var(--accent); }
+.diag {
+  display: grid;
+  grid-template-columns: 1fr minmax(220px, 340px) 1fr;
+  align-items: center;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.dcol { display: flex; flex-direction: column; gap: 1.5rem; }
+.dcol.r { align-items: flex-start; }
+.syi {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: default;
+  animation: syf 4s ease-in-out infinite alternate;
+}
+.syi:nth-child(2) { animation-delay: 0.5s; }
+.syi:nth-child(3) { animation-delay: 1s; }
+@keyframes syf { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+.dcol:first-child .syi { flex-direction: row-reverse; text-align: right; }
+.dcol.r .syi { flex-direction: row; text-align: left; }
+.syic {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: rgba(61, 234, 36, 0.08);
+  border: 1px solid rgba(61, 234, 36, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--accent);
+  flex-shrink: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.syi:hover .syic {
+  background: var(--accent);
+  box-shadow: 0 0 20px var(--glow);
+}
+.syi:hover .syic i { color: #000; }
+.syt h4 {
+  font-family: var(--fh);
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 3px;
+  letter-spacing: 0.3px;
+}
+.syt p { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+.dctr {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.car-top {
+  width: 100%;
+  max-width: 300px;
+  filter: drop-shadow(0 0 40px rgba(61, 234, 36, 0.18)) drop-shadow(0 0 80px rgba(61, 234, 36, 0.08));
+  animation: carf 5s ease-in-out infinite alternate;
+  position: relative;
+  z-index: 2;
+}
+@keyframes carf { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+.gr1 {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border: 1px solid rgba(61, 234, 36, 0.12);
+  border-radius: 50%;
+  animation: rp 3s ease-in-out infinite;
+}
+.gr2 {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border: 1px solid rgba(61, 234, 36, 0.06);
+  border-radius: 50%;
+  animation: rp 3s ease-in-out infinite 1.5s;
+}
+@keyframes rp { 0%,100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.04); opacity: 1; } }
+.bubs-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 4rem;
+}
+.bubs-row .bub {
+  position: static;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(61,234,36,0.55);
+  border-radius: 99px;
+  padding: 7px 18px;
+  font-family: var(--fh);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Brands */
+.brands-w {
+  background: rgba(8, 12, 20, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 36px;
+  padding: 3rem 2.5rem;
+}
+.brands-lbl {
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 3px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--fh);
+}
+.brands-lbl::before, .brands-lbl::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(61, 234, 36, 0.4));
+}
+.brands-lbl::after { transform: scaleX(-1); }
+.brands-g {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+}
+.bpill {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(61, 234, 36, 0.2);
+  border-radius: 99px;
+  padding: 0.55rem 1.4rem;
+  font-family: var(--fh);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  transition: all 0.22s;
+  cursor: default;
+}
+.bpill:hover {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 0 18px var(--glow);
+}
+
+/* Testimonios */
+.tst-hdr { text-align: center; margin-bottom: 3.5rem; }
+.tst-hdr h2 {
+  font-family: var(--fh);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.8rem;
+}
+.tst-hdr h2 span { color: var(--accent); }
+.tst-hdr p { font-size: 0.9rem; color: var(--muted); max-width: 500px; margin: 0 auto; }
+.tst-bento {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.2rem;
+}
+.tc {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 24px;
+  padding: 2rem;
+  transition: border-color 0.3s;
+  position: relative;
+}
+.tc:hover { border-color: var(--border); }
+.tc-img {
+  border-radius: 18px;
+  overflow: hidden;
+  height: 220px;
+}
+.tc-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6) saturate(0.6);
+  transition: filter 0.3s;
+}
+.tc-img:hover img { filter: brightness(0.75) saturate(0.8); }
+.stars { display: flex; gap: 3px; margin-bottom: 1rem; }
+.stars i { color: var(--accent); font-size: 0.8rem; }
+.tc p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; font-style: italic; }
+.tau {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tav {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(61, 234, 36, 0.12);
+  border: 1px solid rgba(61, 234, 36, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--fh);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+.tname { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+.tveh { font-size: 0.72rem; color: var(--dim); margin-top: 2px; }
+.t1 { grid-column: 1; grid-row: 1; }
+.t2 { grid-column: 2; grid-row: 1/3; display: flex; flex-direction: column; gap: 1.2rem; padding: 0; background: transparent; border: none; }
+.t3 { grid-column: 3; grid-row: 1; }
+.t4 { grid-column: 1; grid-row: 2; }
+.t5 { grid-column: 3; grid-row: 2; }
+
+/* Contacto */
+.cnt-sec { position: relative; overflow: hidden; }
+.cnt-sec::before {
+  content: '';
+  position: absolute;
+  right: -20%;
+  top: 0;
+  bottom: 0;
+  width: 55%;
+  background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900&q=60') center/cover no-repeat;
+  opacity: 0.07;
+  pointer-events: none;
+}
+.cnt-w {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 4rem;
+  align-items: start;
+}
+.cnt-info h2 {
+  font-family: var(--fh);
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.2rem;
+}
+.cnt-info h2 span { color: var(--accent); }
+.cnt-info > p {
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  margin-top: 1rem;
+}
+.cdets { display: flex; flex-direction: column; gap: 1.1rem; }
+.citem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 1rem 1.3rem;
+  background: rgba(8, 12, 20, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  transition: border-color 0.25s, background 0.25s;
+  text-decoration: none;
+}
+.citem:hover {
+  border-color: var(--border);
+  background: rgba(61, 234, 36, 0.04);
+}
+.cico {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(61, 234, 36, 0.1);
+  border: 1px solid rgba(61, 234, 36, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.ctxt strong {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 2px;
+}
+.ctxt span { font-size: 0.88rem; color: var(--text); }
+.fbox {
+  background: rgba(8, 12, 20, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 2.5rem;
+}
+.ftit {
+  font-family: var(--fh);
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.3px;
+}
+.fg { margin-bottom: 1rem; }
+.fg label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.fg input, .fg select, .fg textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 0.85rem 1.1rem;
+  color: var(--text);
+  font-family: var(--fb);
+  font-size: 0.88rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  border-color: rgba(61, 234, 36, 0.5);
+  box-shadow: 0 0 0 3px rgba(61, 234, 36, 0.08);
+}
+/* Error state */
+.fg input.err, .fg select.err {
+  border-color: rgba(255, 80, 80, 0.6);
+  box-shadow: 0 0 0 3px rgba(255, 80, 80, 0.08);
+}
+.fg select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A8699' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 2.5rem; }
+.fg select option { background: #0C1018; }
+.fg textarea { resize: vertical; min-height: 80px; }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.fbtn2 {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  background: var(--accent);
+  color: #000;
+  font-family: var(--fh);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  padding: 1rem;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: box-shadow 0.25s, transform 0.2s, opacity 0.2s;
+}
+.fbtn2:hover {
+  box-shadow: 0 0 30px var(--glow), 0 8px 30px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+}
+.fbtn2:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.fnote {
+  font-size: 0.7rem;
+  color: var(--dim);
+  text-align: center;
+  margin-top: 0.8rem;
+}
+.fsucc { display: none; text-align: center; padding: 2.5rem 1rem; }
+.fsucc i { font-size: 3.5rem; color: var(--accent); display: block; margin-bottom: 1rem; }
+.fsucc h4 { font-family: var(--fh); font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; }
+.fsucc p { color: var(--muted); font-size: 0.9rem; }
+.fsucc .fback { margin-top: 1.5rem; font-family: var(--fh); font-size: 0.8rem; color: var(--accent); background: none; border: 1px solid var(--border); border-radius: 99px; padding: 0.5rem 1.5rem; cursor: pointer; transition: background 0.2s; }
+.fsucc .fback:hover { background: rgba(61,234,36,0.1); }
+
+/* Footer */
+footer {
+  background: #020304;
+  border-top: 1px solid var(--border);
+  padding: 4rem 0 1.5rem;
+}
+.fg2 {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+.fb-brand p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-top: 1rem;
+  max-width: 240px;
+}
+.fsocs { display: flex; gap: 10px; margin-top: 1.5rem; }
+.fsoc {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.fsoc:hover {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+.fc h4 {
+  font-family: var(--fh);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 1.2rem;
+}
+.fc ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.fc ul li a {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.fc ul li a:hover { color: var(--accent); }
+.fbot {
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.fbot p { font-size: 0.75rem; color: var(--dim); }
+.fbot span { color: var(--accent); }
+
+/* Botones flotantes */
+.fbts {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 600;
+}
+.fbt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 99px;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-family: var(--fh);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  transition: transform 0.25s, box-shadow 0.25s;
+  border: 1px solid transparent;
+}
+.fbt:hover { transform: translateX(-5px); }
+.fbt-wa {
+  background: rgba(37, 211, 102, 0.15);
+  border-color: rgba(37, 211, 102, 0.5);
+  color: #25D366;
+}
+.fbt-wa:hover {
+  background: #25D366;
+  color: #000;
+  box-shadow: 0 0 24px rgba(37, 211, 102, 0.5);
+}
+.fbt-loc {
+  background: rgba(61, 234, 36, 0.08);
+  border-color: rgba(61, 234, 36, 0.35);
+  color: var(--accent);
+}
+.fbt-loc:hover {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0 24px var(--glow);
+}
+.fbt i { font-size: 1.15rem; }
+
+/* Botón volver arriba */
+#backTop {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(8,12,20,0.85);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 600;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s, background 0.2s;
+  backdrop-filter: blur(10px);
+}
+#backTop.vis { opacity: 1; transform: translateY(0); }
+#backTop:hover { background: var(--accent); color: #000; box-shadow: 0 0 18px var(--glow); }
+
+.div { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(61, 234, 36, 0.18), transparent); }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 1024px) {
+  .fg2 { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+  .tst-bento {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .t1 { grid-column: 1; grid-row: 1; }
+  .t2 { grid-column: 2; grid-row: 1/3; }
+  .t3 { grid-column: 1; grid-row: 2; }
+  .t4 { grid-column: 1; grid-row: 3; }
+  .t5 { grid-column: 2; grid-row: 3; }
+}
+
+@media (max-width: 820px) {
+  .nav-links { display: none; }
+  .hbg { display: flex; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .bento { grid-template-columns: 1fr; }
+  .bento-l { padding-right: 0; }
+  .bento-l { grid-column: 1; grid-row: auto; }
+  .diag { grid-template-columns: 1fr; }
+  .dctr { display: none; }
+  .dcol:first-child .syi { flex-direction: row; text-align: left; }
+  .stats-row { flex-wrap: wrap; width: 100%; }
+  .stat { flex: 1; min-width: 120px; }
+  .cnt-w { grid-template-columns: 1fr; gap: 2.5rem; }
+  .frow { grid-template-columns: 1fr; }
+  .tst-bento { grid-template-columns: 1fr; }
+  .t2 { grid-column: 1; grid-row: auto; }
+  .t3, .t4, .t5 { grid-column: 1; grid-row: auto; }
+  .fg2 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .wrap { padding: 0 1.2rem; }
+  .section { padding: 4rem 0; }
+  .hero { padding: 3rem 0 2rem; min-height: auto; }
+  .stats-row { width: 100%; border-radius: 16px; }
+  .stat { padding: 1rem 1.2rem; }
+  .stat-n { font-size: 1.8rem; }
+  .why-grid { grid-template-columns: 1fr; }
+  .fbox { padding: 1.8rem 1.2rem; }
+  .fbts { bottom: 1rem; right: 1rem; gap: 8px; }
+  .fbt { padding: 8px 14px; font-size: 0.78rem; }
+  #backTop { bottom: 1rem; left: 1rem; }
+  .mob a { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="cur" aria-hidden="true"></div>
+<div id="curR" aria-hidden="true"></div>
+
+<header id="hdr">
+  <div class="wrap">
+    <nav class="nav" role="navigation" aria-label="Navegación principal">
+      <a href="#inicio" class="logo" aria-label="Alpha Automotriz - Inicio">
+        <div class="logo-wolf" aria-hidden="true">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width="34" height="34" aria-hidden="true">
+            <path d="M15 65 L28 42 L20 28 L30 33 L36 18 L40 28 L44 18 L50 33 L60 28 L52 42 L65 65 L48 57 L40 72 L32 57 Z" fill="#000"/>
+            <ellipse cx="32" cy="36" rx="3.5" ry="4" fill="#000" transform="rotate(-8,32,36)"/>
+            <ellipse cx="48" cy="36" rx="3.5" ry="4" fill="#000" transform="rotate(8,48,36)"/>
+            <path d="M36 47 Q40 51 44 47" stroke="#000" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <path d="M28 33 L22 16 L33 27Z" fill="#000"/>
+            <path d="M52 33 L58 16 L47 27Z" fill="#000"/>
+          </svg>
+        </div>
+        <div>
+          <div class="logo-alpha">ALPHA AUTOMOTRIZ</div>
+          <div class="logo-sub">Diagnóstico · Precisión · Confianza</div>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#sistemas">Sistemas</a></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#testimonios">Clientes</a></li>
+        <li><a href="#contacto" class="nav-cta">AGENDAR CITA</a></li>
+      </ul>
+      <button class="hbg" id="hbg" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobM">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<nav class="mob" id="mobM" aria-label="Menú móvil" aria-hidden="true">
+  <a href="#inicio" class="ml">INICIO</a>
+  <a href="#servicios" class="ml">SERVICIOS</a>
+  <a href="#sistemas" class="ml">SISTEMAS</a>
+  <a href="#nosotros" class="ml">NOSOTROS</a>
+  <a href="#testimonios" class="ml">CLIENTES</a>
+  <a href="#contacto" class="ml" style="color: var(--accent)">AGENDAR CITA →</a>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section id="inicio" class="hero">
+  <div class="hero-gbg" aria-hidden="true"></div>
+  <div class="hero-orb" aria-hidden="true"></div>
+  <div class="hero-ghost" aria-hidden="true">AUTO</div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="sr">
+        <div class="badge"><span class="bdot" aria-hidden="true"></span>Diagnóstico Premium</div>
+        <h1 class="hero-title">
+          Potencia y<br>
+          <span class="accent">Precisión</span>
+          <span class="outline">para tu Vehículo</span>
+        </h1>
+        <p class="hero-desc">Diagnóstico computarizado de última generación, mantenimiento mayor y afinamiento electrónico. Un equipo de técnicos con más de una década de expertise impulsando la innovación automotriz.</p>
+        <div class="hero-btns">
+          <a href="#contacto" class="btn-p"><i class="fas fa-calendar-check" aria-hidden="true"></i> Agendar diagnóstico</a>
+          <a href="https://wa.me/51964989341?text=Hola%20Alpha%20Automotriz%2C%20quisiera%20informaci%C3%B3n%20sobre%20sus%20servicios" target="_blank" rel="noopener noreferrer" class="btn-g"><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</a>
+        </div>
+        <div class="stats-row" role="list" aria-label="Estadísticas">
+          <div class="stat" role="listitem">
+            <div class="stat-n" data-to="10" data-suf="+" aria-label="Más de 10 técnicos expertos">0</div>
+            <div class="stat-l">Técnicos Expertos</div>
+          </div>
+          <div class="stat" role="listitem">
+            <div class="stat-n" data-to="12" data-suf="+" aria-label="Más de 12 certificaciones">0</div>
+            <div class="stat-l">Certificaciones</div>
+          </div>
+          <div class="stat" role="listitem">
+            <div class="stat-n" data-to="98" data-suf="%" aria-label="98% de satisfacción">0</div>
+            <div class="stat-l">Satisfacción</div>
+          </div>
+          <div class="stat" role="listitem">
+            <div class="stat-n" data-to="3000" data-suf="+" aria-label="Más de 3000 vehículos atendidos">0</div>
+            <div class="stat-l">Vehículos Atendidos</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right sr d2" aria-hidden="true">
+        <div class="orbital-system">
+          <div class="center-glow"></div>
+          <div class="car-center">
+            <img src="imagenes/hyundai1.png" alt="" width="400" height="260"
+              onerror="this.parentElement.innerHTML='<div class=car-placeholder><i class=\'fas fa-car\'></i><span>HYUNDAI</span></div>'">
+          </div>
+          <div class="planet-bubble planet1"><i class="fas fa-microchip" aria-hidden="true"></i>Tec. Avanzada</div>
+          <div class="planet-bubble planet2"><i class="fas fa-gears" aria-hidden="true"></i>Repuestos</div>
+          <div class="planet-bubble planet3"><i class="fas fa-plug" aria-hidden="true"></i>Accesorios</div>
+          <div class="planet-bubble planet4"><i class="fas fa-laptop-medical" aria-hidden="true"></i>Escáner Pro</div>
+          <div class="planet-bubble planet5"><i class="fas fa-wrench" aria-hidden="true"></i>Equipos Esp</div>
+          <div class="planet-bubble planet6"><i class="fas fa-shield-halved" aria-hidden="true"></i>Garantía Total</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Ticker -->
+<div class="tkw" aria-hidden="true">
+  <div class="tkt">
+    <span class="ti"><i class="fas fa-microchip"></i>Diagnóstico Computarizado</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-wrench"></i>Mantenimiento Mayor</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-tachometer-alt"></i>Afinamiento Electrónico</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-car-battery"></i>Sistema Eléctrico</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-wind"></i>Aire Acondicionado</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-cogs"></i>Transmisión y Motor</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-shield-halved"></i>Garantía Total</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-microchip"></i>Innovación constante</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-wrench"></i>Mantenimiento Mayor</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-tachometer-alt"></i>Afinamiento Electrónico</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-car-battery"></i>Sistema Eléctrico</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-wind"></i>Aire Acondicionado</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-cogs"></i>Transmisión y Motor</span><span class="tdot"></span>
+    <span class="ti"><i class="fas fa-shield-halved"></i>Garantía Total</span><span class="tdot"></span>
+  </div>
+</div>
+
+<!-- Servicios -->
+<section id="servicios" class="section">
+  <div class="wrap">
+    <div class="bento">
+      <div class="bento-l srl">
+        <h2>Conoce nuestro<br><span>Servicio<br>Especializado</span></h2>
+        <p>Servicios automotrices con diagnóstico computarizado para máximo rendimiento, seguridad y confianza en tu vehículo en Huánuco.</p>
+        <a href="https://jhafinamientoelectronico.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn-p" style="align-self:flex-start">Ver todos los servicios <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      <div class="sc2 sr d1">
+        <img src="https://images.unsplash.com/photo-1581092335871-4b4a1d0f1f6a?w=600&q=70" alt="Técnico realizando afinamiento electrónico en motor" class="sc2-img" loading="lazy" width="600" height="180">
+        <div class="sc2-body">
+          <div class="sc2-icon" aria-hidden="true"><i class="fas fa-microchip"></i></div>
+          <h3>Afinamiento Electrónico</h3>
+          <p>Optimiza el rendimiento del motor mediante calibración electrónica y ajuste del sistema de inyección.</p>
+        </div>
+      </div>
+      <div class="sc2 sr d2">
+        <img src="https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=600&q=70" alt="Vehículo en elevador hidráulico para mantenimiento" class="sc2-img" loading="lazy" width="600" height="180">
+        <div class="sc2-body">
+          <div class="sc2-icon" aria-hidden="true"><i class="fas fa-wrench"></i></div>
+          <h3>Mantenimiento Mayor</h3>
+          <p>Servicio completo que incluye revisión y cambio de componentes esenciales del vehículo.</p>
+        </div>
+      </div>
+      <div class="sc2 sr d3">
+        <span class="sc2-tag">PREMIUM</span>
+        <img src="https://images.unsplash.com/photo-1564941527446-512b1b9f5fb2?w=600&q=70" alt="Escáner automotriz conectado a vehículo" class="sc2-img" loading="lazy" width="600" height="180">
+        <div class="sc2-body">
+          <div class="sc2-icon" aria-hidden="true"><i class="fas fa-laptop-medical"></i></div>
+          <h3>Diagnóstico Computarizado</h3>
+          <p>Detección precisa de fallas electrónicas mediante escáner y software automotriz de última generación.</p>
+        </div>
+      </div>
+      <div class="sc2 sr d4">
+        <img src="https://images.unsplash.com/photo-1621799754526-a0d52c49fad5?w=600&q=70" alt="Reparación de sistema eléctrico automotriz" class="sc2-img" loading="lazy" width="600" height="180">
+        <div class="sc2-body">
+          <div class="sc2-icon" aria-hidden="true"><i class="fas fa-bolt"></i></div>
+          <h3>Sistema Eléctrico</h3>
+          <p>Reparación y mantenimiento de circuitos, sensores y componentes eléctricos del vehículo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="div" role="separator"></div>
+
+<!-- Nosotros -->
+<section id="nosotros" class="section" style="background:linear-gradient(180deg,transparent,rgba(61,234,36,.02),transparent);">
+  <div class="wrap">
+    <div class="why-hdr sr">
+      <h2>¿Por Qué Elegir <span>Alpha Automotriz?</span></h2>
+      <p>Innovación, tecnología de punta y un equipo de especialistas que superan los estándares del sector.</p>
+    </div>
+    <div class="why-grid">
+      <div class="wyc sr d1">
+        <div class="wyn" aria-hidden="true">01</div>
+        <h3>Expertos +10 años</h3>
+        <p>Técnicos con más de una década de trayectoria, actualizados en las últimas tecnologías automotrices.</p>
+      </div>
+      <div class="wyc sr d2">
+        <div class="wyn" aria-hidden="true">02</div>
+        <h3>Diagnóstico Profesional</h3>
+        <p>Escaneo avanzado multicanal, detección precisa de fallas sin gastos innecesarios.</p>
+      </div>
+      <div class="wyc sr d3">
+        <div class="wyn" aria-hidden="true">03</div>
+        <h3>Garantía e Innovación</h3>
+        <p>Respaldamos cada reparación con garantía y equipos de última generación.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="div" role="separator"></div>
+
+<!-- Sistemas -->
+<section id="sistemas" class="section sys-sec">
+  <div class="wrap">
+    <div class="sys-hdr sr">
+      <h2>Sistemas que <span>Dominamos</span></h2>
+      <p style="color:var(--muted);font-size:.95rem;max-width:500px;margin:.8rem auto 0;">Diagnóstico integral de todos los sistemas con tecnología de última generación.</p>
+    </div>
+    <div class="diag">
+      <div class="dcol srl d1">
+        <div class="syi">
+          <div class="syt"><h4>Sistema Eléctrico</h4><p>Luces, sensores y computadoras.</p></div>
+          <div class="syic" aria-hidden="true"><i class="fas fa-car-battery"></i></div>
+        </div>
+        <div class="syi">
+          <div class="syt"><h4>Suspensión</h4><p>Estabilidad y control.</p></div>
+          <div class="syic" aria-hidden="true"><i class="fas fa-road"></i></div>
+        </div>
+        <div class="syi">
+          <div class="syt"><h4>Sistema de Combustible</h4><p>Inyección precisa.</p></div>
+          <div class="syic" aria-hidden="true"><i class="fas fa-gas-pump"></i></div>
+        </div>
+      </div>
+      <div class="dctr sr d3" aria-hidden="true">
+        <div class="gr2"></div>
+        <div class="gr1"></div>
+        <img src="https://www.pngplay.com/wp-content/uploads/15/Toyota-Hilux-Transparent-Free-PNG.png" alt="" class="car-top" loading="lazy" width="300" height="180">
+      </div>
+      <div class="dcol r srr d1">
+        <div class="syi">
+          <div class="syic" aria-hidden="true"><i class="fas fa-wind"></i></div>
+          <div class="syt"><h4>Aire Acondicionado (A/C)</h4><p>Climatización total.</p></div>
+        </div>
+        <div class="syi">
+          <div class="syic" aria-hidden="true"><i class="fas fa-cogs"></i></div>
+          <div class="syt"><h4>Transmisión</h4><p>Manual, automática, CVT.</p></div>
+        </div>
+        <div class="syi">
+          <div class="syic" aria-hidden="true"><i class="fas fa-car"></i></div>
+          <div class="syt"><h4>Motor Integral</h4><p>Potencia y durabilidad.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="bubs-row sr" aria-label="Especialidades">
+      <div class="bub"><i class="fas fa-charging-station" aria-hidden="true"></i> Transmisión 4x4</div>
+      <div class="bub"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> Turbo Diesel</div>
+      <div class="bub"><i class="fas fa-shield-halved" aria-hidden="true"></i> Seguridad Activa</div>
+      <div class="bub"><i class="fas fa-cogs" aria-hidden="true"></i> Tracción Integral</div>
+      <div class="bub"><i class="fas fa-microchip" aria-hidden="true"></i> Centralita Off-Road</div>
+      <div class="bub"><i class="fas fa-oil-can" aria-hidden="true"></i> Lubricación Avanzada</div>
+    </div>
+  </div>
+</section>
+
+<div class="div" role="separator"></div>
+
+<!-- Marcas -->
+<section class="section-sm" aria-label="Marcas que atendemos">
+  <div class="wrap">
+    <div class="brands-w sr">
+      <p class="brands-lbl">Cobertura completa de marcas</p>
+      <div class="brands-g" role="list" aria-label="Lista de marcas">
+        <span class="bpill" role="listitem">Toyota</span>
+        <span class="bpill" role="listitem">Hyundai</span>
+        <span class="bpill" role="listitem">Kia</span>
+        <span class="bpill" role="listitem">Nissan</span>
+        <span class="bpill" role="listitem">DFSK</span>
+        <span class="bpill" role="listitem">Foton</span>
+        <span class="bpill" role="listitem">Mazda</span>
+        <span class="bpill" role="listitem">Chevrolet</span>
+        <span class="bpill" role="listitem">Volkswagen</span>
+        <span class="bpill" role="listitem">Ford</span>
+        <span class="bpill" role="listitem">Mitsubishi</span>
+        <span class="bpill" role="listitem">Honda</span>
+        <span class="bpill" role="listitem">Suzuki</span>
+        <span class="bpill" role="listitem">+ Todas las marcas</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="div" role="separator"></div>
+
+<!-- Testimonios -->
+<section id="testimonios" class="section">
+  <div class="wrap">
+    <div class="tst-hdr sr">
+      <h2>Lo que dicen <span>nuestros clientes</span></h2>
+      <p>Conoce la experiencia de quienes confían en Alpha Automotriz para el cuidado de su vehículo.</p>
+    </div>
+    <div class="tst-bento">
+      <article class="tc t1 sr d1">
+        <div class="stars" aria-label="5 estrellas">
+          <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+          <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+          <i class="fas fa-star" aria-hidden="true"></i>
+        </div>
+        <p>"El diagnóstico computarizado en mi Mazda 6 fue increíblemente rápido. Encontraron una falla que nadie podía solucionar. Alpha Automotriz es garantía pura."</p>
+        <div class="tau">
+          <div class="tav" aria-hidden="true">FR</div>
+          <div><div class="tname">Fernando R.</div><div class="tveh">Mazda 6 · 2019 · 2026</div></div>
+        </div>
+      </article>
+      <div class="t2 sr d2">
+        <div class="tc-img">
+          <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=70" alt="Vehículo deportivo en carretera" loading="lazy" width="600" height="220">
+        </div>
+        <div class="tc-img">
+          <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&q=70" alt="Auto moderno en velocidad" loading="lazy" width="600" height="220">
+        </div>
+      </div>
+      <article class="tc t3 sr d3">
+        <div class="stars" aria-label="5 estrellas">
+          <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+          <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+          <i class="fas fa-star" aria-hidden="true"></i>
+        </div>
+        <p>"Mi Toyota Hilux está impecable después del mantenimiento mayor. Profesionalismo total y cumplen los plazos al pie de la letra."</p>
+        <div class="tau">
+          <div class="tav" aria-hidden="true">LS</div>
+          <div><div class="tname">Laura S.</div><div class="tveh">Toyota Hilux · 2021 · 2026</div></div>
+        </div>
+      </article>
+      <div class="tc-img t4 sr d1" style="border-radius:24px;overflow:hidden;height:200px;">
+        <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=600&q=70" alt="Interior de taller automotriz moderno" loading="lazy" width="600" height="200" style="width:100%;height:100%;object-fit:cover;filter:brightness(.6) saturate(.7);">
+      </div>
+      <article class="tc sr d2" style="grid-column:2;grid-row:2;">
+        <div class="stars" aria-label="5 estrellas">
+          <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+          <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+          <i class="fas fa-star" aria-hidden="true"></i>
+        </div>
+        <p>"Hacía falta un taller de esta categoría en Huánuco. Aparecimos por necesidad de clientes de un taller completo y Alpha Automotriz superó todas las expectativas. Confianza 100%."</p>
+        <div class="tau">
+          <div class="tav" aria-hidden="true">EC</div>
+          <div><div class="tname">Empresa Comercial Los Andes</div><div class="tveh">Flota Corporativa · 2026</div></div>
+        </div>
+      </article>
+      <div class="tc-img t5 sr d3" style="border-radius:24px;overflow:hidden;height:200px;">
+        <img src="https://images.unsplash.com/photo-1606577924006-27d39b132ae2?w=600&q=70" alt="Interior de vehículo moderno" loading="lazy" width="600" height="200" style="width:100%;height:100%;object-fit:cover;filter:brightness(.6) saturate(.7);">
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="div" role="separator"></div>
+
+<!-- Contacto -->
+<section id="contacto" class="section cnt-sec">
+  <div class="wrap">
+    <div class="cnt-w">
+      <div class="cnt-info srl">
+        <h2>Agenda tu <span>Servicio</span><br>hoy y toma control<br>de tu vehículo</h2>
+        <p>Diagnóstico sin compromiso. Atención personalizada con tecnología de punta.</p>
+        <div class="cdets">
+          <a href="tel:+51964989341" class="citem">
+            <div class="cico" aria-hidden="true"><i class="fas fa-phone-alt"></i></div>
+            <div class="ctxt"><strong>Teléfono / WhatsApp</strong><span>+51 964 989 341</span></div>
+          </a>
+          <a href="mailto:taller@alphaautomotriz.com" class="citem">
+            <div class="cico" aria-hidden="true"><i class="fas fa-envelope"></i></div>
+            <div class="ctxt"><strong>Correo electrónico</strong><span>taller@alphaautomotriz.com</span></div>
+          </a>
+          <div class="citem">
+            <div class="cico" aria-hidden="true"><i class="far fa-clock"></i></div>
+            <div class="ctxt"><strong>Horario</strong><span>Lunes a Domingo · 8:00 am – 7:00 pm</span></div>
+          </div>
+          <a href="https://www.google.com/maps?q=-9.948674,-76.254519" target="_blank" rel="noopener noreferrer" class="citem">
+            <div class="cico" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="ctxt"><strong>Dirección</strong><span style="color:var(--accent);">Av. Los Próceres 123, Huánuco ↗</span></div>
+          </a>
+        </div>
+      </div>
+      <div class="srr">
+        <div class="fbox">
+          <div id="fContent">
+            <p class="ftit">Solicita tu cita ahora</p>
+            <form id="cForm" novalidate aria-label="Formulario de cita">
+              <div class="frow">
+                <div class="fg">
+                  <label for="fn">Nombre completo *</label>
+                  <input type="text" id="fn" placeholder="Ej: Juan García" required autocomplete="name" aria-required="true">
+                </div>
+                <div class="fg">
+                  <label for="ft">WhatsApp / Teléfono</label>
+                  <input type="tel" id="ft" placeholder="+51 9XX XXX XXX" autocomplete="tel">
+                </div>
+              </div>
+              <div class="fg">
+                <label for="fe">Correo electrónico *</label>
+                <input type="email" id="fe" placeholder="tu@correo.com" required autocomplete="email" aria-required="true">
+              </div>
+              <div class="frow">
+                <div class="fg">
+                  <label for="fv">Marca del vehículo</label>
+                  <select id="fv" aria-label="Selecciona la marca de tu vehículo">
+                    <option value="">Seleccionar marca</option>
+                    <option>Toyota</option><option>Mazda</option><option>Hyundai</option>
+                    <option>Kia</option><option>Nissan</option><option>Chevrolet</option>
+                    <option>Volkswagen</option><option>Ford</option><option>Mitsubishi</option>
+                    <option>DFSK</option><option>Honda</option><option>Suzuki</option>
+                    <option>Otra marca</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label for="fs">Servicio requerido</label>
+                  <select id="fs" aria-label="Selecciona el servicio que necesitas">
+                    <option value="">¿Qué necesitas?</option>
+                    <option>Diagnóstico Computarizado</option>
+                    <option>Mantenimiento Mayor</option>
+                    <option>Afinamiento Electrónico</option>
+                    <option>Sistema Eléctrico</option>
+                    <option>Aire Acondicionado</option>
+                    <option>Suspensión</option>
+                    <option>Transmisión</option>
+                    <option>Otro servicio</option>
+                  </select>
+                </div>
+              </div>
+              <div class="fg">
+                <label for="fm">Descripción (opcional)</label>
+                <textarea id="fm" placeholder="Cuéntanos brevemente qué le ocurre a tu vehículo..."></textarea>
+              </div>
+              <button type="submit" class="fbtn2" id="fBtn">
+                <i class="fab fa-whatsapp" aria-hidden="true"></i> Enviar vía WhatsApp
+              </button>
+              <p class="fnote">Respuesta garantizada en menos de 2 horas · Lun–Dom 8am–7pm</p>
+            </form>
+          </div>
+          <div class="fsucc" id="fSucc" role="alert" aria-live="polite">
+            <i class="fas fa-check-circle" aria-hidden="true"></i>
+            <h4>¡Redirigiendo a WhatsApp!</h4>
+            <p>Si no se abrió, escríbenos al <strong>+51 964 989 341</strong></p>
+            <button class="fback" id="fBack">Enviar otra consulta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fg2">
+      <div class="fb-brand">
+        <a href="#inicio" class="logo" style="text-decoration:none;margin-bottom:.5rem;display:inline-flex;">
+          <div class="logo-wolf" style="width:38px;height:38px;" aria-hidden="true">
+            <svg viewBox="0 0 80 80" fill="none" width="28" height="28" aria-hidden="true">
+              <path d="M15 65 L28 42 L20 28 L30 33 L36 18 L40 28 L44 18 L50 33 L60 28 L52 42 L65 65 L48 57 L40 72 L32 57 Z" fill="#000"/>
+              <ellipse cx="32" cy="36" rx="3.5" ry="4" fill="#000" transform="rotate(-8,32,36)"/>
+              <ellipse cx="48" cy="36" rx="3.5" ry="4" fill="#000" transform="rotate(8,48,36)"/>
+              <path d="M36 47 Q40 51 44 47" stroke="#000" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <path d="M28 33 L22 16 L33 27Z" fill="#000"/>
+              <path d="M52 33 L58 16 L47 27Z" fill="#000"/>
+            </svg>
+          </div>
+          <span class="logo-alpha" style="font-size:1.1rem;align-self:center;margin-left:10px;">ALPHA AUTOMOTRIZ</span>
+        </a>
+        <p>Más de una década de expertise en diagnóstico y reparación automotriz en Huánuco, Perú. Innovación constante al servicio de tu vehículo.</p>
+        <div class="fsocs">
+          <a href="#" class="fsoc" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" class="fsoc" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" class="fsoc" aria-label="TikTok"><i class="fab fa-tiktok" aria-hidden="true"></i></a>
+          <a href="https://wa.me/51964989341" target="_blank" rel="noopener noreferrer" class="fsoc" aria-label="WhatsApp"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <div class="fc">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#sistemas">Sistemas</a></li>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#testimonios">Clientes</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h4>Horario</h4>
+        <ul>
+          <li><a href="#contacto">Lun – Vie: 8am – 7pm</a></li>
+          <li><a href="#contacto">Sáb – Dom: 8am – 5pm</a></li>
+          <li><a href="#contacto">Feriados: Consultar</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="tel:+51964989341">+51 964 989 341</a></li>
+          <li><a href="mailto:taller@alphaautomotriz.com">taller@alphaautomotriz.com</a></li>
+          <li><a href="https://www.google.com/maps?q=-9.948674,-76.254519" target="_blank" rel="noopener noreferrer">Av. Los Próceres 123, Huánuco</a></li>
+          <li><a href="#">Política de privacidad</a></li>
+          <li><a href="#">Libro de reclamaciones</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fbot">
+      <p>© 2026 ALPHA AUTOMOTRIZ S.A.C. · Todos los derechos reservados</p>
+      <p>Hecho con <span aria-hidden="true">♥</span><span class="sr-only">amor</span> en <span>Huánuco, Perú</span></p>
+    </div>
+  </div>
+</footer>
+
+<!-- Botones flotantes -->
+<div class="fbts">
+  <a href="https://wa.me/51964989341?text=Hola%20Alpha%20Automotriz%2C%20necesito%20informaci%C3%B3n%20sobre%20sus%20servicios" target="_blank" rel="noopener noreferrer" class="fbt fbt-wa" aria-label="Contactar por WhatsApp">
+    <i class="fab fa-whatsapp" aria-hidden="true"></i><span>WhatsApp</span>
+  </a>
+  <a href="https://www.google.com/maps?q=-9.948674,-76.254519" target="_blank" rel="noopener noreferrer" class="fbt fbt-loc" aria-label="Ver ubicación en Google Maps">
+    <i class="fas fa-map-marker-alt" aria-hidden="true"></i><span>Ubicación</span>
+  </a>
+</div>
+
+<!-- Botón volver arriba -->
+<button id="backTop" aria-label="Volver al inicio de la página" title="Volver arriba">
+  <i class="fas fa-chevron-up" aria-hidden="true"></i>
+</button>
+
+<script>
+/* Cursor personalizado */
+const cur = document.getElementById('cur'), curR = document.getElementById('curR');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+});
+(function anim() {
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  curR.style.left = rx + 'px'; curR.style.top = ry + 'px';
+  requestAnimationFrame(anim);
+})();
+document.querySelectorAll('a,button,.bub,.bpill,.wyc,.sc2,.tc,.planet-bubble').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cur.style.transform = 'translate(-50%,-50%) scale(2.5)';
+    cur.style.background = 'transparent';
+    cur.style.border = '1px solid var(--accent)';
+    curR.style.width = '0px'; curR.style.height = '0px';
+  });
+  el.addEventListener('mouseleave', () => {
+    cur.style.transform = 'translate(-50%,-50%) scale(1)';
+    cur.style.background = 'var(--accent)';
+    cur.style.border = 'none';
+    curR.style.width = '32px'; curR.style.height = '32px';
+  });
+});
+
+/* Header scroll */
+const hdr = document.getElementById('hdr');
+window.addEventListener('scroll', () => hdr.classList.toggle('sc', scrollY > 40), { passive: true });
+
+/* Menú móvil */
+const hbg = document.getElementById('hbg'), mob = document.getElementById('mobM');
+function toggleMob(open) {
+  hbg.classList.toggle('open', open);
+  mob.classList.toggle('open', open);
+  hbg.setAttribute('aria-expanded', open);
+  mob.setAttribute('aria-hidden', !open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+hbg.addEventListener('click', () => toggleMob(!mob.classList.contains('open')));
+document.querySelectorAll('.ml').forEach(l => l.addEventListener('click', () => toggleMob(false)));
+mob.addEventListener('click', e => { if (e.target === mob) toggleMob(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && mob.classList.contains('open')) toggleMob(false); });
+
+/* Smooth scroll */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const t = document.getElementById(id);
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+/* Reveal on scroll */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.sr,.srl,.srr').forEach(el => obs.observe(el));
+
+/* Contadores animados */
+function cnt(el) {
+  const to = parseInt(el.dataset.to), suf = el.dataset.suf || '', dur = 1800, st = performance.now();
+  (function tk(now) {
+    const p = Math.min((now - st) / dur, 1), e2 = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(e2 * to).toLocaleString('es-PE') + suf;
+    if (p < 1) requestAnimationFrame(tk);
+  })(st);
+}
+const cobs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { cnt(e.target); cobs.unobserve(e.target); } });
+}, { threshold: 0.6 });
+document.querySelectorAll('[data-to]').forEach(el => cobs.observe(el));
+
+/* Formulario */
+const frm = document.getElementById('cForm');
+const fSucc = document.getElementById('fSucc');
+const fCnt = document.getElementById('fContent');
+const fBtn = document.getElementById('fBtn');
+const fBack = document.getElementById('fBack');
+
+frm.addEventListener('submit', e => {
+  e.preventDefault();
+  const fn = document.getElementById('fn');
+  const fe = document.getElementById('fe');
+  const ft = document.getElementById('ft');
+  const fv = document.getElementById('fv');
+  const fs = document.getElementById('fs');
+  const fm = document.getElementById('fm');
+
+  fn.classList.remove('err'); fe.classList.remove('err');
+  let valid = true;
+  if (!fn.value.trim()) { fn.classList.add('err'); fn.focus(); valid = false; }
+  else if (!fe.value.trim() || !fe.value.includes('@')) { fe.classList.add('err'); fe.focus(); valid = false; }
+  if (!valid) return;
+
+  fBtn.disabled = true;
+  fBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i> Enviando...';
+
+  const msg = [
+    '🐺 *Alpha Automotriz – Nueva Cita*', '',
+    `👤 *Nombre:* ${fn.value.trim()}`,
+    ft.value.trim() ? `📱 *Teléfono:* ${ft.value.trim()}` : '',
+    `📧 *Email:* ${fe.value.trim()}`,
+    fv.value ? `🚗 *Vehículo:* ${fv.value}` : '',
+    fs.value ? `🛠️ *Servicio:* ${fs.value}` : '',
+    fm.value.trim() ? `📝 *Detalle:* ${fm.value.trim()}` : ''
+  ].filter(Boolean).join('\n');
+
+  const url = `https://wa.me/51964989341?text=${encodeURIComponent(msg)}`;
+
+  setTimeout(() => {
+    fCnt.style.display = 'none';
+    fSucc.style.display = 'block';
+    window.open(url, '_blank');
+  }, 600);
+});
+
+fBack.addEventListener('click', () => {
+  fSucc.style.display = 'none';
+  fCnt.style.display = 'block';
+  frm.reset();
+  fBtn.disabled = false;
+  fBtn.innerHTML = '<i class="fab fa-whatsapp" aria-hidden="true"></i> Enviar vía WhatsApp';
+});
+
+/* Botón volver arriba */
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  backTop.classList.toggle('vis', scrollY > 400);
+}, { passive: true });
+backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+</body>
+</html>
