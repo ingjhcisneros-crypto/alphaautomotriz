@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="A1 Motors Perú — Taller automotriz multimarca en Los Olivos, Lima. Conversión a GNV/GLP, mantenimiento mayor y menor, afinamiento electrónico, planchado y pintura.">
+<meta name="robots" content="index, follow">
+
+<title>A1 Motors Perú — Taller Automotriz Multimarca en Los Olivos, Lima</title>
+
+<link rel="icon"           type="image/png" href="imagenes/favicon.png" data-img="favicon" data-attr="href">
+<link rel="shortcut icon"  type="image/png" href="imagenes/favicon.png" data-img="favicon" data-attr="href">
+<link rel="apple-touch-icon"               href="imagenes/favicon.png" data-img="favicon" data-attr="href">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body data-cursor="precision">
+
+<!-- Cursor personalizado (se activa solo con ratón) -->
+<div class="cursor-estela" id="cursorEstela" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="anillo"></span></div>
+
+<!-- ══════════════ CABECERA ══════════════ -->
+<header class="cabecera" id="cabecera">
+  <div class="contenedor">
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="#inicio" class="nav-logo" id="navLogo" title="A1 Motors Perú">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/logo.png" alt="A1 Motors Perú" data-img="logo" data-alterno="marcaTexto">
+        <span class="marca-texto" id="marcaTexto" hidden>A1<span> MOTORS</span></span>
+      </a>
+
+      <ul class="nav-enlaces">
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#promociones">Promociones</a></li>
+        <li><a href="#porque">¿Por qué?</a></li>
+        <li><a href="#sistemas">Sistemas</a></li>
+        <li><a href="#testimonios">Testimonios</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+
+      <div style="display:flex; align-items:center; gap:12px;">
+        <a href="#contacto" class="nav-cta">
+          <i class="fas fa-calendar-check"></i> <span>Agendar Cita</span>
+        </a>
+        <button class="nav-menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Menú móvil -->
+<div class="nav-movil" id="navMovil" role="dialog" aria-label="Menú de navegación" aria-modal="true">
+  <button class="cerrar" id="menuCerrar" aria-label="Cerrar menú"><i class="fas fa-times"></i></button>
+  <a href="#inicio">Inicio</a>
+  <a href="#servicios">Servicios</a>
+  <a href="#promociones">Promociones</a>
+  <a href="#porque">¿Por qué?</a>
+  <a href="#sistemas">Sistemas</a>
+  <a href="#testimonios">Testimonios</a>
+  <a href="#contacto">Contacto</a>
+</div>
+
+<!-- ══════════════ PORTADA ══════════════ -->
+<section id="inicio" class="portada">
+  <div class="portada-rejilla" aria-hidden="true"></div>
+  <div class="contenedor">
+    <div class="portada-inner">
+
+      <div class="portada-izquierda">
+        <div class="portada-guino">Taller Automotriz Premium</div>
+        <h1 class="portada-h1">
+          <span class="l1">Precisión automotriz</span>
+          <span class="l2">que marca la diferencia</span>
+        </h1>
+        <p class="portada-desc">
+          Infraestructura moderna, equipos especializados y personal altamente capacitado
+          para brindar soluciones automotrices con altos estándares de calidad.
+          Experiencia y compromiso para maximizar el rendimiento y la seguridad de cada vehículo.
+        </p>
+        <div class="portada-botones">
+          <a href="#contacto" class="btn btn-lleno">
+            <span class="btn-aro"><i class="fas fa-calendar-check"></i></span> Agendar Cita
+          </a>
+          <a href="#servicios" class="btn btn-borde">
+            <span class="btn-aro"><i class="fas fa-tools"></i></span> Ver Servicios
+          </a>
+        </div>
+      </div>
+
+      <div class="portada-derecha">
+        <div class="auto-resplandor" aria-hidden="true"></div>
+        <div class="portada-auto">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/hero-auto.png" alt="Vehículo atendido en A1 Motors" data-img="hero-auto" width="900" height="560">
+        </div>
+        <div class="pulso" aria-hidden="true">
+          <div class="pulso-linea"></div><div class="pulso-linea"></div><div class="pulso-linea"></div>
+        </div>
+        <div class="portada-sellos">
+          <div class="sello"><i class="fas fa-microchip"></i> Diagnóstico Tech</div>
+          <div class="sello"><i class="fas fa-bolt"></i> Afinamiento Élite</div>
+          <div class="sello"><i class="fas fa-certificate"></i> Certificación</div>
+          <div class="sello"><i class="fas fa-shield-halved"></i> Garantía Total</div>
+          <div class="sello"><i class="fas fa-chart-line"></i> Rendimiento Pro</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ CIFRAS ══════════════ -->
+<div class="cifras">
+  <div class="contenedor">
+    <div class="cifras-rejilla">
+      <div class="cifra revelar">
+        <i class="fas fa-users"></i>
+        <span class="cifra-num" data-txt="cifra1_num">+5000</span>
+        <span class="cifra-txt" data-txt="cifra1_txt">Clientes atendidos</span>
+      </div>
+      <div class="cifra revelar">
+        <i class="fas fa-star"></i>
+        <span class="cifra-num" data-txt="cifra2_num">98%</span>
+        <span class="cifra-txt" data-txt="cifra2_txt">Satisfacción garantizada</span>
+      </div>
+      <div class="cifra revelar">
+        <i class="fas fa-helmet-safety"></i>
+        <span class="cifra-num" data-txt="cifra3_num">+15</span>
+        <span class="cifra-txt" data-txt="cifra3_txt">Técnicos especializados</span>
+      </div>
+      <div class="cifra revelar">
+        <i class="fas fa-certificate"></i>
+        <span class="cifra-num" data-txt="cifra4_num">+10</span>
+        <span class="cifra-txt" data-txt="cifra4_txt">Certificaciones técnicas</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SERVICIOS ══════════════ -->
+<section id="servicios" class="seccion">
+  <div class="contenedor">
+    <div class="sec-cabeza revelar">
+      <span class="sec-guino">Lo que hacemos</span>
+      <h2 class="sec-titulo"><span class="t-blanco">Servicios que</span> <span class="t-cyan">realizamos</span></h2>
+      <p class="sec-desc">Soluciones automotrices integrales con tecnología de vanguardia y técnicos certificados para cada necesidad.</p>
+    </div>
+
+    <div class="servicios-rejilla">
+      <article class="svc revelar">
+        <div class="svc-foto">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/svc-gnv.png" alt="Conversión a GNV y GLP" data-img="svc-gnv" loading="lazy">
+          <div class="svc-velo"></div><div class="svc-num">01</div>
+        </div>
+        <div class="svc-cuerpo">
+          <div class="svc-icono"><i class="fas fa-gas-pump"></i></div>
+          <h3 class="svc-titulo"><span class="t-cyan">Conversión</span> a GNV / GLP</h3>
+          <p class="svc-desc">Implementamos sistemas de gas modernos para maximizar ahorro y rendimiento, con certificación oficial.</p>
+        </div>
+      </article>
+
+      <article class="svc revelar">
+        <div class="svc-foto">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/svc-mant-mayor.png" alt="Mantenimiento mayor" data-img="svc-mant-mayor" loading="lazy">
+          <div class="svc-velo"></div><div class="svc-num">02</div>
+        </div>
+        <div class="svc-cuerpo">
+          <div class="svc-icono"><i class="fas fa-oil-can"></i></div>
+          <h3 class="svc-titulo"><span class="t-cyan">Mantenimiento</span> Mayor</h3>
+          <p class="svc-desc">Servicio completo para preservar el rendimiento y la vida útil del motor. Revisión total de sistemas.</p>
+        </div>
+      </article>
+
+      <article class="svc revelar">
+        <div class="svc-foto">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/svc-gas.png" alt="Mantenimiento de sistemas de gas" data-img="svc-gas" loading="lazy">
+          <div class="svc-velo"></div><div class="svc-num">03</div>
+        </div>
+        <div class="svc-cuerpo">
+          <div class="svc-icono"><i class="fas fa-fire"></i></div>
+          <h3 class="svc-titulo"><span class="t-cyan">Mantenimiento</span> de Gas</h3>
+          <p class="svc-desc">Diagnóstico y calibración especializada de sistemas GNV y GLP para un rendimiento óptimo garantizado.</p>
+        </div>
+      </article>
+
+      <article class="svc revelar">
+        <div class="svc-foto">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/svc-afinamiento.png" alt="Afinamiento electrónico" data-img="svc-afinamiento" loading="lazy">
+          <div class="svc-velo"></div><div class="svc-num">04</div>
+        </div>
+        <div class="svc-cuerpo">
+          <div class="svc-icono"><i class="fas fa-microchip"></i></div>
+          <h3 class="svc-titulo"><span class="t-cyan">Afinamiento</span> Electrónico</h3>
+          <p class="svc-desc">Escáner, reprogramación y puesta a punto para máxima potencia y consumo eficiente del vehículo.</p>
+        </div>
+      </article>
+
+      <article class="svc revelar">
+        <div class="svc-foto">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/svc-mant-menor.png" alt="Mantenimiento menor" data-img="svc-mant-menor" loading="lazy">
+          <div class="svc-velo"></div><div class="svc-num">05</div>
+        </div>
+        <div class="svc-cuerpo">
+          <div class="svc-icono"><i class="fas fa-wrench"></i></div>
+          <h3 class="svc-titulo"><span class="t-cyan">Mantenimiento</span> Menor</h3>
+          <p class="svc-desc">Inspección preventiva y cambio de componentes esenciales. Revisión exprés profesional sin esperas.</p>
+        </div>
+      </article>
+
+      <article class="svc revelar">
+        <div class="svc-foto">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/svc-planchado.png" alt="Planchado y pintura" data-img="svc-planchado" loading="lazy">
+          <div class="svc-velo"></div><div class="svc-num">06</div>
+        </div>
+        <div class="svc-cuerpo">
+          <div class="svc-icono"><i class="fas fa-paint-roller"></i></div>
+          <h3 class="svc-titulo"><span class="t-cyan">Planchado</span> y Pintura</h3>
+          <p class="svc-desc">Restauración estética profesional con colorimetría exacta y acabados de calidad de fábrica.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PROMOCIONES ══════════════ -->
+<section id="promociones" class="seccion seccion-2">
+  <div class="contenedor">
+    <div class="sec-cabeza revelar">
+      <span class="sec-guino">Ofertas exclusivas</span>
+      <h2 class="sec-titulo"><span class="t-blanco">Promociones</span> <span class="t-cyan">del Mes</span></h2>
+      <p class="sec-desc">Aprovecha nuestras ofertas especiales en todas las áreas del taller. Toca una promoción para verla en grande.</p>
+    </div>
+
+    <div class="promo-bloque revelar">
+      <div class="grupo-cabeza">
+        <div class="grupo-icono"><i class="fas fa-wrench"></i></div>
+        <h3 class="grupo-titulo">Mecánica <span class="t-cyan">General</span></h3>
+        <div class="grupo-linea"></div>
+      </div>
+      <div class="promo-rejilla">
+        <figure class="promo" tabindex="0" data-visor="promo-mecanica-1">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/promo-mecanica-1.png" alt="Promoción de mecánica general 1" data-img="promo-mecanica-1" loading="lazy">
+          <figcaption class="promo-pie">
+            <span class="promo-lupa"><i class="fas fa-expand"></i> Ampliar</span>
+            <button class="promo-wa" data-oferta="mecanica"><i class="fab fa-whatsapp"></i> Solicitar</button>
+          </figcaption>
+        </figure>
+        <figure class="promo" tabindex="0" data-visor="promo-mecanica-2">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/promo-mecanica-2.png" alt="Promoción de mecánica general 2" data-img="promo-mecanica-2" loading="lazy">
+          <figcaption class="promo-pie">
+            <span class="promo-lupa"><i class="fas fa-expand"></i> Ampliar</span>
+            <button class="promo-wa" data-oferta="mecanica"><i class="fab fa-whatsapp"></i> Solicitar</button>
+          </figcaption>
+        </figure>
+        <figure class="promo" tabindex="0" data-visor="promo-mecanica-3">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/promo-mecanica-3.png" alt="Promoción de mecánica general 3" data-img="promo-mecanica-3" loading="lazy">
+          <figcaption class="promo-pie">
+            <span class="promo-lupa"><i class="fas fa-expand"></i> Ampliar</span>
+            <button class="promo-wa" data-oferta="mecanica"><i class="fab fa-whatsapp"></i> Solicitar</button>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="promo-bloque revelar">
+      <div class="grupo-cabeza">
+        <div class="grupo-icono"><i class="fas fa-gas-pump"></i></div>
+        <h3 class="grupo-titulo">Conversiones <span class="t-cyan">GNV / GLP</span></h3>
+        <div class="grupo-linea"></div>
+      </div>
+      <div class="promo-rejilla">
+        <figure class="promo" tabindex="0" data-visor="promo-gnv-1">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/promo-gnv-1.png" alt="Promoción de conversión a GNV 1" data-img="promo-gnv-1" loading="lazy">
+          <figcaption class="promo-pie">
+            <span class="promo-lupa"><i class="fas fa-expand"></i> Ampliar</span>
+            <button class="promo-wa" data-oferta="gnv"><i class="fab fa-whatsapp"></i> Solicitar</button>
+          </figcaption>
+        </figure>
+        <figure class="promo" tabindex="0" data-visor="promo-gnv-2">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/promo-gnv-2.png" alt="Promoción de conversión a GNV 2" data-img="promo-gnv-2" loading="lazy">
+          <figcaption class="promo-pie">
+            <span class="promo-lupa"><i class="fas fa-expand"></i> Ampliar</span>
+            <button class="promo-wa" data-oferta="gnv"><i class="fab fa-whatsapp"></i> Solicitar</button>
+          </figcaption>
+        </figure>
+        <figure class="promo" tabindex="0" data-visor="promo-gnv-3">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/promo-gnv-3.png" alt="Promoción de conversión a GNV 3" data-img="promo-gnv-3" loading="lazy">
+          <figcaption class="promo-pie">
+            <span class="promo-lupa"><i class="fas fa-expand"></i> Ampliar</span>
+            <button class="promo-wa" data-oferta="gnv"><i class="fab fa-whatsapp"></i> Solicitar</button>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="promo-bloque revelar">
+      <div class="grupo-cabeza">
+        <div class="grupo-icono"><i class="fas fa-paint-roller"></i></div>
+        <h3 class="grupo-titulo">Pintura y <span class="t-cyan">Planchado</span></h3>
+        <div class="grupo-linea"></div>
+      </div>
+      <div class="promo-rejilla">
+        <figure class="promo" tabindex="0" data-visor="promo-pintura-1">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/promo-pintura-1.png" alt="Promoción de pintura 1" data-img="promo-pintura-1" loading="lazy">
+          <figcaption class="promo-pie">
+            <span class="promo-lupa"><i class="fas fa-expand"></i> Ampliar</span>
+            <button class="promo-wa" data-oferta="pintura"><i class="fab fa-whatsapp"></i> Solicitar</button>
+          </figcaption>
+        </figure>
+        <figure class="promo" tabindex="0" data-visor="promo-pintura-2">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/promo-pintura-2.png" alt="Promoción de pintura 2" data-img="promo-pintura-2" loading="lazy">
+          <figcaption class="promo-pie">
+            <span class="promo-lupa"><i class="fas fa-expand"></i> Ampliar</span>
+            <button class="promo-wa" data-oferta="pintura"><i class="fab fa-whatsapp"></i> Solicitar</button>
+          </figcaption>
+        </figure>
+        <figure class="promo" tabindex="0" data-visor="promo-pintura-3">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/promo-pintura-3.png" alt="Promoción de pintura 3" data-img="promo-pintura-3" loading="lazy">
+          <figcaption class="promo-pie">
+            <span class="promo-lupa"><i class="fas fa-expand"></i> Ampliar</span>
+            <button class="promo-wa" data-oferta="pintura"><i class="fab fa-whatsapp"></i> Solicitar</button>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ POR QUÉ ══════════════ -->
+<section id="porque" class="seccion">
+  <div class="contenedor">
+    <div class="sec-cabeza revelar">
+      <span class="sec-guino">Nuestra ventaja</span>
+      <h2 class="sec-titulo"><span class="t-cyan">¿Por qué</span> <span class="t-blanco">somos los mejores para ti?</span></h2>
+    </div>
+    <div class="servicios-rejilla" style="max-width:1080px; grid-template-columns:repeat(4,1fr);">
+      <article class="svc revelar" style="text-align:center;">
+        <div class="svc-cuerpo">
+          <div class="svc-icono" style="margin:0 auto var(--e3);"><i class="fas fa-users"></i></div>
+          <h3 class="svc-titulo">Clientes y Empresas</h3>
+          <p class="svc-desc">Atención personalizada a clientes particulares y empresas, con trato cercano y soluciones a medida.</p>
+        </div>
+      </article>
+      <article class="svc revelar" style="text-align:center;">
+        <div class="svc-cuerpo">
+          <div class="svc-icono" style="margin:0 auto var(--e3);"><i class="fas fa-building"></i></div>
+          <h3 class="svc-titulo">Amplio Local</h3>
+          <p class="svc-desc">Local equipado para múltiples vehículos en simultáneo. Más de 500 m² de infraestructura premium.</p>
+        </div>
+      </article>
+      <article class="svc revelar" style="text-align:center;">
+        <div class="svc-cuerpo">
+          <div class="svc-icono" style="margin:0 auto var(--e3);"><i class="fas fa-industry"></i></div>
+          <h3 class="svc-titulo">Infraestructura de Fábrica</h3>
+          <p class="svc-desc">Tecnología especializada tipo factoría industrial. Soluciones integrales en un solo lugar.</p>
+        </div>
+      </article>
+      <article class="svc revelar" style="text-align:center;">
+        <div class="svc-cuerpo">
+          <div class="svc-icono" style="margin:0 auto var(--e3);"><i class="fas fa-truck"></i></div>
+          <h3 class="svc-titulo">Flotas Corporativas</h3>
+          <p class="svc-desc">Capacidad para atención y mantenimiento programado de flotas empresariales completas.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ EMPRESAS ══════════════ -->
+<section class="seccion seccion-2">
+  <div class="contenedor">
+    <div class="sec-cabeza revelar">
+      <span class="sec-guino">Confianza empresarial</span>
+      <h2 class="sec-titulo"><span class="t-blanco">Empresas que</span> <span class="t-cyan">confían en nosotros</span></h2>
+      <p class="sec-desc">Marcas y empresas líderes que depositan su flota en manos expertas de A1 Motors.</p>
+    </div>
+    <div class="empresas-rejilla revelar">
+      <div class="empresa">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/empresa-1.png" alt="" data-img="empresa-1" loading="lazy">
+        <div class="empresa-nombre" data-txt="empresa1_nombre">Melconsi SAC</div>
+      </div>
+      <div class="empresa">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/empresa-2.png" alt="" data-img="empresa-2" loading="lazy">
+        <div class="empresa-nombre" data-txt="empresa2_nombre">Campo Fe SAC</div>
+      </div>
+      <div class="empresa">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/empresa-3.png" alt="" data-img="empresa-3" loading="lazy">
+        <div class="empresa-nombre" data-txt="empresa3_nombre">Operadores Logísticos SAC</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ SISTEMAS ══════════════ -->
+<section id="sistemas" class="seccion">
+  <div class="contenedor">
+    <div class="sec-cabeza revelar">
+      <span class="sec-guino">Expertise técnico</span>
+      <h2 class="sec-titulo"><span class="t-blanco">Sistemas que</span> <span class="t-cyan">dominamos</span></h2>
+      <p class="sec-desc">Diagnóstico y reparación integral de todos los sistemas de tu vehículo con precisión milimétrica.</p>
+    </div>
+
+    <div class="sistemas-plano revelar">
+      <div class="sis-col izquierda">
+        <div class="sis-nodo">
+          <div class="sis-icono"><i class="fas fa-car-burst"></i></div>
+          <div><div class="sis-nombre">Suspensión</div><div class="sis-sub">Amortiguadores y resortes</div></div>
+        </div>
+        <div class="sis-nodo">
+          <div class="sis-icono"><i class="fas fa-arrows-rotate"></i></div>
+          <div><div class="sis-nombre">Dirección</div><div class="sis-sub">Hidráulica y electrónica</div></div>
+        </div>
+        <div class="sis-nodo">
+          <div class="sis-icono"><i class="fas fa-circle-notch"></i></div>
+          <div><div class="sis-nombre">Frenos</div><div class="sis-sub">Pastillas, discos y ABS</div></div>
+        </div>
+      </div>
+
+      <div class="sis-centro">
+        <div class="sis-anillo" aria-hidden="true"></div>
+        <div class="sis-anillo" aria-hidden="true"></div>
+        <div class="sis-anillo" aria-hidden="true"></div>
+        <div class="sis-auto">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/sistemas-auto.png" alt="Vehículo en diagnóstico integral" data-img="sistemas-auto" loading="lazy">
+        </div>
+        <div class="pulso" aria-hidden="true">
+          <div class="pulso-linea"></div><div class="pulso-linea"></div><div class="pulso-linea"></div>
+        </div>
+      </div>
+
+      <div class="sis-col derecha">
+        <div class="sis-nodo">
+          <div class="sis-icono"><i class="fas fa-gauge-high"></i></div>
+          <div><div class="sis-nombre">Motor</div><div class="sis-sub">Diagnóstico y reparación</div></div>
+        </div>
+        <div class="sis-nodo">
+          <div class="sis-icono"><i class="fas fa-bolt"></i></div>
+          <div><div class="sis-nombre">Electricidad</div><div class="sis-sub">Sensores y actuadores</div></div>
+        </div>
+        <div class="sis-nodo">
+          <div class="sis-icono"><i class="fas fa-paint-brush"></i></div>
+          <div><div class="sis-nombre">Carrocería</div><div class="sis-sub">Planchado y pintura</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ MARCAS ══════════════ -->
+<section class="seccion seccion-2">
+  <div class="contenedor">
+    <div class="sec-cabeza revelar">
+      <span class="sec-guino">Experiencia universal</span>
+      <h2 class="sec-titulo"><span class="t-cyan">Somos</span> <span class="t-blanco">Multimarca</span></h2>
+      <p class="sec-desc">Trabajamos con las marcas más comerciales del Perú con el mismo nivel de excelencia técnica.</p>
+    </div>
+  </div>
+  <div class="marcas-pista-caja">
+    <div class="marcas-pista" id="marcasPista" aria-label="Marcas atendidas">
+      <!-- La segunda mitad la duplica el JS para que el carrusel no tenga cortes -->
+      <div class="marca"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/marca-1.png"  alt="" data-img="marca-1"  loading="lazy"><div class="marca-nombre" data-txt="marca1_nombre">Toyota</div></div>
+      <div class="marca"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/marca-2.png"  alt="" data-img="marca-2"  loading="lazy"><div class="marca-nombre" data-txt="marca2_nombre">Hyundai</div></div>
+      <div class="marca"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/marca-3.png"  alt="" data-img="marca-3"  loading="lazy"><div class="marca-nombre" data-txt="marca3_nombre">Kia</div></div>
+      <div class="marca"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/marca-4.png"  alt="" data-img="marca-4"  loading="lazy"><div class="marca-nombre" data-txt="marca4_nombre">Nissan</div></div>
+      <div class="marca"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/marca-5.png"  alt="" data-img="marca-5"  loading="lazy"><div class="marca-nombre" data-txt="marca5_nombre">Chevrolet</div></div>
+      <div class="marca"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/marca-6.png"  alt="" data-img="marca-6"  loading="lazy"><div class="marca-nombre" data-txt="marca6_nombre">Mazda</div></div>
+      <div class="marca"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/marca-7.png"  alt="" data-img="marca-7"  loading="lazy"><div class="marca-nombre" data-txt="marca7_nombre">Suzuki</div></div>
+      <div class="marca"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/marca-8.png"  alt="" data-img="marca-8"  loading="lazy"><div class="marca-nombre" data-txt="marca8_nombre">Volkswagen</div></div>
+      <div class="marca"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/marca-9.png"  alt="" data-img="marca-9"  loading="lazy"><div class="marca-nombre" data-txt="marca9_nombre">Mitsubishi</div></div>
+      <div class="marca"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/marca-10.png" alt="" data-img="marca-10" loading="lazy"><div class="marca-nombre" data-txt="marca10_nombre">Ford</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ TESTIMONIOS ══════════════ -->
+<section id="testimonios" class="seccion">
+  <div class="contenedor">
+    <div class="sec-cabeza revelar">
+      <span class="sec-guino">Lo que dicen</span>
+      <h2 class="sec-titulo"><span class="t-blanco">Historias de nuestros</span> <span class="t-cyan">clientes</span></h2>
+    </div>
+    <div class="testi-rejilla">
+      <article class="testi revelar">
+        <div class="testi-foto"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/cliente-1.png" alt="" data-img="cliente-1" loading="lazy"></div>
+        <div class="testi-cuerpo">
+          <div class="testi-estrellas" aria-label="5 de 5 estrellas">★★★★★</div>
+          <p class="testi-texto" data-txt="testi1_texto">Mi auto quedó como nuevo, resolvieron una falla eléctrica que nadie podía. Excelentes técnicos y atención de primer nivel.</p>
+          <div class="testi-autor">
+            <div class="testi-punto"></div>
+            <div>
+              <div class="testi-nombre" data-txt="testi1_nombre">Carlos G.</div>
+              <div class="testi-rol" data-txt="testi1_rol">Cliente Particular</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="testi revelar">
+        <div class="testi-foto"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/cliente-2.png" alt="" data-img="cliente-2" loading="lazy"></div>
+        <div class="testi-cuerpo">
+          <div class="testi-estrellas" aria-label="5 de 5 estrellas">★★★★★</div>
+          <p class="testi-texto" data-txt="testi2_texto">Atienden flotas empresariales con mucha seriedad. Redujeron significativamente nuestros costos de mantenimiento mensual.</p>
+          <div class="testi-autor">
+            <div class="testi-punto"></div>
+            <div>
+              <div class="testi-nombre" data-txt="testi2_nombre">Operadores Logísticos SAC</div>
+              <div class="testi-rol" data-txt="testi2_rol">Cliente Empresarial</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="testi revelar">
+        <div class="testi-foto"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/cliente-3.png" alt="" data-img="cliente-3" loading="lazy"></div>
+        <div class="testi-cuerpo">
+          <div class="testi-estrellas" aria-label="5 de 5 estrellas">★★★★★</div>
+          <p class="testi-texto" data-txt="testi3_texto">Planchado y pintura impecable, color exacto y entrega rápida. La atención y los resultados son de taller internacional.</p>
+          <div class="testi-autor">
+            <div class="testi-punto"></div>
+            <div>
+              <div class="testi-nombre" data-txt="testi3_nombre">Valeria M.</div>
+              <div class="testi-rol" data-txt="testi3_rol">SUV Owner</div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ CONTACTO ══════════════ -->
+<section id="contacto" class="seccion seccion-2">
+  <div class="contenedor">
+    <div class="sec-cabeza revelar">
+      <span class="sec-guino">Escríbenos</span>
+      <h2 class="sec-titulo"><span class="t-blanco">Agenda tu</span> <span class="t-cyan">servicio hoy</span></h2>
+      <p class="sec-desc">Completa el formulario y te derivamos por WhatsApp al especialista del área que necesitas.</p>
+    </div>
+
+    <div class="form-caja revelar">
+      <form id="formCita" novalidate>
+        <div class="form-fila">
+          <div class="f-grupo">
+            <label class="f-etiqueta" for="f-nombre">Nombre <span aria-hidden="true">*</span></label>
+            <input class="f-campo" type="text" id="f-nombre" name="nombre" placeholder="Tu nombre" required autocomplete="name">
+          </div>
+          <div class="f-grupo">
+            <label class="f-etiqueta" for="f-modelo">Marca y modelo</label>
+            <input class="f-campo" type="text" id="f-modelo" name="modelo" placeholder="Ej: Toyota Corolla 2019">
+          </div>
+        </div>
+        <div class="form-fila">
+          <div class="f-grupo">
+            <label class="f-etiqueta" for="f-placa">Placa</label>
+            <input class="f-campo" type="text" id="f-placa" name="placa" placeholder="Ej: ABC-123" style="text-transform:uppercase">
+          </div>
+          <div class="f-grupo">
+            <label class="f-etiqueta" for="f-servicio">Servicio requerido <span aria-hidden="true">*</span></label>
+            <select class="f-campo" id="f-servicio" name="servicio" required>
+              <option value="" disabled selected>¿Qué necesitas?</option>
+              <option>Conversión a GNV/GLP</option>
+              <option>Diagnóstico computarizado</option>
+              <option>Mantenimiento mayor</option>
+              <option>Mantenimiento menor</option>
+              <option>Afinamiento electrónico</option>
+              <option>Sistema eléctrico</option>
+              <option>Aire acondicionado</option>
+              <option>Suspensión y dirección</option>
+              <option>Frenos</option>
+              <option>Transmisión</option>
+              <option>Planchado y pintura</option>
+              <option>Otro servicio</option>
+            </select>
+          </div>
+        </div>
+        <div class="f-grupo" style="margin-bottom:var(--e4);">
+          <label class="f-etiqueta" for="f-desc">Descripción <span style="color:var(--apagado);font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
+          <textarea class="f-campo" id="f-desc" name="descripcion" placeholder="Cuéntanos brevemente el problema o tu consulta…"></textarea>
+        </div>
+        <div class="aviso error" id="formAviso" role="alert"></div>
+        <button type="submit" class="btn-wa">
+          <i class="fab fa-whatsapp"></i> ENVIAR POR WHATSAPP
+        </button>
+      </form>
+
+      <div class="contacto-tira">
+        <a class="contacto-dato" id="mapaContacto" href="#" target="_blank" rel="noopener">
+          <i class="fas fa-map-marker-alt"></i> <span data-txt="dir_texto">San Fernando 275, Los Olivos</span>
+        </a>
+        <div class="contacto-dato">
+          <i class="far fa-clock"></i> <span data-txt="horario_texto">Lun–Sáb 8AM–7PM · Dom previa cita</span>
+        </div>
+        <div class="redes">
+          <a class="red-btn red-ig" data-red="ig" href="#" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a class="red-btn red-fb" data-red="fb" href="#" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a class="red-btn red-tt" data-red="tt" href="#" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PIE ══════════════ -->
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie-alto">
+      <div>
+        <img class="pie-logo" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-respaldo="imagenes/logo.png" alt="A1 Motors Perú" data-img="logo" loading="lazy">
+        <p class="pie-lema" data-txt="pie_lema">Excelencia automotriz con más de 20 años de experiencia. Los Olivos, Lima — Perú.</p>
+      </div>
+      <div class="pie-col">
+        <h4>Navegación</h4>
+        <ul class="pie-enlaces">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#promociones">Promociones</a></li>
+          <li><a href="#porque">¿Por qué nosotros?</a></li>
+          <li><a href="#sistemas">Sistemas</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="pie-col">
+        <h4>Servicios</h4>
+        <ul class="pie-enlaces">
+          <li><a href="#servicios">Conversión GNV / GLP</a></li>
+          <li><a href="#servicios">Mantenimiento mayor</a></li>
+          <li><a href="#servicios">Mantenimiento menor</a></li>
+          <li><a href="#servicios">Afinamiento electrónico</a></li>
+          <li><a href="#servicios">Planchado y pintura</a></li>
+          <li><a href="#servicios">Diagnóstico digital</a></li>
+        </ul>
+      </div>
+      <div class="pie-col">
+        <h4>Contacto</h4>
+        <ul class="pie-enlaces">
+          <li><a data-red="map" href="#" target="_blank" rel="noopener"><span data-txt="dir_texto">San Fernando 275, Los Olivos</span></a></li>
+          <li><span style="color:var(--tenue);font-size:var(--t-sm)" data-txt="horario_texto">Lun–Sáb 8AM–7PM</span></li>
+          <li><a data-red="ig" href="#" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a data-red="fb" href="#" target="_blank" rel="noopener">Facebook</a></li>
+          <li><a data-red="tt" href="#" target="_blank" rel="noopener">TikTok</a></li>
+        </ul>
+      </div>
+    </div>
+    <hr class="pie-raya">
+    <div class="pie-bajo">
+      <div class="pie-copia">© <span id="anio">2026</span> A1 MOTORS PERÚ. Todos los derechos reservados.</div>
+      <div class="pie-dev">
+        <a href="https://wa.me/51993210651?text=Hola%2C%20quiero%20una%20p%C3%A1gina%20web%20profesional%20para%20mi%20empresa." target="_blank" rel="noopener">
+          Desarrollado por Ing. Cisneros Jhober <i class="fab fa-whatsapp"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════ BOTONES FLOTANTES ══════════════ -->
+<div class="flotantes">
+  <button class="flot flot-wa" id="botonWA" aria-label="Escribir por WhatsApp"><i class="fab fa-whatsapp"></i></button>
+  <a class="flot flot-mapa" data-red="map" href="#" target="_blank" rel="noopener" aria-label="Ver ubicación"><i class="fas fa-map-marker-alt"></i></a>
+  <div class="redes-flot">
+    <div class="redes-flot-menu" id="redesMenu">
+      <a class="redes-flot-item red-ig" data-red="ig" href="#" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a class="redes-flot-item red-fb" data-red="fb" href="#" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a class="redes-flot-item red-tt" data-red="tt" href="#" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    </div>
+    <button class="flot redes-flot-btn" id="redesBtn" aria-label="Redes sociales" aria-expanded="false"><i class="fas fa-share-alt" id="redesIcono"></i></button>
+  </div>
+  <button class="flot flot-arriba" id="botonArriba" aria-label="Volver arriba"><i class="fas fa-arrow-up"></i></button>
+</div>
+
+<!-- ══════════════ MODAL: ELEGIR ÁREA DE WHATSAPP ══════════════ -->
+<div class="modal" id="modalWA" role="dialog" aria-modal="true" aria-labelledby="modalWATitulo">
+  <div class="modal-caja">
+    <button class="modal-cerrar" data-cerrar-modal aria-label="Cerrar">✕</button>
+    <div class="modal-marca">A1 MOTORS</div>
+    <p class="modal-titulo" id="modalWATitulo">¿En qué podemos ayudarte?</p>
+    <p class="modal-sub">Elige el área y te conectamos con el especialista correcto por WhatsApp.</p>
+    <div class="modal-opciones">
+      <button class="opcion-wa" data-area="mecanica">
+        <span class="opcion-icono"><i class="fas fa-wrench"></i></span>
+        <span>
+          <span class="opcion-titulo">Mecánica General</span>
+          <span class="opcion-sub">Mantenimiento, diagnóstico, motor, suspensión…</span>
+        </span>
+      </button>
+      <button class="opcion-wa" data-area="pintura">
+        <span class="opcion-icono"><i class="fas fa-paint-roller"></i></span>
+        <span>
+          <span class="opcion-titulo">Planchado y Pintura</span>
+          <span class="opcion-sub">Restauración de carrocería y acabados.</span>
+        </span>
+      </button>
+      <button class="opcion-wa" data-area="gnv">
+        <span class="opcion-icono"><i class="fas fa-gas-pump"></i></span>
+        <span>
+          <span class="opcion-titulo">Conversiones GNV / GLP</span>
+          <span class="opcion-sub">Instalación y mantenimiento de sistemas de gas.</span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MODAL: CONFIRMAR ÁREA DEL FORMULARIO ══════════════ -->
+<div class="modal" id="modalForm" role="dialog" aria-modal="true" aria-labelledby="modalFormTitulo">
+  <div class="modal-caja">
+    <button class="modal-cerrar" data-cerrar-modal aria-label="Cerrar">✕</button>
+    <div class="modal-marca">CONFIRMAR ENVÍO</div>
+    <p class="modal-titulo" id="modalFormTitulo">¿A qué área corresponde tu consulta?</p>
+    <p class="modal-sub">Servicio solicitado: <strong id="formResumen" style="color:#fff"></strong></p>
+    <div class="modal-opciones">
+      <button class="opcion-wa" data-area-form="mecanica">
+        <span class="opcion-icono"><i class="fas fa-wrench"></i></span>
+        <span class="opcion-titulo">Mecánica General</span>
+      </button>
+      <button class="opcion-wa" data-area-form="pintura">
+        <span class="opcion-icono"><i class="fas fa-paint-roller"></i></span>
+        <span class="opcion-titulo">Planchado y Pintura</span>
+      </button>
+      <button class="opcion-wa" data-area-form="gnv">
+        <span class="opcion-icono"><i class="fas fa-gas-pump"></i></span>
+        <span class="opcion-titulo">Conversiones GNV / GLP</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ VISOR DE PROMOCIONES ══════════════ -->
+<div class="visor" id="visor" role="dialog" aria-modal="true" aria-label="Promoción ampliada">
+  <button class="visor-cerrar" id="visorCerrar" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+  <img id="visorImg" src="" alt="Promoción ampliada">
+  <div class="visor-pie">
+    <button class="promo-wa" id="visorWA"><i class="fab fa-whatsapp"></i> Solicitar esta oferta</button>
+  </div>
+</div>
+
+<!-- ══════════════ PANEL ADMINISTRATIVO ══════════════ -->
+<!-- Se abre con 4 clics seguidos sobre el logo. El contenido lo genera
+     js/app.js a partir del catálogo del servidor, así el panel y la
+     página nunca pueden quedar desalineados. -->
+<div class="admin-capa" id="adminCapa" role="dialog" aria-modal="true" aria-label="Panel administrativo">
+
+  <div class="admin-acceso" id="adminAcceso">
+    <div class="admin-acceso-caja">
+      <div class="admin-marca">A1 <span>MOTORS</span></div>
+      <div class="admin-sub">Panel administrativo</div>
+      <div class="aviso" id="adminAvisoAcceso" role="alert"></div>
+      <label class="admin-etiqueta" for="adminClave">Contraseña de acceso</label>
+      <div class="admin-clave-caja">
+        <input class="f-campo" type="password" id="adminClave" placeholder="••••••••••••" autocomplete="current-password">
+        <button class="admin-ojo" id="adminOjo" type="button" aria-label="Mostrar contraseña"><i class="fas fa-eye"></i></button>
+      </div>
+      <button class="admin-btn" id="adminEntrar">INGRESAR</button>
+      <div class="admin-nota" id="adminIntentos"></div>
+      <button class="admin-btn fantasma" id="adminCancelar" style="margin-top:12px;">Cancelar</button>
+    </div>
+  </div>
+
+  <div class="admin-tablero" id="adminTablero">
+    <div class="admin-barra">
+      <div>
+        <div class="admin-marca">A1 <span>MOTORS</span></div>
+        <div class="admin-sub" style="margin-bottom:0">Panel administrativo</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <span class="admin-estado" id="adminEstado"><span class="punto"></span> Conectado a la base de datos</span>
+        <button class="admin-btn fantasma auto" id="adminSalir"><i class="fas fa-right-from-bracket"></i> Salir</button>
+      </div>
+    </div>
+
+    <div class="admin-pestanas" id="adminPestanas" role="tablist"></div>
+    <div id="adminContenido"></div>
+
+    <div class="admin-guardar-barra" id="adminBarraGuardar">
+      <div class="admin-pendientes" id="adminPendientes">Sin cambios pendientes.</div>
+      <div class="admin-guardar-acciones">
+        <button class="admin-btn peligro auto" id="adminRestaurar"><i class="fas fa-rotate-left"></i> Restaurar todo</button>
+        <button class="admin-btn auto" id="adminGuardar"><i class="fas fa-save"></i> GUARDAR CAMBIOS</button>
+      </div>
+    </div>
+    <div class="admin-resultado" id="adminResultado"></div>
+  </div>
+</div>
+
+<!-- Aviso si el servidor no responde -->
+<div class="alerta-servidor" id="alertaServidor" role="alert">
+  <i class="fas fa-triangle-exclamation"></i>
+  <div>
+    <strong>El sitio no pudo cargar el contenido del servidor</strong>
+    <span id="alertaServidorTexto"></span>
+  </div>
+  <button id="alertaServidorCerrar" aria-label="Cerrar aviso">✕</button>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

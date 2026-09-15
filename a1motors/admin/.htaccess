@@ -1,0 +1,27 @@
+# A1 Motors — protección de la carpeta admin
+Options -Indexes
+
+# config.php contiene las credenciales de la base de datos: nunca accesible por web
+<Files "config.php">
+    Require all denied
+</Files>
+<Files "nucleo.php">
+    Require all denied
+</Files>
+
+# Compatibilidad con Apache 2.2 (algunos hospedajes antiguos)
+<IfModule !mod_authz_core.c>
+    <Files "config.php">
+        Order Allow,Deny
+        Deny from all
+    </Files>
+    <Files "nucleo.php">
+        Order Allow,Deny
+        Deny from all
+    </Files>
+</IfModule>
+
+# Copias de seguridad y archivos sueltos
+<FilesMatch "\.(bak|old|sql|log|zip|tar|gz|ini|env)$">
+    Require all denied
+</FilesMatch>

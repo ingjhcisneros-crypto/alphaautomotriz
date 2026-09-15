@@ -1,0 +1,22 @@
+# A1 Motors — carpeta de imágenes
+# Aquí solo se sirven imágenes. Nada de código, pase lo que pase.
+Options -Indexes -ExecCGI
+
+AddType text/plain .php .php3 .php4 .php5 .php7 .phtml .pl .py .cgi .asp .sh
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+<FilesMatch "\.(php|php\d|phtml|pl|py|cgi|sh|asp|htaccess)$">
+    Require all denied
+</FilesMatch>
+
+# Caché larga: el nombre de archivo lleva la marca de tiempo, así que
+# cuando cambias una imagen el navegador recibe una URL nueva.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/png  "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/gif  "access plus 30 days"
+</IfModule>
