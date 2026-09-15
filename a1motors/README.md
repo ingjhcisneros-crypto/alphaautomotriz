@@ -246,10 +246,14 @@ Visitante pulsa el botón verde flotante
         ↓
 «¿En qué podemos ayudarte?»
         ↓
-┌─ Mecánica General ──────→ wa_mecanica
-├─ Planchado y Pintura ───→ wa_pintura
-└─ Conversiones GNV/GLP ──→ wa_gnv
+┌─ Mecánica General ──────→ wa_mecanica  ·  +51 997 319 758
+├─ Planchado y Pintura ───→ wa_pintura   ·  +51 959 172 262
+└─ Conversiones GNV/GLP ──→ wa_gnv       ·  +51 993 210 651
 ```
+
+> El número del pie de página (**+51 997 042 903**, Ing. Cisneros Jhober) es el de
+> soporte técnico de la web y **no** es un número del taller. Es fijo, no se
+> administra desde el panel.
 
 Lo mismo pasa con **«Solicitar»** en cada promoción (ya sabe el área, va directo) y
 con el **formulario de cita** (pregunta el área al final y envía todos los datos ya
