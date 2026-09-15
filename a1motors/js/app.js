@@ -517,7 +517,13 @@ function iniciarFormulario() {
    5 · REFRESCO AUTOMÁTICO
    Si alguien guarda desde el panel, el resto de pestañas abiertas
    se actualizan solas: comparamos el sello de versión del servidor.
+   No hace falta recargar la página ni en computadora ni en celular.
 ══════════════════════════════════════════════════════════════════ */
+
+/* Cada cuánto se pregunta al servidor si hubo cambios (milisegundos).
+   La respuesta es diminuta, así que 30 s no pesa nada. */
+const INTERVALO_REFRESCO = 30000;
+
 function iniciarRefresco() {
   let fallos = 0;
 
@@ -538,7 +544,7 @@ function iniciarRefresco() {
     }
   };
 
-  setInterval(comprobar, 45000);
+  setInterval(comprobar, INTERVALO_REFRESCO);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) comprobar(); });
 }
 

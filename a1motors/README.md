@@ -109,6 +109,7 @@ public_html/
 ├── css/estilos.css
 ├── js/app.js
 ├── imagenes/            ← TODAS las imágenes del sitio
+│   ├── LEEME.md         ← nombres y medidas de las 35 imágenes
 │   └── .htaccess
 └── admin/
     ├── config.php       ← el único archivo que editas
@@ -227,6 +228,27 @@ Si algo no pasa la validación, te dice **qué campo y por qué**
 (por ejemplo: *«Mecánica General: debe tener exactamente 9 dígitos»*)
 y el campo se marca en rojo. Lo demás sí se guarda.
 
+### Los cambios llegan solos a todos lados
+
+No hace falta avisar a nadie ni pedir que recarguen la página:
+
+| Situación | Cuándo lo ve |
+|---|---|
+| Alguien abre la web **después** de que guardaste | Al instante |
+| Alguien **ya tenía la página abierta** (PC o celular) | **En menos de 30 segundos, sin recargar** |
+| La pestaña estaba en segundo plano | En cuanto vuelve a ella |
+
+Cada 30 segundos el navegador le pregunta al servidor *«¿ha cambiado algo?»*.
+La respuesta es diminuta, así que no consume datos ni batería de forma apreciable.
+Si algo cambió, se repinta solo: textos, números, enlaces e imágenes.
+
+> Mientras tengas el panel abierto, **tu propia pestaña no se refresca**, para que
+> un refresco no te borre lo que estás escribiendo.
+
+*Comprobado con tres dispositivos a la vez (PC del administrador, otro PC y un
+celular): los dos que no se tocaron se actualizaron solos a los 23 segundos,
+con textos e imagen incluidos.*
+
 ### Restaurar todo
 
 El botón **Restaurar todo** (escribiendo `CONFIRMAR`) devuelve textos y enlaces a
@@ -253,7 +275,11 @@ Visitante pulsa el botón verde flotante
 
 > El número del pie de página (**+51 997 042 903**, Ing. Cisneros Jhober) es el de
 > soporte técnico de la web y **no** es un número del taller. Es fijo, no se
-> administra desde el panel.
+> administra desde el panel. Su mensaje ya viene redactado para que sepas de
+> inmediato desde qué web te escriben:
+>
+> *«Hola Ing. Cisneros, vi la página web de A1 Motors y me interesa algo así
+> para mi negocio. ¿Podría darme información?»*
 
 Lo mismo pasa con **«Solicitar»** en cada promoción (ya sabe el área, va directo) y
 con el **formulario de cita** (pregunta el área al final y envía todos los datos ya
@@ -338,7 +364,7 @@ Se escriben con **9 dígitos, sin el +51** (el sistema lo añade solo).
 | Tipografías | Goldman + Space Grotesk (Google Fonts) |
 | Iconos | Font Awesome 6 (CDN) |
 | Dependencias JS | Ninguna — JavaScript puro |
-| Refresco automático | Cada 45 s se comprueba si hubo cambios |
+| Refresco automático | Cada 30 s (`INTERVALO_REFRESCO` en `js/app.js`) |
 
 ### Cómo añadir un hueco de imagen o un campo nuevo
 
