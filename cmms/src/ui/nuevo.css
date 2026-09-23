@@ -48,3 +48,16 @@ body.claro .calor-c.mal{ background:#f9c4cc; } body.claro .calor-c.reg{ backgrou
 .filtros .rejilla{ align-items:end; }
 @media (max-width:980px){ .rail .grupo{ flex-wrap:nowrap; } .lienzo-graf{ height:260px; } }
 @media print{ .export, .filtros, #simTabs, .btn{ display:none !important; } }
+
+/* Resumen primero, detalle a pedido: todo lo clicable se señala igual. */
+tr.clic, td.clic, .celda-par{ cursor:pointer; }
+tr.clic:hover td, td.clic:hover{ background:rgba(61,234,36,0.06); }
+td.celda-par{ border-left:1px solid var(--border); font-weight:600; }
+td.celda-par:hover{ outline:2px solid var(--accent); outline-offset:-2px; }
+td.celda-par .sub{ font-weight:400; }
+.etapas.cascada .etapa-b{ cursor:pointer; }
+.etapas.cascada .etapa-b:hover{ border-color:var(--accent); }
+.det-par h3{ margin:0 0 var(--s2); font-size:var(--t-sm); }
+@media (max-width:760px){ .det-par{ grid-template-columns:1fr; } }
+.lin-graf{ grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); }
+@media (max-width:1500px){ .lin-graf{ grid-template-columns:1fr; } }

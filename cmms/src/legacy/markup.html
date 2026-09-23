@@ -41,8 +41,9 @@
     </div>
     <nav id="menu">
       <div class="grupo"><h3>Indicadores</h3>
-        <a data-vista="tablero" data-tit="Tablero de|OEE" data-sub="Indicadores de línea y por máquina calculados desde los registros" class="activo"><i class="fas fa-chart-line"></i> Tablero OEE</a>
-        <a data-vista="calculo" data-tit="Cálculo del|OEE" data-sub="Del tiempo calendario al tiempo de valor añadido, por máquina y por línea"><i class="fas fa-gauge-high"></i> Cálculo del OEE</a>
+        <a data-vista="linea" data-tit="OEE de|línea" data-sub="Horas de línea: lo que efectivamente detuvo la producción" class="activo"><i class="fas fa-chart-line"></i> OEE de línea</a>
+        <a data-vista="maquina" data-tit="OEE por|máquina" data-sub="Horas-máquina: cada equipo frente a su propio tiempo de carga"><i class="fas fa-gauge-high"></i> OEE por máquina</a>
+        <a data-vista="paradas" data-tit="Análisis de|paradas" data-sub="Correctivo, formatos, auxiliares, paradas cortas, vacío y reuniones por máquina"><i class="fas fa-triangle-exclamation"></i> Análisis de paradas</a>
         <a data-vista="registros" data-tit="Registros y|carga" data-sub="Siete registros operativos: plantillas, carga por Excel y edición"><i class="fas fa-file-excel"></i> Registros y carga</a>
       </div>
       <div class="grupo"><h3>Simulación</h3>
@@ -67,7 +68,7 @@
 
   <div class="lienzo-app">
     <header class="barra">
-      <div><div class="titulo" id="vTit">Tablero de <span>OEE</span></div><div class="sub" id="vSub">Indicadores de línea y por máquina calculados desde los registros</div></div>
+      <div><div class="titulo" id="vTit">OEE de <span>línea</span></div><div class="sub" id="vSub">Horas de línea: lo que efectivamente detuvo la producción</div></div>
       <div class="sesion">
         <span class="marcador m-ok" id="chipRecalculo" title="Último recálculo del OEE">Sin recálculo</span>
         <span class="marcador m-info" id="chipFecha">—</span>
@@ -186,32 +187,17 @@
 
       <!-- ESPECIFICACIONES -->
       <section class="vista stack" id="v-espec">
+        <p class="nota" style="margin:0">Producto, capacidades y lotes tienen una sola fuente: <b>Parámetros</b> (catálogo de equipos, periodo y simulación). Aquí se muestran en solo lectura; la animación los toma automáticamente.</p>
         <div class="panel">
-          <header><h2>Ficha técnica de la lámina</h2><span class="chico tenue">Todas las medidas en sistema métrico</span></header>
-          <div class="rejilla c5">
-            <div class="campo"><label>Largo en metros</label><input type="number" id="fLargo" step="0.01"></div>
-            <div class="campo"><label>Ancho en metros</label><input type="number" id="fAncho" step="0.01"></div>
-            <div class="campo"><label>Espesor en milímetros</label><input type="number" id="fEsp" step="0.05"></div>
-            <div class="campo"><label>Densidad en g/cm³</label><input type="number" id="fDens" step="0.01"></div>
-            <div class="pastilla"><div class="v" id="fPeso">–</div><div class="k">Kilos por lámina</div></div>
-          </div>
-          <p class="nota" id="fDetalle"></p>
+          <header><h2>Producto patrón y formatos</h2><span class="chico tenue">Masa unitaria vigente: <b id="fPeso">–</b> kg por lámina</span></header>
+          <div class="tabla-caja"><table id="espProductos"></table></div>
         </div>
         <div class="panel">
-          <header><h2>Tiempos de ciclo por máquina</h2><span class="chico tenue">La conversión usa el peso de la ficha técnica</span></header>
+          <header><h2>Capacidad y ciclo por máquina</h2><span class="chico tenue">Capacidad de ficha del catálogo de equipos</span></header>
           <div class="tabla-caja"><table>
             <thead><tr><th>Etapa</th><th>Máquina</th><th class="num">Capacidad</th><th>Unidad</th>
               <th class="num">Equivale en kg/h</th><th class="num">Equivale en láminas/h</th><th class="num">Ciclo por lámina</th></tr></thead>
             <tbody id="ciclosTabla"></tbody></table></div>
-        </div>
-        <div class="panel">
-          <header><h2>Lote y ciclo del proceso</h2></header>
-          <div class="rejilla c4">
-            <div class="campo"><label>Lote de dosificado en kg</label><input type="number" id="pLote" step="50" min="1"></div>
-            <div class="campo"><label>Carga del extruder en kg</label><input type="number" id="pCarga" step="5" min="1"></div>
-            <div class="campo"><label>Ciclo del extruder en minutos</label><input type="number" id="pCiclo" step="1" min="1"></div>
-            <div class="campo"><label>Láminas por carga del autoclave</label><input type="number" id="pAuto" step="1" min="1"></div>
-          </div>
         </div>
         <div class="panel">
           <header><h2>Tiempos de traslado</h2><span class="chico tenue">Diez mediciones por tramo, el sistema usa el promedio</span></header>
@@ -236,6 +222,7 @@
               <div class="pestanas" id="planTipo"><button class="pest on" data-t="todos">Todos</button>
                 <button class="pest" data-t="Planificado">Planificado</button><button class="pest" data-t="Autónomo">Autónomo</button>
                 <button class="pest" data-t="Calidad">Calidad</button></div>
+              <button class="btn btn-ghost btn-sm" id="planPdf" title="Plan del filtro actual en PDF"><i class="fas fa-file-pdf"></i> PDF</button>
               <button class="btn btn-primary btn-sm" id="btnNuevaTarea"><i class="fas fa-plus"></i> Nueva tarea</button>
             </div></header>
           <div class="tabla-caja alta"><table>
@@ -273,6 +260,7 @@
               <select id="hTipo" style="width:145px"><option value="">Todos los pilares</option>
                 <option>Planificado</option><option>Autónomo</option><option>Calidad</option></select>
               <button class="btn btn-ghost btn-sm" id="hReset">Desde el inicio</button>
+              <button class="btn btn-ghost btn-sm" id="hPdf" title="Historial del filtro actual en PDF"><i class="fas fa-file-pdf"></i> PDF</button>
             </div></header>
           <div class="banda chica">
             <div class="m"><div class="v" id="hTot">0</div><div class="k">Órdenes del periodo</div></div>
@@ -303,7 +291,8 @@
             <div class="pestanas" id="anFiltro"><button class="pest on" data-f="todos">Todos</button>
               <button class="pest" data-f="No conformidad">No conformidades</button>
               <button class="pest" data-f="Observación">Observaciones</button>
-              <button class="pest" data-f="pend">Sin revisar</button></div></header>
+              <button class="pest" data-f="pend">Sin revisar</button></div>
+            <button class="btn btn-ghost btn-sm" id="anPdf" title="Registro del filtro actual en PDF"><i class="fas fa-file-pdf"></i> PDF</button></header>
           <div class="tabla-caja alta"><table>
             <thead><tr><th>Fecha</th><th>Equipo</th><th>Clase</th><th>Detalle</th><th>Criterio esperado</th><th>Origen</th><th>Revisión</th><th></th></tr></thead>
             <tbody id="anTabla"></tbody></table></div>
@@ -328,54 +317,12 @@
           </div>
         </div>
         <div class="panel">
-          <header><h2>Jornada de trabajo</h2></header>
-          <div class="rejilla c6">
-            <div class="campo"><label>Hora de inicio del primer turno</label><input type="time" id="jIni"></div>
-            <div class="campo"><label>Horas netas por turno</label><input type="number" id="gHoras" step="0.5" min="1"></div>
-            <div class="campo"><label>Turnos por día</label><input type="number" id="gTurnos" step="1" min="1"></div>
-            <div class="campo"><label>Almuerzo por turno, horas</label><input type="number" id="jAlm" step="0.25" min="0"></div>
-            <div class="campo"><label>Capacitación por turno, horas</label><input type="number" id="jCap" step="0.5" min="0"></div>
-            <div class="campo"><label>Día de capacitación</label><select id="jCapDia">
-              <option value="1">Lunes</option><option value="2">Martes</option><option value="3">Miércoles</option>
-              <option value="4">Jueves</option><option value="5">Viernes</option><option value="6">Sábado</option></select></div>
-          </div>
-          <div class="campo" style="max-width:220px;margin-top:var(--s4)"><label>Días laborables por mes</label><input type="number" id="gDias" step="1" min="1"></div>
+          <header><h2>Jornada y programa de mantenimiento</h2><span class="chico tenue">Se definen en Parámetros del periodo</span></header>
+          <div class="banda chica" id="admJornada"></div>
           <p class="nota" id="jHorario"></p>
-        </div>
-        <div class="panel">
-          <header><h2>Arranque del programa</h2></header>
-          <div class="rejilla c3">
-            <div class="campo"><label>Inicio del programa</label><input type="date" id="progIni"></div>
-            <div class="campo"><label>Horizonte en meses</label>
-              <select id="progMeses"><option>6</option><option selected>12</option><option>18</option><option>24</option></select></div>
-            <div class="campo" style="justify-content:flex-end"><button class="btn btn-primary" id="progRegen">Recalcular calendario</button></div>
-          </div>
           <p class="nota" id="progNota"></p>
+          <p class="nota">Feriados y días no laborables: una sola lista, en <b>Parámetros → Feriados del periodo</b>. El programa de mantenimiento, el OEE y la simulación usan el mismo calendario.</p>
         </div>
-        <p class="nota">Los feriados y periodos omitidos de esta sección gobiernan el calendario del programa de mantenimiento. El calendario del OEE se define en Parámetros del periodo.</p>
-        <div class="panel">
-            <header><h2>Periodos omitidos</h2><span class="chico tenue">Se descuentan del calendario como si no hubieran existido</span></header>
-            <div class="rejilla c4">
-              <div class="campo"><label>Desde</label><input type="date" id="omIni"></div>
-              <div class="campo"><label>Hasta</label><input type="date" id="omFin"></div>
-              <div class="campo"><label>Motivo</label><input type="text" id="omMotivo" placeholder="Paro de planta, obra civil"></div>
-              <div class="campo" style="justify-content:flex-end"><button class="btn btn-primary" id="omAdd">Agregar periodo</button></div>
-            </div>
-            <div class="tabla-caja" style="margin-top:var(--s4)"><table>
-              <thead><tr><th>Desde</th><th>Hasta</th><th class="num">Días</th><th>Motivo</th><th></th></tr></thead>
-              <tbody id="omTabla"></tbody></table></div>
-          </div>
-          <div class="panel">
-            <header><h2>Feriados</h2><span class="chico tenue">Eliminar requiere la clave del usuario principal</span></header>
-            <div class="rejilla c4">
-              <div class="campo"><label>Fecha</label><input type="date" id="ferFecha"></div>
-              <div class="campo" style="grid-column:span 2"><label>Motivo</label><input type="text" id="ferMotivo"></div>
-              <div class="campo" style="justify-content:flex-end"><button class="btn btn-primary" id="ferAdd">Agregar feriado</button></div>
-            </div>
-            <div class="tabla-caja" style="margin-top:var(--s4)"><table>
-              <thead><tr><th>Fecha</th><th>Motivo</th><th>Origen</th><th></th></tr></thead>
-              <tbody id="ferTabla"></tbody></table></div>
-          </div>
       </section>
 
       <!-- USUARIOS Y MARCA -->
@@ -419,8 +366,8 @@
   <div class="oee-box"><div><div class="chico tenue">OEE del equipo</div><div class="mini tenue" id="qTipo">–</div></div>
     <div style="text-align:right"><div class="v" id="qOee">–</div><div class="mini" id="qJuicio"></div></div></div>
   <div class="rejilla c2" id="bloqueCap">
-    <div class="campo"><label>Capacidad nominal</label><input type="number" id="qCap" step="0.1" min="0"></div>
-    <div class="campo"><label>Unidad</label><select id="qUni"><option value="kg/h">kg/h</option><option value="und/h">láminas/h</option></select></div></div>
+    <div class="campo"><label>Capacidad nominal</label><input type="number" id="qCap" step="0.1" min="0" disabled title="Se edita en Parámetros → Catálogo de equipos"></div>
+    <div class="campo"><label>Unidad</label><select id="qUni" disabled title="Se edita en Parámetros → Catálogo de equipos"><option value="kg/h">kg/h</option><option value="und/h">láminas/h</option></select></div></div>
   <div class="rejilla c3">
     <div class="campo"><label>Disponibilidad %</label><input type="number" id="qD" step="0.1" min="0" max="100"></div>
     <div class="campo"><label>Rendimiento %</label><input type="number" id="qR" step="0.1" min="0" max="100"></div>

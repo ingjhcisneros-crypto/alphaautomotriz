@@ -64,7 +64,24 @@ async function cargarTodo() {
   E.resultadosSim = {}; (await BD.todos('resultados_sim')).forEach(r => E.resultadosSim[r.id] = r);
 }
 
-export const ctx = () => ({ periodo: E.periodo, config: E.config, equipos: E.equipos, listas: E.listas, codigos: E.codigos });
+/* Órdenes del programa de mantenimiento (módulo heredado) cumplidas dentro de la jornada y del periodo:
+   pilares Planificado y Calidad. Son parada planificada y se descuentan del tiempo de carga. */
+const LEG_A_ID = { molino: 'MOL', extruder: 'EXT', prensa1: 'PR1', prensa2: 'PR2', prensa3: 'PR3', prensa4: 'PR4', prensa5: 'PR5', autoclave: 'AUT', caldero1: 'CAL1', caldero2: 'CAL2' };
+export function mantenimientoEjecutado() {
+  const L = globalThis.LEGADO; if (!L || !E.periodo) return [];
+  const P = E.periodo;
+  return (L.instantanea().OTS || []).filter(o => o.estado === 'Ejecutada' && (o.tipo === 'Planificado' || o.tipo === 'Calidad') && o.enJornada !== false && o.fecha >= P.fecha_inicio && o.fecha <= P.fecha_fin && LEG_A_ID[o.eqId])
+    .map(o => ({ equipo_id: LEG_A_ID[o.eqId], dia: o.fecha, horas: (o.real != null ? o.real : o.min) / 60, tipo: o.tipo, ot: o.id, act: o.act }));
+}
+let huellaMtto = '';
+/* Llamado cuando cambia el estado del programa (cierre de órdenes): recalcula solo si cambió el mantenimiento ejecutado. */
+export function alCambiarPrograma() {
+  const h = huella(mantenimientoEjecutado().map(x => x.ot + x.horas));
+  if (h === huellaMtto) return false;
+  huellaMtto = h; E.versionDatos++; if (E.estado) { E.estado.versionDatos = E.versionDatos; BD.poner('config', E.estado); }
+  recalcular('programa'); return true;
+}
+export const ctx = () => ({ periodo: E.periodo, config: E.config, equipos: E.equipos, listas: E.listas, codigos: E.codigos, mantenimiento: mantenimientoEjecutado() });
 const registrosPeriodo = () => { const o = {}; Object.keys(E.registros).forEach(k => o[k] = E.registros[k].filter(r => r.periodo_id === E.periodo.id)); return o; };
 
 /* Recálculo (sección 9.1): horas por equipo y mes → OEE por máquina → factores topológicos → OEE de línea →
@@ -73,8 +90,10 @@ export function recalcular(motivo) {
   const t0 = performance.now();
   emitir('recalculando', motivo);
   const base = Object.assign(ctx(), { registros: registrosPeriodo() });
+  huellaMtto = huella(base.mantenimiento.map(x => x.ot + x.horas));
   E.total = calcularOEE(Object.assign({}, base, { filtros: {} }));
-  E.resultado = calcularOEE(Object.assign({}, base, { filtros: E.filtros }));
+  const hayFiltro = Object.values(E.filtros || {}).some(v => Array.isArray(v) ? v.length : v);
+  E.resultado = hayFiltro ? calcularOEE(Object.assign({}, base, { filtros: E.filtros })) : E.total;
   E.ultimoRecalculo = new Date();
   E.duracionRecalculo = performance.now() - t0;
   emitir('recalculo', { motivo, resultado: E.resultado });
@@ -87,6 +106,17 @@ export function recalcularAsincrono(motivo) {
   return new Promise(ok => setTimeout(() => ok(recalcular(motivo)), 30));
 }
 export function fijarFiltros(f) { E.filtros = f; return recalcular('filtros'); }
+/* Cada vista pide su propio cálculo filtrado; se memoriza por combinación de filtros y se invalida en cada recálculo. */
+let cache = new Map(), cacheVersion = -1;
+export function resultadoPara(filtros) {
+  const f = filtros || {};
+  if (!Object.values(f).some(v => Array.isArray(v) ? v.length : v)) return E.total;
+  if (cacheVersion !== E.ultimoRecalculo) { cache = new Map(); cacheVersion = E.ultimoRecalculo; }
+  const k = JSON.stringify(f);
+  if (!cache.has(k)) cache.set(k, calcularOEE(Object.assign(ctx(), { registros: registrosPeriodo(), filtros: f })));
+  return cache.get(k);
+}
+export const registrosDelPeriodo = () => registrosPeriodo();
 
 async function datosCambiaron(defId, detalle) {
   E.versionDatos++;
@@ -172,6 +202,14 @@ export async function activarPeriodo(id) {
   if (!act) throw new Error('Periodo inexistente');
   await bitacora('Periodo', 'Activado ' + act.nombre);
   await cambioDePeriodo(act);
+}
+/* Días no laborables adicionales (paro de planta, obra civil): se agregan al mismo listado de feriados. */
+export function rangoNoLaborable(periodo, desde, hasta, motivo) {
+  const p = copia(periodo), existe = new Set(p.feriados.map(f => f.fecha));
+  for (let d = new Date(desde + 'T12:00:00Z'); d.toISOString().slice(0, 10) <= hasta; d = new Date(d.getTime() + 86400000)) {
+    const f = d.toISOString().slice(0, 10); if (!existe.has(f)) p.feriados.push({ fecha: f, motivo });
+  }
+  p.feriados.sort((a, b) => a.fecha < b.fecha ? -1 : 1); return p;
 }
 async function cambioDePeriodo(p) {
   E.periodo = p; E.filtros = {};

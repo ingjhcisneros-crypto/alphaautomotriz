@@ -108,6 +108,14 @@ check(4, 'Brecha −27.69 pp', cerca(L.brecha * 100, -27.69, 0.01), (L.brecha * 
 check(4, 'No conformidades de línea 347.2 h', cerca(L.perdidas.defectos + L.perdidas.reprocesos, 347.2, 0.05), (L.perdidas.defectos + L.perdidas.reprocesos).toFixed(2) + ' h');
 const A2 = RL.maquina.AUT.total;
 check(4, 'Autoclave con los datos completos: OEE 79.17 %', cerca(A2.OEE * 100, 79.17, 0.01), p2(A2.D) + ' × ' + p2(A2.R) + ' × ' + p2(A2.Q) + ' = ' + p2(A2.OEE) + ' % · bruto ' + A2.bruto.toFixed(1) + ' h (auxiliares ' + A2.perdidas.auxiliares.toFixed(2) + ' h por reparto)');
+/* Mantenimiento del programa ejecutado (planificado y calidad): descuenta del tiempo de carga de su equipo. */
+const conMtto = mt => calcularOEE(Object.assign({}, ctx, { registros: regRef, mantenimiento: mt }));
+const RA = conMtto([{ equipo_id: 'AUT', dia: '2025-07-10', horas: 6, tipo: 'Planificado' }, { equipo_id: 'AUT', dia: '2025-08-12', horas: 4, tipo: 'Calidad' }]);
+check(4, 'Programa ejecutado: 10 h en el autoclave (serie) → carga del autoclave −10 h y carga de línea −10 h', cerca(RL.maquina.AUT.total.carga - RA.maquina.AUT.total.carga, 10, 1e-9) && cerca(L.carga - RA.linea.total.carga, 10, 1e-9) && cerca(RA.linea['2025-07'].mttoPrograma, 6, 1e-9),
+  'autoclave ' + RA.maquina.AUT.total.carga.toFixed(1) + ' h · línea ' + RA.linea.total.carga.toFixed(1) + ' h · OEE línea ' + p2(RA.linea.total.OEE) + ' %');
+const RP = conMtto([{ equipo_id: 'PR1', dia: '2025-07-10', horas: 10, tipo: 'Planificado' }]);
+check(4, 'Programa ejecutado en una prensa (paralelo): solo baja la carga de esa prensa; la línea no se detiene', cerca(RL.maquina.PR1.total.carga - RP.maquina.PR1.total.carga, 10, 1e-9) && cerca(RP.linea.total.carga, L.carga, 1e-9) && cerca(RP.maquina.PR2.total.carga, RL.maquina.PR2.total.carga, 1e-9), 'prensa 1 ' + RP.maquina.PR1.total.carga.toFixed(1) + ' h');
+check(4, 'Sin órdenes ejecutadas el resultado no cambia', cerca(conMtto([]).linea.total.OEE, L.OEE, 1e-15), '');
 const direct = calcularOEE(Object.assign({}, ctx, { registros: Object.assign({}, ref, { operacion_en_vacio: regRef.operacion_en_vacio, reuniones_emergencia: regRef.reuniones_emergencia }) })).linea.total;
 check(4, 'Archivos adjuntos subidos sin modificación (encabezado en fila 4) dan el mismo resultado', cerca(direct.OEE, L.OEE, 1e-12), p2(direct.OEE) + ' %');
 check(4, 'Regla del turno 2: eventos 00:00–02:00 asignados al día anterior', ref.no_conformidades.filter(r => r.inicio.slice(11, 13) < '02').every(r => r.dia_prod < r.inicio.slice(0, 10)), ref.no_conformidades.filter(r => r.inicio.slice(11, 13) < '02').length + ' no conformidades entre 00:00 y 02:00');

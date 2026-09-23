@@ -145,19 +145,27 @@ export function calcularOEE(ctx) {
     });
   });
 
+  /* Mantenimiento planificado y de calidad EJECUTADO en jornada (órdenes cumplidas del programa): es una parada
+     planificada, así que se descuenta del tiempo de carga de su propio equipo. En la línea pesa según la topología
+     (un preventivo del autoclave detiene la línea; el de una prensa no). */
+  const mtto = {}; activos.forEach(e => { mtto[e.id] = {}; meses.forEach(m => mtto[e.id][m] = 0); });
+  (ctx.mantenimiento || []).forEach(x => { const m = String(x.dia).slice(0, 7); if (mtto[x.equipo_id] && mtto[x.equipo_id][m] != null) mtto[x.equipo_id][m] += (+x.horas || 0) * factorTurno; });
+  const cargaEq = (id, m) => cal[m].carga - mtto[id][m];
+
   /* Resultados por máquina. */
   const maquina = {};
   activos.forEach(e => {
     maquina[e.id] = {};
-    const tot = cero(); let nTot = 0;
+    const tot = cero(); let nTot = 0, mTot = 0;
     meses.forEach(m => {
       const p = hm[e.id][m];
-      maquina[e.id][m] = Object.assign(cadena(cal[m].carga, p), { n_fallas: nF[e.id][m] });
-      Object.keys(tot).forEach(k => tot[k] += p[k]); nTot += nF[e.id][m];
+      maquina[e.id][m] = Object.assign(cadena(cargaEq(e.id, m), p), { n_fallas: nF[e.id][m], mttoPrograma: mtto[e.id][m] });
+      Object.keys(tot).forEach(k => tot[k] += p[k]); nTot += nF[e.id][m]; mTot += mtto[e.id][m];
     });
-    const cargaTot = suma(meses, m => cal[m].carga);
-    maquina[e.id].total = Object.assign(cadena(cargaTot, tot), { n_fallas: nTot });
+    const cargaTot = suma(meses, m => cargaEq(e.id, m));
+    maquina[e.id].total = Object.assign(cadena(cargaTot, tot), { n_fallas: nTot, mttoPrograma: mTot });
   });
+  const mttoLinea = m => suma(activos, e => mtto[e.id][m] * factorLinea(e, 'D', config, activos));
 
   /* Horas de línea. */
   const vl = vacioLinea(periodo, equipos, vacioTabla);
@@ -184,13 +192,13 @@ export function calcularOEE(ctx) {
   const totL = cero(), totHM = cero(); let nsTot = 0;
   meses.forEach(m => {
     const { p, crudo, nSetups } = conv(m);
-    linea[m] = Object.assign(cadena(cal[m].carga, p), { produccion: 0, nSetups });
+    linea[m] = Object.assign(cadena(cal[m].carga - mttoLinea(m), p), { produccion: 0, nSetups, mttoPrograma: mttoLinea(m) });
     linea[m].produccion = linea[m].va * cap;
     lineaHM[m] = crudo;
     Object.keys(totL).forEach(k => { totL[k] += p[k]; totHM[k] += crudo[k]; }); nsTot += nSetups;
   });
-  const cargaTot = suma(meses, m => cal[m].carga);
-  linea.total = Object.assign(cadena(cargaTot, totL), { nSetups: nsTot });
+  const cargaTot = suma(meses, m => cal[m].carga - mttoLinea(m));
+  linea.total = Object.assign(cadena(cargaTot, totL), { nSetups: nsTot, mttoPrograma: suma(meses, mttoLinea) });
   linea.total.produccion = linea.total.va * cap;
   lineaHM.total = totHM;
   meses.concat(['total']).forEach(m => {
@@ -236,5 +244,6 @@ export function calcularOEE(ctx) {
 
   return { periodo: periodo.id, meses, cal, equipos: activos.map(e => ({ id: e.id, nombre: e.nombre, etapa: e.etapa, topologia: e.topologia })),
     seleccion: selEq.map(e => e.id), maquina, linea, lineaHM, vacioLinea: vl, confiabilidad, pareto, sumas,
+    mantenimiento: { ordenes: (ctx.mantenimiento || []).length, horas: suma(ctx.mantenimiento || [], x => x.horas) },
     conteos: Object.fromEntries(Object.keys(R).map(k => [k, R[k].length]).concat([['operacion_en_vacio', vacioTabla.length]])) };
 }

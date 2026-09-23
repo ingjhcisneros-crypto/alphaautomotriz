@@ -1,5 +1,5 @@
 {
- "fecha": "2026-09-23T15:10:19.459Z",
+ "fecha": "2026-09-23T18:30:51.688Z",
  "fallas": 0,
  "informe": [
   {
@@ -28,7 +28,7 @@
   },
   {
    "auditoria": 5,
-   "verificacion": "El tablero indica «Sistema sin registros operativos»",
+   "verificacion": "OEE de línea indica «Sin registros operativos»",
    "ok": true,
    "detalle": ""
   },
@@ -120,7 +120,7 @@
    "auditoria": 7,
    "verificacion": "Informe de validación descargable en Excel",
    "ok": true,
-   "detalle": "12 filas en Informe_validacion_mantenimiento_correctivo_2026-09-23-15-09.xlsx"
+   "detalle": "12 filas en Informe_validacion_mantenimiento_correctivo_2026-09-23-18-29.xlsx"
   },
   {
    "auditoria": 7,
@@ -198,127 +198,235 @@
    "auditoria": 8,
    "verificacion": "Fecha del último recálculo visible en la cabecera",
    "ok": true,
-   "detalle": "Recalculado 03:09:13 p. m."
+   "detalle": "Recalculado 06:29:31 p. m."
   },
   {
    "auditoria": 9,
-   "verificacion": "Tabla cruzada: 10 equipos + OEE de línea × 12 meses + periodo",
+   "verificacion": "OEE de línea: KPIs del periodo (55.68 %) con horas de línea",
    "ok": true,
-   "detalle": "11 filas · 13 columnas"
+   "detalle": "Disponibilidad76.42 %▲ +2.75 pp · May-26 vs Abr-26BuenoRendimiento82.86 %▲ +1.36 pp · May-26 vs Abr-26BuenoCalidad87.93 "
   },
   {
    "auditoria": 9,
-   "verificacion": "Clic en celda abre el detalle correcto (autoclave, periodo: 79.17 %, cadena de tiempos)",
-   "ok": true,
-   "detalle": "Autoclave · periodo completo88.47 %Disponibilidad96.30 %Rendimiento92.92 %Calidad79.17 %OEEClasificación: Bueno · 167 fallas correctivasB. T"
-  },
-  {
-   "auditoria": 9,
-   "verificacion": "Filtro «Periodo (desde Set-25)» afecta a los seis bloques",
-   "ok": true,
-   "detalle": "cambian: kpi, cruz, ev, per, conf, par"
-  },
-  {
-   "auditoria": 9,
-   "verificacion": "Filtro «Turno 2» afecta a los seis bloques",
-   "ok": true,
-   "detalle": "cambian: kpi, cruz, ev, per, conf, par"
-  },
-  {
-   "auditoria": 9,
-   "verificacion": "Filtro «Topología serie» afecta a los seis bloques",
-   "ok": true,
-   "detalle": "cambian: kpi, cruz, ev, per, conf, par"
-  },
-  {
-   "auditoria": 9,
-   "verificacion": "Filtro «Etapa Prensado» afecta a los seis bloques",
-   "ok": true,
-   "detalle": "cambian: kpi, cruz, ev, per, conf, par"
-  },
-  {
-   "auditoria": 9,
-   "verificacion": "Filtro «Equipos: extrusora y autoclave» afecta a los seis bloques",
-   "ok": true,
-   "detalle": "cambian: kpi, cruz, ev, per, conf, par"
-  },
-  {
-   "auditoria": 9,
-   "verificacion": "Limpiar filtros restaura los valores",
+   "verificacion": "Cascada de 6 etapas en resumen (sin tabla mensual a la vista)",
    "ok": true,
    "detalle": ""
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b1 a XLSX",
+   "verificacion": "Clic en una etapa abre la cadena completa y la evolución mensual plegada",
    "ok": true,
-   "detalle": "Indicadores_de_linea_2026-09-23-15-09.xlsx · 7875 bytes"
+   "detalle": "Cascada de la línea · periodo completo76.42 %Disponibilidad82.86 %Rendimiento87.93 %Calidad55.68 %OEETiempo calendario8,"
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b1 a PNG",
+   "verificacion": "Filtro de turno afecta a los cuatro bloques de la vista de línea",
    "ok": true,
-   "detalle": "Indicadores_de_linea_2026-09-23-15-09.png · 33148 bytes"
+   "detalle": ""
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b2 a XLSX",
+   "verificacion": "«Todo el periodo» restaura los valores",
    "ok": true,
-   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-15-09.xlsx · 14095 bytes"
+   "detalle": ""
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b2 a PNG",
+   "verificacion": "OEE por máquina: resumen de 10 equipos con OEE y confiabilidad en una sola tabla",
    "ok": true,
-   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-15-09.png · 107346 bytes"
+   "detalle": "10 filas"
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b3 a XLSX",
+   "verificacion": "Detalle mensual por máquina plegado (solo a pedido)",
    "ok": true,
-   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-15-09.xlsx · 9226 bytes"
+   "detalle": ""
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b3 a PNG",
+   "verificacion": "Clic en el autoclave abre su cascada (79.17 %, horas-máquina)",
    "ok": true,
-   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-15-09.png · 41578 bytes"
+   "detalle": "Autoclave · periodo88.47 %Disponibilidad96.30 %Rendimiento92.92 %Calidad79.17 %OEETiempo calendario8,760.0 h− Domingos-1"
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b4 a XLSX",
+   "verificacion": "OEE de máquina ≠ OEE de línea (horas-máquina vs horas de línea)",
    "ok": true,
-   "detalle": "Composicion_de_perdidas_horas_de_linea_2026-09-23-15-09.xlsx · 10689 bytes"
+   "detalle": ""
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b4 a PNG",
+   "verificacion": "Al desplegar: matriz máquina × 12 meses + periodo",
    "ok": true,
-   "detalle": "Composicion_de_perdidas_horas_de_linea_2026-09-23-15-09.png · 40304 bytes"
+   "detalle": "13 columnas"
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b5 a XLSX",
+   "verificacion": "Análisis de paradas: los 6 tipos por máquina",
    "ok": true,
-   "detalle": "Confiabilidad_por_equipo_2026-09-23-15-09.xlsx · 11590 bytes"
+   "detalle": "Máquina | Correctivo | Cambio de formato | Equipos auxiliares | Paradas cortas | Operación en vacío | Reuniones de emergencia | Total (h)"
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b5 a PNG",
+   "verificacion": "Matriz = motor de cálculo (correctivo del autoclave, una sola fuente)",
    "ok": true,
-   "detalle": "Confiabilidad_por_equipo_2026-09-23-15-09.png · 70206 bytes"
+   "detalle": "327.3 h"
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b6 a XLSX",
+   "verificacion": "Clic en una celda: eventos, causas principales y evolución mensual",
    "ok": true,
-   "detalle": "Pareto_de_causas_por_horas_perdidas_2026-09-23-15-09.xlsx · 9154 bytes"
+   "detalle": "Correctivo · Autoclave167Eventos327.3 hHoras-máquina2.0 hDuración media por evento8.2 hEvento más la"
   },
   {
    "auditoria": 9,
-   "verificacion": "Exportación b6 a PNG",
+   "verificacion": "Exportación lb1 a XLSX",
    "ok": true,
-   "detalle": "Pareto_de_causas_por_horas_perdidas_2026-09-23-15-09.png · 83816 bytes"
+   "detalle": "Indicadores_de_la_linea_2026-09-23-18-29.xlsx · 7881 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación lb1 a PNG",
+   "ok": true,
+   "detalle": "Indicadores_de_la_linea_2026-09-23-18-29.png · 33240 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación lb3 a XLSX",
+   "ok": true,
+   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-18-29.xlsx · 9786 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación lb3 a PNG",
+   "ok": true,
+   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-18-29.png · 51465 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación lb4 a XLSX",
+   "ok": true,
+   "detalle": "Perdidas_de_la_linea_2026-09-23-18-29.xlsx · 9115 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación lb4 a PNG",
+   "ok": true,
+   "detalle": "Perdidas_de_la_linea_2026-09-23-18-29.png · 54189 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación mb1 a XLSX",
+   "ok": true,
+   "detalle": "Resumen_por_maquina_2026-09-23-18-29.xlsx · 14278 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación mb1 a PNG",
+   "ok": true,
+   "detalle": "Resumen_por_maquina_2026-09-23-18-29.png · 99094 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación mb2 a XLSX",
+   "ok": true,
+   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-18-29.xlsx · 13546 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación mb2 a PNG",
+   "ok": true,
+   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-18-29.png · 97951 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación mb3 a XLSX",
+   "ok": true,
+   "detalle": "Perdidas_por_maquina_horas-maquina_2026-09-23-18-29.xlsx · 10534 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación mb3 a PNG",
+   "ok": true,
+   "detalle": "Perdidas_por_maquina_horas-maquina_2026-09-23-18-29.png · 48916 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación pb1 a XLSX",
+   "ok": true,
+   "detalle": "Paradas_por_maquina_y_tipo_horas-maquina_2026-09-23-18-29.xlsx · 12546 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación pb1 a PNG",
+   "ok": true,
+   "detalle": "Paradas_por_maquina_y_tipo_horas-maquina_2026-09-23-18-29.png · 98902 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación pb2 a XLSX",
+   "ok": true,
+   "detalle": "Pareto_de_causas_2026-09-23-18-29.xlsx · 8905 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación pb2 a PNG",
+   "ok": true,
+   "detalle": "Pareto_de_causas_2026-09-23-18-29.png · 82652 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Informe PDF de la vista linea con el estilo del sistema",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Informe PDF de la vista maquina con el estilo del sistema",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Informe PDF de la vista paradas con el estilo del sistema",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": "9b",
+   "verificacion": "PDF del filtro «Planificado · Caldero»: solo ese pilar y ese equipo, agrupado y con firmas",
+   "ok": true,
+   "detalle": "CMMS4.0Plan maestro planificadoLínea de láminas antiabrasivas · programa desde 2025-06-01 · 12 mesesEmitido 23/9/2026, 6:29:50 p. m.por Guti"
+  },
+  {
+   "auditoria": "9b",
+   "verificacion": "PDF del historial de cumplimiento según su filtro",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": "9b",
+   "verificacion": "OT planificada cumplida en el autoclave (2 h) → carga del autoclave y de la línea −2 h",
+   "ok": true,
+   "detalle": "OT-00039, OT-00013 · línea 4543.4 → 4541.4 h"
+  },
+  {
+   "auditoria": "9b",
+   "verificacion": "OT de calidad cumplida en la prensa 1 (paralelo) → solo su carga −2 h",
+   "ok": true,
+   "detalle": "4543.4 → 4541.4 h"
+  },
+  {
+   "auditoria": "9b",
+   "verificacion": "La banda de la línea informa el mantenimiento del programa ejecutado",
+   "ok": true,
+   "detalle": "to: 10,068 láminas × S/ 1802.0 hMantenimiento del programa ejecutado (2 órdenes)"
+  },
+  {
+   "auditoria": "9b",
+   "verificacion": "Revertir las órdenes devuelve exactamente el OEE anterior",
+   "ok": true,
+   "detalle": ""
   },
   {
    "auditoria": 10,
@@ -360,7 +468,7 @@
    "auditoria": 10,
    "verificacion": "Recálculo idempotente (dos ejecuciones idénticas)",
    "ok": true,
-   "detalle": "Huellas 543507 / 543507 caracteres"
+   "detalle": "Huellas 545978 / 545978 caracteres"
   },
   {
    "auditoria": 10,
@@ -396,7 +504,7 @@
    "auditoria": 12,
    "verificacion": "Worker de simulación: línea base ejecutada sin bloquear la interfaz",
    "ok": true,
-   "detalle": "4.8 s · 30 réplicas"
+   "detalle": "4.7 s · 30 réplicas"
   },
   {
    "auditoria": 12,

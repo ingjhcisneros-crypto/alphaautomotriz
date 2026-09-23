@@ -79,7 +79,7 @@ export function periodoSemilla() {
     capacidad_cuello_botella: 8.0, equipo_cuello_botella: 'AUT', masa_unitaria_kg: 71.44,
     costo_unitario: 370, precio_venta: 550, margen_unitario: 180,
     benchmark_oee: 0.8337, benchmark_fuente: 'Senthil y Sudhakara Pandian (2022)', objetivo_oee: 0.75,
-    retraso_encendido_min: 10
+    retraso_encendido_min: 10, dia_capacitacion: 1
   };
 }
 

@@ -45,7 +45,7 @@ const listas = await E(() => CMMS.servicio.E.listas);
 check(5, 'Catálogos sembrados = hojas «Listas» de los adjuntos', Object.keys(LISTAS_SEMILLA).every(k => JSON.stringify(listas[k]) === JSON.stringify(LISTAS_SEMILLA[k])), Object.keys(listas).length + ' listas');
 check(5, 'Catálogo de equipos y parámetros del periodo sembrados', await E(() => CMMS.servicio.E.equipos.length === 10 && CMMS.servicio.E.periodo.feriados.length === 16), '10 equipos · 16 feriados');
 check(5, 'El portal no muestra credenciales', !/grupo29|ing29|tec29|ope29/.test(await P.content()), '');
-check(5, 'El tablero indica «Sistema sin registros operativos»', await P.isVisible('#tabVacio'), '');
+check(5, 'OEE de línea indica «Sin registros operativos»', await P.isVisible('#v-linea .vacio-oee'), '');
 await P.screenshot({ path: path.join(SHOTS, '01_instalacion_vacia.png') });
 await ir(P, 'param');
 const c0 = await E(() => CMMS.servicio.E.total.linea.total.carga);
@@ -114,36 +114,84 @@ check(8, 'Borrarlo devuelve exactamente el valor anterior', o2.OEE === o0.OEE &&
 check(8, 'Recalcular dos veces produce el mismo resultado (idempotente)', await E(() => JSON.stringify(CMMS.servicio.recalcular('prueba')) === JSON.stringify(CMMS.servicio.recalcular('prueba'))), '');
 check(8, 'Fecha del último recálculo visible en la cabecera', /Recalculado \d/.test(await P.textContent('#chipRecalculo')), await P.textContent('#chipRecalculo'));
 
-console.log('\nAuditoría 9 · Tablero');
-await ir(P, 'tablero'); await P.waitForTimeout(300);
-const filasT = await P.$$eval('#tCruzada tbody tr', t => t.length), colsT = await P.$$eval('#tCruzada thead th', t => t.length);
-check(9, 'Tabla cruzada: 10 equipos + OEE de línea × 12 meses + periodo', filasT === 11 && colsT === 14, filasT + ' filas · ' + (colsT - 1) + ' columnas');
-await P.click('#tCruzada td[data-eq="AUT"][data-mes="total"]');
-const det = (await P.textContent('.capa.abierta')).replace(/\s+/g, ' ');
-check(9, 'Clic en celda abre el detalle correcto (autoclave, periodo: 79.17 %, cadena de tiempos)', /Autoclave · periodo completo/.test(det) && /79[.,]17 %/.test(det) && /Tiempo bruto/.test(det), det.slice(0, 140));
-await P.screenshot({ path: path.join(SHOTS, '02_detalle_celda.png') }); await P.click('.capa.abierta [data-x]');
-await P.screenshot({ path: path.join(SHOTS, '03_tablero.png'), fullPage: true });
-const estado = () => E(() => ({ kpi: document.getElementById('kpiLinea').textContent, cruz: document.getElementById('tCruzada').textContent, ev: JSON.stringify(Chart.getChart('gEvol').data.datasets[0].data),
-  per: JSON.stringify(Chart.getChart('gPerdidas').data.datasets.map(d => d.data)), conf: document.getElementById('tConf').textContent, par: JSON.stringify(Chart.getChart('gPareto').data.datasets[0].data) }));
-const s0 = await estado();
-const filtros = [['Periodo (desde Set-25)', async () => P.selectOption('#fDesde', '2025-09')], ['Turno 2', async () => P.selectOption('#fTurno', '2')], ['Topología serie', async () => P.selectOption('#fTopo', 'serie')],
-  ['Etapa Prensado', async () => P.selectOption('#fEtapa', 'Prensado')], ['Equipos: extrusora y autoclave', async () => { await P.check('#fEquipos input[value="EXT"]'); await P.check('#fEquipos input[value="AUT"]'); }]];
-for (const [n, fn] of filtros) {
-  await P.click('#fLimpiar'); await P.waitForTimeout(150); const a = await estado(); await fn(); await P.waitForTimeout(250); const b = await estado();
-  const cambian = Object.keys(a).filter(k => a[k] !== b[k]);
-  check(9, 'Filtro «' + n + '» afecta a los seis bloques', cambian.length === 6, 'cambian: ' + cambian.join(', '));
+console.log('\nAuditoría 9 · OEE de línea, OEE por máquina y análisis de paradas (resumen primero, detalle a pedido)');
+await ir(P, 'linea'); await P.waitForTimeout(300);
+const kL = (await P.textContent('#lKpis')).replace(/\s+/g, ' ');
+check(9, 'OEE de línea: KPIs del periodo (55.68 %) con horas de línea', /55[.,]68 %/.test(kL), kL.slice(0, 120));
+check(9, 'Cascada de 6 etapas en resumen (sin tabla mensual a la vista)', await P.$$eval('#lCascada .etapa-b', x => x.length) === 6 && !(await P.isVisible('#v-linea table.mensual')), '');
+await P.click('#lCascada .etapa-b[data-etapa="C"]');
+let det = (await P.textContent('.capa.abierta')).replace(/\s+/g, ' ');
+check(9, 'Clic en una etapa abre la cadena completa y la evolución mensual plegada', /Tiempo de carga/.test(det) && /Ver evolución mensual/.test(det) && !(await P.isVisible('.capa.abierta details .cuerpo table')), det.slice(0, 120));
+await P.screenshot({ path: path.join(SHOTS, '02_cascada_linea.png') }); await P.click('.capa.abierta [data-x]');
+await P.screenshot({ path: path.join(SHOTS, '03_oee_linea.png'), fullPage: true });
+const eL = () => E(() => ({ kpi: document.getElementById('lKpis').textContent, cas: document.getElementById('lCascada').textContent, ev: JSON.stringify(Chart.getChart('gLEvol').data.datasets[0].data), per: document.getElementById('lPerdidas').textContent }));
+const sL = await eL(); await P.selectOption('#lTurno', '2'); await P.waitForTimeout(250); const tL = await eL();
+check(9, 'Filtro de turno afecta a los cuatro bloques de la vista de línea', Object.keys(sL).every(k => sL[k] !== tL[k]), '');
+await P.click('#lLimpiar'); await P.waitForTimeout(200);
+check(9, '«Todo el periodo» restaura los valores', JSON.stringify(await eL()) === JSON.stringify(sL), '');
+await ir(P, 'maquina'); await P.waitForTimeout(300);
+const filasM = await P.$$eval('#mResumen tbody tr', t => t.length);
+check(9, 'OEE por máquina: resumen de 10 equipos con OEE y confiabilidad en una sola tabla', filasM === 10, filasM + ' filas');
+check(9, 'Detalle mensual por máquina plegado (solo a pedido)', !(await P.isVisible('#mCruzada')), '');
+await P.click('#mResumen tr[data-eq="AUT"]');
+det = (await P.textContent('.capa.abierta')).replace(/\s+/g, ' ');
+check(9, 'Clic en el autoclave abre su cascada (79.17 %, horas-máquina)', /Autoclave · periodo/.test(det) && /79[.,]17 %/.test(det) && /Tiempo bruto/.test(det), det.slice(0, 120));
+await P.click('.capa.abierta [data-x]');
+check(9, 'OEE de máquina ≠ OEE de línea (horas-máquina vs horas de línea)', await E(() => { const r = CMMS.servicio.E.total; return Math.abs(r.maquina.AUT.total.OEE - r.linea.total.OEE) > 0.1; }), '');
+await P.click('#v-maquina details.fold summary'); await P.waitForTimeout(150);
+const colsM = await P.$$eval('#mCruzada thead th', t => t.length);
+check(9, 'Al desplegar: matriz máquina × 12 meses + periodo', colsM === 14, (colsM - 1) + ' columnas');
+await P.screenshot({ path: path.join(SHOTS, '04_oee_maquina.png'), fullPage: true });
+await ir(P, 'paradas'); await P.waitForTimeout(300);
+const tipos = await P.$$eval('#pMatriz thead th', t => t.map(x => x.textContent.trim()));
+check(9, 'Análisis de paradas: los 6 tipos por máquina', ['Correctivo', 'Cambio de formato', 'Equipos auxiliares', 'Paradas cortas', 'Operación en vacío', 'Reuniones de emergencia'].every(x => tipos.some(t => t.indexOf(x) >= 0)), tipos.join(' | '));
+const hMat = await E(() => { const t = document.querySelector('#pMatriz td.celda-par[data-maq="AUT"][data-t="correctivo"]'); return parseFloat(t.textContent.replace(',', '')); });
+check(9, 'Matriz = motor de cálculo (correctivo del autoclave, una sola fuente)', Math.abs(hMat - await E(() => CMMS.servicio.E.total.maquina.AUT.total.perdidas.correctivo)) < 0.06, hMat + ' h');
+await P.click('#pMatriz td.celda-par[data-maq="AUT"][data-t="correctivo"]');
+det = (await P.textContent('.capa.abierta')).replace(/\s+/g, ' ');
+check(9, 'Clic en una celda: eventos, causas principales y evolución mensual', /Causas principales/.test(det) && /Por mes/.test(det), det.slice(0, 100));
+await P.screenshot({ path: path.join(SHOTS, '05_detalle_parada.png') }); await P.click('.capa.abierta [data-x]');
+await P.screenshot({ path: path.join(SHOTS, '06_paradas.png'), fullPage: true });
+for (const [vista, bloques] of [['linea', ['lb1', 'lb3', 'lb4']], ['maquina', ['mb1', 'mb2', 'mb3']], ['paradas', ['pb1', 'pb2']]]) {
+  await ir(P, vista); await P.waitForTimeout(200);
+  for (const b of bloques) for (const f of ['xlsx', 'png']) {
+    await P.waitForTimeout(600);
+    try {
+      const [dl] = await Promise.all([P.waitForEvent('download', { timeout: 10000 }), P.click('.export[data-bloque="' + b + '"] [data-f="' + f + '"]')]);
+      const tam = fs.statSync(await dl.path()).size;
+      check(9, 'Exportación ' + b + ' a ' + f.toUpperCase(), tam > 500, dl.suggestedFilename() + ' · ' + tam + ' bytes');
+    } catch (e) { check(9, 'Exportación ' + b + ' a ' + f.toUpperCase(), false, e.message.slice(0, 80)); }
+  }
 }
-await P.click('#fLimpiar'); await P.waitForTimeout(200);
-check(9, 'Limpiar filtros restaura los valores', JSON.stringify(await estado()) === JSON.stringify(s0), '');
-for (const b of ['b1', 'b2', 'b3', 'b4', 'b5', 'b6']) for (const f of ['xlsx', 'png']) {
-  await P.waitForTimeout(600);
-  try {
-    const [dl] = await Promise.all([P.waitForEvent('download', { timeout: 10000 }), P.click('.export[data-bloque="' + b + '"] [data-f="' + f + '"]')]);
-    const tam = fs.statSync(await dl.path()).size;
-    check(9, 'Exportación ' + b + ' a ' + f.toUpperCase(), tam > 500, dl.suggestedFilename() + ' · ' + tam + ' bytes');
-  } catch (e) { check(9, 'Exportación ' + b + ' a ' + f.toUpperCase(), false, e.message.slice(0, 80) + ' · ' + errores.slice(-2).join(' | ') + ' · ' + await P.textContent('#avisos').catch(() => '')); }
+const ultimoPdf = () => E(() => { const f = Array.from(document.querySelectorAll('iframe')).pop(); return f ? f.contentWindow.document.body.textContent.replace(/\s+/g, ' ') : ''; });
+for (const [vista, btn, re] of [['linea', '#lPdf', /OEE de línea/], ['maquina', '#mPdf', /Resumen por máquina/], ['paradas', '#pPdf', /Reuniones de emergencia/]]) {
+  await ir(P, vista); await P.click(btn); await P.waitForTimeout(500);
+  check(9, 'Informe PDF de la vista ' + vista + ' con el estilo del sistema', re.test(await ultimoPdf()), '');
 }
-await ir(P, 'calculo'); await P.screenshot({ path: path.join(SHOTS, '04_calculo.png'), fullPage: true });
+
+console.log('\nAuditoría 9b · Programa de mantenimiento: PDF por filtro y cumplimiento → tiempo de carga');
+await ir(P, 'plan'); await P.click('#planTipo .pest[data-t="Planificado"]'); await P.selectOption('#planEqF', 'caldero'); await P.click('#planPdf'); await P.waitForTimeout(600);
+const tPlan = await ultimoPdf();
+check('9b', 'PDF del filtro «Planificado · Caldero»: solo ese pilar y ese equipo, agrupado y con firmas', /Plan maestro planificado/.test(tPlan) && /Caldero \(2 unidades\)/.test(tPlan) && !/Molino|Autoclave/.test(tPlan) && /Aprobado por/.test(tPlan), tPlan.slice(0, 140));
+const pagPlan = await navegador.newPage(); await pagPlan.setContent(await E(() => Array.from(document.querySelectorAll('iframe')).pop().contentWindow.document.documentElement.outerHTML));
+await pagPlan.pdf({ path: path.join(OUT, 'Plan_Planificado_Caldero.pdf'), format: 'A4' }); await pagPlan.close();
+await P.click('#planTipo .pest[data-t="todos"]'); await P.selectOption('#planEqF', 'todos');
+await ir(P, 'agenda'); await P.click('#hPdf'); await P.waitForTimeout(400);
+check('9b', 'PDF del historial de cumplimiento según su filtro', /Historial de cumplimiento/.test(await ultimoPdf()), '');
+await ir(P, 'anom'); await P.click('#anPdf').catch(() => {});
+const c0L = await E(() => ({ l: CMMS.servicio.E.total.linea.total.carga, a: CMMS.servicio.E.total.maquina.AUT.total.carga, p: CMMS.servicio.E.total.maquina.PR1.total.carga }));
+const cerr = await E(() => { const L = LEGADO.instantanea(), P0 = CMMS.servicio.E.periodo, out = [];
+  for (const [eqId, tipo] of [['autoclave', 'Planificado'], ['prensa1', 'Calidad']]) { const o = L.OTS.find(x => x.eqId === eqId && x.tipo === tipo && x.fecha >= P0.fecha_inicio && x.fecha <= P0.fecha_fin && x.estado !== 'Ejecutada');
+    o.estado = 'Ejecutada'; o.real = 120; o.enJornada = true; out.push(o.id); }
+  CMMS.alCambiarLegado(); return out; });
+await P.waitForTimeout(400);
+const c1L = await E(() => ({ l: CMMS.servicio.E.total.linea.total.carga, a: CMMS.servicio.E.total.maquina.AUT.total.carga, p: CMMS.servicio.E.total.maquina.PR1.total.carga }));
+check('9b', 'OT planificada cumplida en el autoclave (2 h) → carga del autoclave y de la línea −2 h', Math.abs(c0L.a - c1L.a - 2) < 1e-6 && Math.abs(c0L.l - c1L.l - 2) < 1e-6, cerr.join(', ') + ' · línea ' + c0L.l.toFixed(1) + ' → ' + c1L.l.toFixed(1) + ' h');
+check('9b', 'OT de calidad cumplida en la prensa 1 (paralelo) → solo su carga −2 h', Math.abs(c0L.p - c1L.p - 2) < 1e-6, c0L.p.toFixed(1) + ' → ' + c1L.p.toFixed(1) + ' h');
+await ir(P, 'linea'); await P.waitForTimeout(200);
+check('9b', 'La banda de la línea informa el mantenimiento del programa ejecutado', /2[.,]0 h/.test(await P.textContent('#lBanda')), (await P.textContent('#lBanda')).replace(/\s+/g, ' ').slice(-80));
+await E(ids => { const L = LEGADO.instantanea(); ids.forEach(id => { const o = L.OTS.find(x => x.id === id); o.estado = 'Programada'; o.real = null; }); CMMS.alCambiarLegado(); }, cerr); await P.waitForTimeout(400);
+check('9b', 'Revertir las órdenes devuelve exactamente el OEE anterior', (await oee()).OEE === o0.OEE, '');
 
 console.log('\nAuditoría 10 · Integridad global (verificaciones en la aplicación)');
 await ir(P, 'audit'); await P.click('#audCorrer');
@@ -155,7 +203,7 @@ await ir(P, 'simdes'); await P.click('#simAjustar'); await P.waitForSelector('#s
 const nDist = await P.$$eval('#simDist tbody tr', t => t.length);
 check(11, 'Distribuciones ajustadas y tabla de bondad de ajuste visible', nDist > 20, nDist + ' ajustes');
 check(11, 'Advertencia permanente por validez limitada o insuficiente', /Advertencia metodológica permanente/.test(await P.textContent('#simAvisos')), '');
-await P.screenshot({ path: path.join(SHOTS, '05_distribuciones.png'), fullPage: true });
+await P.screenshot({ path: path.join(SHOTS, '07_distribuciones.png'), fullPage: true });
 await P.click('#simTabs .pest[data-t="escenarios"]');
 check(13, 'Escenarios de mejora bloqueados antes de validar', await P.isDisabled('[data-run="E1"]'), '');
 await P.click('#simTabs .pest[data-t="validacion"]');
@@ -166,7 +214,7 @@ const val = await E(() => CMMS.servicio.E.validacion);
 check(12, 'Worker de simulación: línea base ejecutada sin bloquear la interfaz', true, ((Date.now() - t0) / 1000).toFixed(1) + ' s · ' + val.replicas + ' réplicas');
 val.verificaciones.forEach(x => check(12, x.verificacion, x.ok, x.detalle));
 val.filas.forEach(f => check(13, f.indicador + ' dentro de tolerancia', f.ok, 'desvío ' + f.desvio.toFixed(2) + ' ' + f.unidad + (f.icContiene ? ' · IC contiene el real' : ' · IC no contiene el real')));
-await P.screenshot({ path: path.join(SHOTS, '06_validacion.png'), fullPage: true });
+await P.screenshot({ path: path.join(SHOTS, '08_validacion.png'), fullPage: true });
 await P.click('#simTabs .pest[data-t="escenarios"]');
 check(13, 'Validación aprobada habilita los escenarios', !(await P.isDisabled('[data-run="E1"]')), '');
 await P.click('#simCorrerTodos');
@@ -175,15 +223,15 @@ await P.click('#simTabs .pest[data-t="resultados"]'); await P.waitForTimeout(300
 const comp = await P.$$eval('#simComp tbody tr', t => t.map(r => Array.from(r.cells).map(c => c.textContent.trim())));
 check(14, 'Tabla comparativa con los siete escenarios', comp.length === 7, comp.map(c => c[0].slice(0, 3) + ' ' + c[2] + ' Δ' + c[4] + ' ' + c[6]).join(' | '));
 check(14, 'Todas las mejoras E1–E6 significativas al 95 %', comp.slice(1).every(c => c[6] === 'Sí'), '');
-await P.screenshot({ path: path.join(SHOTS, '07_resultados.png'), fullPage: true });
+await P.screenshot({ path: path.join(SHOTS, '09_resultados.png'), fullPage: true });
 
 console.log('\nMejoras finales · PDF, tema, periodos y portal');
 await P.click('#simPdf'); await P.waitForTimeout(800);
-check('F', 'PDF de resultados sin ventana emergente (documento imprimible en marco interno)', await E(() => { const f = document.querySelector('iframe'); return !!f && /Comparación contra la línea base/.test(f.contentWindow.document.body.textContent); }), '');
-await ir(P, 'tablero'); await P.waitForTimeout(200);
-const colorAntes = await E(() => Chart.getChart('gEvol').options.scales.x.ticks.color);
+check('F', 'PDF de resultados sin ventana emergente (documento imprimible en marco interno)', await E(() => { const f = Array.from(document.querySelectorAll('iframe')).pop(); return !!f && /Comparación contra la línea base/.test(f.contentWindow.document.body.textContent); }), '');
+await ir(P, 'linea'); await P.waitForTimeout(200);
+const colorAntes = await E(() => Chart.getChart('gLEvol').options.scales.x.ticks.color);
 await P.click('#btnTema'); await P.waitForTimeout(300);
-const colorDespues = await E(() => Chart.getChart('gEvol').options.scales.x.ticks.color);
+const colorDespues = await E(() => Chart.getChart('gLEvol').options.scales.x.ticks.color);
 check('F', 'Al cambiar de tema los gráficos se repintan con los colores nuevos', colorAntes !== colorDespues, colorAntes + ' → ' + colorDespues);
 await P.click('#btnTema'); await P.waitForTimeout(200);
 await ir(P, 'param'); await P.waitForTimeout(300);
@@ -209,7 +257,7 @@ check('P', 'El usuario creado inicia sesión con su clave tras recargar', await 
 check('P', 'Tras recargar, persiste el estado de los módulos heredados (usuario creado)', await E(() => LEGADO.instantanea().USUARIOS.some(u => u.user === 'persistencia@lexacaucho.pe')), '');
 const movil = await navegador.newContext({ viewport: { width: 820, height: 1180 } }); const pm = await movil.newPage();
 await pm.goto('file://' + path.resolve(import.meta.dirname, '../dist/cmms_lexacaucho_v6.html')); await pm.waitForFunction(() => window.CMMS && CMMS.servicio.E.resultado);
-await entrar(pm); await pm.waitForTimeout(400); await pm.screenshot({ path: path.join(SHOTS, '08_tableta.png'), fullPage: false });
+await entrar(pm); await pm.waitForTimeout(400); await pm.screenshot({ path: path.join(SHOTS, '10_tableta.png'), fullPage: false });
 const desborde = await pm.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 check(9, 'Responsive: tableta 820 px sin desplazamiento horizontal de la página', desborde <= 2, desborde + ' px');
 

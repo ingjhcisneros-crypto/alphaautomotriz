@@ -1,81 +1,101 @@
-      <!-- TABLERO OEE -->
-      <section class="vista on stack" id="v-tablero">
+      <!-- OEE DE LÍNEA -->
+      <section class="vista on stack" id="v-linea">
         <div class="panel filtros">
-          <div class="rejilla c6">
-            <div class="campo"><label>Desde (mes)</label><select id="fDesde"></select></div>
-            <div class="campo"><label>Hasta (mes)</label><select id="fHasta"></select></div>
-            <div class="campo"><label>Etapa</label><select id="fEtapa"><option value="">Todas</option></select></div>
-            <div class="campo"><label>Topología</label><select id="fTopo"><option value="">Todas</option><option value="serie">Serie</option><option value="paralelo">Paralelo</option><option value="soporte">Soporte</option></select></div>
-            <div class="campo"><label>Turno</label><select id="fTurno"><option value="">Ambos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select></div>
-            <div class="campo"><label>&nbsp;</label><button class="btn btn-ghost" id="fLimpiar"><i class="fas fa-rotate-left"></i> Limpiar filtros</button></div>
+          <div class="rejilla c5">
+            <div class="campo"><label>Desde (mes)</label><select id="lDesde"></select></div>
+            <div class="campo"><label>Hasta (mes)</label><select id="lHasta"></select></div>
+            <div class="campo"><label>Turno</label><select id="lTurno"><option value="">Ambos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select></div>
+            <div class="campo"><label>&nbsp;</label><button class="btn btn-ghost" id="lLimpiar"><i class="fas fa-rotate-left"></i> Todo el periodo</button></div>
+            <div class="campo"><label>&nbsp;</label><button class="btn btn-primary" id="lPdf"><i class="fas fa-file-pdf"></i> Informe PDF</button></div>
           </div>
-          <div class="campo" style="margin-top:var(--s3)"><label>Equipos</label><div class="chips" id="fEquipos"></div></div>
-          <p class="nota" id="fAviso"></p>
+          <p class="nota" id="lAviso">El OEE de línea se calcula con horas de línea: cuánto de cada pérdida detuvo efectivamente la producción según la topología. No es el promedio de las máquinas.</p>
         </div>
-        <div id="tabVacio" class="panel aviso-vacio" style="display:none"></div>
-
-        <div class="bloque" id="b1">
-          <div class="bloque-cab"><h2>Indicadores de línea</h2><div class="export" data-bloque="b1"></div></div>
-          <div class="kpis" id="kpiLinea"></div>
-          <div class="banda chica" id="kpiLinea2"></div>
-        </div>
-
-        <div class="panel bloque" id="b2">
-          <header><h2>OEE por máquina y por mes</h2><div class="export" data-bloque="b2"></div></header>
-          <div class="tabla-caja"><table class="calor" id="tCruzada"></table></div>
-          <p class="nota">Haga clic en una celda para ver la cadena de tiempos y el desglose de paradas de esa máquina en ese mes. Escala: rojo &lt; 65 %, ámbar &lt; 75 %, verde claro &lt; 85 %, verde ≥ 85 %; cada celda muestra su cifra.</p>
-        </div>
-
-        <div class="rejilla c2 dos-bloques">
-          <div class="panel bloque" id="b3">
-            <header><h2>Evolución mensual</h2><div class="export" data-bloque="b3"></div></header>
-            <div class="fila" style="margin-bottom:var(--s3)"><label class="chico tenue">Superponer máquinas:</label><div class="chips" id="b3Maq"></div></div>
-            <div class="lienzo-graf"><canvas id="gEvol"></canvas></div>
+        <div class="panel aviso-vacio vacio-oee" style="display:none"></div>
+        <div class="con-datos stack">
+          <div class="bloque" id="lb1">
+            <div class="bloque-cab"><h2>Indicadores de la línea</h2><div class="export" data-bloque="lb1"></div></div>
+            <div class="kpis" id="lKpis"></div>
+            <div class="banda chica" id="lBanda"></div>
           </div>
-          <div class="panel bloque" id="b4">
-            <header><h2>Composición de pérdidas</h2><div class="export" data-bloque="b4"></div></header>
-            <div class="pestanas" id="b4Modo" style="margin-bottom:var(--s3)"><button class="pest on" data-m="linea">Horas de línea</button><button class="pest" data-m="maquina">Horas-máquina</button></div>
-            <div class="lienzo-graf"><canvas id="gPerdidas"></canvas></div>
+          <div class="panel bloque" id="lb2">
+            <header><h2>Cascada de tiempos de la línea</h2><span class="chico tenue">Resumen del periodo · clic en una etapa para ver el detalle y la evolución mensual</span></header>
+            <div class="etapas cascada" id="lCascada"></div>
           </div>
-        </div>
-
-        <div class="panel bloque" id="b5">
-          <header><h2>Confiabilidad</h2><div class="export" data-bloque="b5"></div></header>
-          <div class="tabla-caja"><table id="tConf"></table></div>
-          <p class="nota">MTBF = tiempo bruto ÷ fallas · MTTR = horas de parada correctiva ÷ fallas · Disponibilidad inherente = MTBF ÷ (MTBF + MTTR). Validez: suficiente con 30 o más eventos, limitada de 5 a 29, insuficiente por debajo de 5.</p>
-        </div>
-
-        <div class="panel bloque" id="b6">
-          <header><h2>Análisis de causas (Pareto)</h2><div class="export" data-bloque="b6"></div></header>
-          <div class="rejilla c3" style="margin-bottom:var(--s3)">
-            <div class="campo"><label>Categoría de parada</label><select id="b6Cat"></select></div>
-            <div class="campo"><label>Equipo</label><select id="b6Eq"><option value="">Todos</option></select></div>
-            <div class="campo"><label>Mostrar</label><select id="b6Top"><option value="10">10 causas principales</option><option value="20">20 causas</option><option value="999">Todas</option></select></div>
+          <div class="rejilla c2 dos-bloques lin-graf">
+            <div class="panel bloque" id="lb3">
+              <header><h2>Evolución mensual</h2><div class="export" data-bloque="lb3"></div></header>
+              <div class="lienzo-graf"><canvas id="gLEvol"></canvas></div>
+            </div>
+            <div class="panel bloque" id="lb4">
+              <header><h2>Pérdidas de la línea</h2><div class="export" data-bloque="lb4"></div></header>
+              <div class="tabla-caja"><table id="lPerdidas"></table></div>
+              <p class="nota">Horas-máquina: suma de lo que perdió cada equipo. Horas de línea: lo que efectivamente detuvo la producción. Clic en una categoría para ver su reparto por máquina y por mes.</p>
+            </div>
           </div>
-          <div class="lienzo-graf alto"><canvas id="gPareto"></canvas></div>
         </div>
       </section>
 
-      <!-- CÁLCULO DEL OEE -->
-      <section class="vista stack" id="v-calculo">
-        <div class="etapas" id="calTabs">
-          <button class="etapa-b on" data-e="1"><b>1 · Tiempo total de producción</b><div class="vv" id="cA">–</div><span>calendario menos tiempo no programado</span></button>
-          <button class="etapa-b" data-e="2"><b>2 · Tiempo de carga</b><div class="vv" id="cB">–</div><span>menos almuerzos, capacitación y mantenimiento</span></button>
-          <button class="etapa-b" data-e="3"><b>3 · Tiempo bruto</b><div class="vv" id="cC">–</div><span>menos paradas no planificadas</span></button>
-          <button class="etapa-b" data-e="4"><b>4 · Tiempo neto</b><div class="vv" id="cD">–</div><span>menos pérdidas de rendimiento</span></button>
-          <button class="etapa-b" data-e="5"><b>5 · Valor añadido</b><div class="vv" id="cE">–</div><span>menos pérdidas de calidad</span></button>
-          <button class="etapa-b" data-e="6"><b>6 · OEE</b><div class="vv" id="cO">–</div><span>disponibilidad × rendimiento × calidad</span></button>
+      <!-- OEE POR MÁQUINA -->
+      <section class="vista stack" id="v-maquina">
+        <div class="panel filtros">
+          <div class="rejilla c6">
+            <div class="campo"><label>Desde (mes)</label><select id="mDesde"></select></div>
+            <div class="campo"><label>Hasta (mes)</label><select id="mHasta"></select></div>
+            <div class="campo"><label>Etapa</label><select id="mEtapa"></select></div>
+            <div class="campo"><label>Topología</label><select id="mTopo"><option value="">Todas</option><option value="serie">Serie</option><option value="paralelo">Paralelo</option><option value="soporte">Soporte</option></select></div>
+            <div class="campo"><label>Turno</label><select id="mTurno"><option value="">Ambos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select></div>
+            <div class="campo"><label>&nbsp;</label><button class="btn btn-primary" id="mPdf"><i class="fas fa-file-pdf"></i> Informe PDF</button></div>
+          </div>
+          <div class="campo" style="margin-top:var(--s3)"><label>Equipos</label><div class="chips" id="mEquipos"></div></div>
+          <p class="nota">El OEE de cada máquina parte de su propio tiempo de carga y descuenta sus propias paradas en horas-máquina.</p>
         </div>
-        <p class="nota" style="margin-top:calc(-1 * var(--s3))">Valores de línea (horas de línea). Seleccione una etapa para ver su detalle por máquina.</p>
-        <div class="panel"><header><h2 id="calTitulo">Detalle</h2><div class="export" data-bloque="calCuerpo"></div></header><div id="calCuerpo"></div></div>
-        <div class="panel">
-          <header><h2>OEE por máquina frente a OEE de línea</h2>
-            <div class="fila"><button class="btn btn-ghost btn-sm" id="btnAlAnim"><i class="fas fa-share-from-square"></i> Llevar valores a la animación</button><div class="export" data-bloque="calMaq"></div></div></header>
-          <div id="calMaq"></div>
+        <div class="panel aviso-vacio vacio-oee" style="display:none"></div>
+        <div class="con-datos stack">
+          <div class="panel bloque" id="mb1">
+            <header><h2>Resumen por máquina</h2><div class="export" data-bloque="mb1"></div></header>
+            <div class="tabla-caja"><table id="mResumen"></table></div>
+            <p class="nota">Clic en una máquina para ver su cascada de tiempos (6 etapas) y su evolución mensual. Validez estadística: suficiente ≥ 30 fallas, limitada 5 a 29, insuficiente &lt; 5.</p>
+          </div>
+          <div class="panel bloque" id="mb2">
+            <header><h2>OEE por máquina y por mes</h2><div class="export" data-bloque="mb2"></div></header>
+            <details class="fold"><summary>Ver el detalle mensual <span class="hint">se muestra solo a pedido</span></summary><div class="cuerpo">
+            <div class="tabla-caja"><table class="calor" id="mCruzada"></table></div>
+            <p class="nota">Escala: rojo &lt; 65 %, ámbar &lt; 75 %, verde claro &lt; 85 %, verde ≥ 85 %. Clic en una celda para ver el detalle del mes.</p></div></details>
+          </div>
+          <div class="panel bloque" id="mb3">
+            <header><h2>Pérdidas por máquina (horas-máquina)</h2><div class="export" data-bloque="mb3"></div></header>
+            <div class="lienzo-graf alto"><canvas id="gMPerdidas"></canvas></div>
+          </div>
         </div>
-        <div class="panel">
-          <header><h2>Horas-máquina frente a horas de línea</h2><div class="export" data-bloque="calConv"></div></header>
-          <div id="calConv"></div>
+      </section>
+
+      <!-- ANÁLISIS DE PARADAS -->
+      <section class="vista stack" id="v-paradas">
+        <div class="panel filtros">
+          <div class="rejilla c5">
+            <div class="campo"><label>Desde (mes)</label><select id="pDesde"></select></div>
+            <div class="campo"><label>Hasta (mes)</label><select id="pHasta"></select></div>
+            <div class="campo"><label>Turno</label><select id="pTurno"><option value="">Ambos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select></div>
+            <div class="campo"><label>Medida</label><select id="pMedida"><option value="h">Horas</option><option value="n">Eventos</option></select></div>
+            <div class="campo"><label>&nbsp;</label><button class="btn btn-primary" id="pPdf"><i class="fas fa-file-pdf"></i> Informe PDF</button></div>
+          </div>
+        </div>
+        <div class="panel aviso-vacio vacio-oee" style="display:none"></div>
+        <div class="con-datos stack">
+          <div class="panel bloque" id="pb1">
+            <header><h2>Paradas por máquina y tipo</h2><div class="export" data-bloque="pb1"></div></header>
+            <div class="tabla-caja"><table class="calor" id="pMatriz"></table></div>
+            <p class="nota">Horas-máquina de cada tipo de parada. Clic en una celda para ver eventos, causas y evolución; clic en el nombre de la máquina para ver todos sus tipos.</p>
+          </div>
+          <div class="panel bloque" id="pb2">
+            <header><h2>Análisis de causas (Pareto)</h2><div class="export" data-bloque="pb2"></div></header>
+            <div class="rejilla c3" style="margin-bottom:var(--s3)">
+              <div class="campo"><label>Tipo de parada</label><select id="pCat"></select></div>
+              <div class="campo"><label>Máquina</label><select id="pEq"></select></div>
+              <div class="campo"><label>Mostrar</label><select id="pTop"><option value="10">10 causas principales</option><option value="20">20 causas</option><option value="999">Todas</option></select></div>
+            </div>
+            <div class="lienzo-graf alto"><canvas id="gPPareto"></canvas></div>
+          </div>
         </div>
       </section>
 
@@ -177,7 +197,7 @@
           <div class="banda chica" id="parCalendario" style="margin-top:var(--s4)"></div>
         </div>
         <div class="panel">
-          <header><h2>Feriados del periodo</h2><div class="fila"><input type="date" id="parFerFecha" style="width:170px"><input type="text" id="parFerMotivo" placeholder="Motivo" style="width:220px"><button class="btn btn-ghost btn-sm" id="parFerAdd"><i class="fas fa-plus"></i> Agregar</button></div></header>
+          <header><h2>Feriados y días no laborables</h2><div class="fila"><input type="date" id="parFerFecha" style="width:160px" title="Desde"><input type="date" id="parFerHasta" style="width:160px" title="Hasta (opcional: paro de planta, vacaciones colectivas)"><input type="text" id="parFerMotivo" placeholder="Motivo" style="width:220px"><button class="btn btn-ghost btn-sm" id="parFerAdd"><i class="fas fa-plus"></i> Agregar</button></div></header>
           <div class="tabla-caja"><table id="parFeriados"></table></div>
         </div>
         <div class="panel">

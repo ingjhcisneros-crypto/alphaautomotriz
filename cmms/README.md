@@ -5,8 +5,8 @@ Entregable: **`dist/cmms_lexacaucho_v6.html`**. Es un solo archivo de 1.2 MB y f
 ```
 npm install            # solo para desarrollar
 npm run build          # regenera dist/cmms_lexacaucho_v6.html
-npm test               # auditorías del núcleo (178 verificaciones)
-node tests/e2e.mjs     # auditorías en Chromium sobre el HTML (89 verificaciones)
+npm test               # auditorías del núcleo (181 verificaciones)
+node tests/e2e.mjs     # auditorías en Chromium sobre el HTML (107 verificaciones)
 ```
 
 Las pruebas necesitan los diez Excel de especificación en `DIR_REF` (variable de entorno). Esos archivos se usan solo para armar datos de prueba y obtener los valores de referencia. **El sistema no siembra ningún registro operativo.**
@@ -26,6 +26,32 @@ Las pruebas necesitan los diez Excel de especificación en `DIR_REF` (variable d
 | Qué se rehízo | El cálculo del OEE (vista «Cálculo del OEE» nueva, con el mismo recorrido de 6 etapas), la captura de paradas (reemplazada por los 7 registros), los datos sembrados (eliminados) y la persistencia |
 
 **Decisión de persistencia: IndexedDB.** La planta opera sin internet estable y con un puesto de ingeniería, así que un backend agregaría un servidor que mantener sin resolver el problema real. IndexedDB guarda los datos en el equipo, sobrevive al cierre del navegador, soporta transacciones (el reemplazo en la carga completa es atómico) y el HTML sigue siendo portátil. Hay respaldo JSON completo y restauración en *Auditoría*. Si más adelante se necesita acceso multiusuario, basta reemplazar `src/app/db.js` por un cliente HTTP; el motor de cálculo no cambia.
+
+## Optimización v6.1 · los 5 principios aplicados
+
+| Paso | Qué se hizo |
+|---|---|
+| 1 · Cuestionar cada requisito | ¿Por qué hay tres pantallas con el OEE por máquina (tablero, cálculo, especificaciones)? ¿Por qué la jornada se escribe en Administración **y** en Parámetros? Cada dato quedó con un solo dueño |
+| 2 · Eliminar | Se borraron las vistas «Tablero» y «Cálculo del OEE» (duplicaban la cascada y la tabla por máquina), los feriados y días omitidos de Administración, los campos de jornada, masa de lámina, capacidades y lotes editables en la parte heredada, y el «mantenimiento planificado» manual cuando ya existe el programa |
+| 3 · Simplificar | Tres vistas con una pregunta cada una: **OEE de línea** (horas de línea, qué detuvo la producción), **OEE por máquina** (horas-máquina frente a su propia carga) y **Análisis de paradas** (6 tipos × máquina). Se muestra el resumen del periodo; el mes a mes y la cadena completa se abren con un clic |
+| 4 · Acelerar | Caché de resultados por filtro (se invalida en cada recálculo); con los filtros vacíos se reutiliza el cálculo total; el programa solo recalcula si cambió el mantenimiento ejecutado (huella) |
+| 5 · Automatizar | Parámetros → especificaciones, jornada, feriados, capacidades, lotes y periodo del programa se sincronizan solos. Cerrar una OT planificada o de calidad descuenta su tiempo real del tiempo de carga. Cada recálculo actualiza la animación |
+
+**Un dato, un lugar.**
+
+| Dato | Único dueño | Antes |
+|---|---|---|
+| Periodo, jornada, almuerzo, capacitación, feriados y días no laborables | Parámetros | también en Administración y en la animación |
+| Masa de lámina, productos y capacidades | Parámetros (catálogo) | también en Especificaciones, editable |
+| Lotes (molino, autoclave) | Parámetros · simulación | también en la animación |
+| Mantenimiento planificado y de calidad | Programa (OT cumplidas) | horas escritas a mano en Parámetros |
+| OEE por máquina, confiabilidad y Pareto | OEE por máquina y Análisis de paradas | repetidos en tablero y cálculo |
+
+**Mantenimiento del programa → tiempo de carga.** Cada OT **planificada o de calidad** cumplida en jornada y dentro del periodo descuenta su tiempo real del tiempo de carga de su equipo. En la línea el efecto depende de la topología: un equipo en serie detiene la línea (−h), mientras que una prensa en paralelo o un caldero de soporte no la detienen. El mantenimiento autónomo no descuenta porque se hace con la máquina en marcha o dentro del arranque. El campo de Parámetros queda solo para el mantenimiento **fuera del programa**.
+
+**PDF por filtro.** Cada filtro emite su documento A4 con el estilo del sistema: el encabezado verde, los filtros aplicados, los KPI, las tablas agrupadas y las firmas. Por ejemplo, el plan maestro «Planificado · Caldero» se agrupa por equipo y frecuencia e incluye el resumen de órdenes, ejecutadas, vencidas y cumplimiento. Hay PDF en OEE de línea, OEE por máquina, Análisis de paradas, Programa, Historial de cumplimiento, Anomalías, las órdenes diarias y los resultados de simulación.
+
+**Análisis de paradas por máquina.** La matriz de máquinas por los 6 tipos (correctivo, cambio de formato, auxiliares, paradas cortas, operación en vacío y reuniones de emergencia) se puede ver en horas o en eventos y sale del mismo motor de cálculo. Un clic en una celda muestra los eventos, la duración media, el evento más largo, las causas principales, la evolución mensual y la exportación a Excel. Un clic en la máquina muestra su perfil por tipo.
 
 ## Estructura
 
@@ -54,7 +80,8 @@ tests/         auditorias.mjs, e2e.mjs, informe/ (JSON y capturas)
 | 6 | 7 plantillas con encabezados idénticos a los adjuntos, desplegables (verificados también con openpyxl), fechas `dd/mm/aaaa hh:mm`, 3 ejemplos en gris y hoja de instrucciones |
 | 7 | Carga incremental: 309 registros la primera vez y 0 al repetir el archivo (309 duplicados). Carga completa: confirma, genera respaldo y reemplaza. El archivo con errores deliberados detecta las 8 filas con error y las 3 advertencias; el informe se descarga en Excel |
 | 8 | Insertar un registro cambia el OEE; borrarlo lo devuelve al valor exacto. El recálculo es idempotente |
-| 9 | Los 5 filtros cambian los 6 bloques. Tabla cruzada de 10 equipos × 12 meses más la línea. El clic abre el detalle correcto. 12 exportaciones (Excel y PNG). Tableta de 820 px sin desbordes |
+| 9 | OEE de línea 55.68 % con cascada de 6 etapas (detalle a pedido). OEE por máquina con 10 equipos y el autoclave en 79.17 %. La matriz de paradas usa el mismo motor. Los filtros cambian todos los bloques. 16 exportaciones y 3 informes PDF. Tableta de 820 px sin desbordes |
+| 9b | El PDF «Planificado · Caldero» contiene solo ese pilar y ese equipo. Una OT cumplida de 2 h en el autoclave reduce 2 h la carga del autoclave y la de la línea; en la prensa 1 solo reduce la de esa prensa. Revertirla devuelve el OEE exacto |
 | 10 | Suma de los registros = tablero, con diferencia de 0.000 h en las 6 categorías |
 | 11 | Autoclave (167) y extrusora (126): suficiente, con K-S sobre 5 candidatos. Molino (5): limitada. Prensas y calderos individuales: insuficiente. Prensas agregadas (7 eventos, 9.3 h) y calderos agregados (4 eventos, 4.7 h) |
 | 12 | El autoclave tiene la mayor utilización (≈ 60 %). El balance de tiempos cierra al 0.0000 %. Sin interbloqueos |

@@ -2,14 +2,16 @@
    original (que se conserva). Expone window.CMMS para el script heredado. */
 import * as S from './servicio.js';
 import { $, aviso, montarExportadores } from './ui/comun.js';
-import * as Tablero from './ui/tablero.js';
-import * as Calculo from './ui/calculo.js';
+import * as Linea from './ui/linea.js';
+import * as Maquina from './ui/maquina.js';
+import * as Paradas from './ui/paradas.js';
 import * as Registros from './ui/registros.js';
 import * as Parametros from './ui/parametros.js';
 import * as Simulador from './ui/simulador.js';
 import * as Auditoria from './ui/auditoria.js';
+import { imprimir, tablaPDF } from './ui/pdf.js';
 
-const PINTORES = { tablero: Tablero.pintar, calculo: Calculo.pintar, registros: Registros.pintar, param: Parametros.pintar, simdes: Simulador.pintar, audit: Auditoria.pintar };
+const PINTORES = { linea: Linea.pintar, maquina: Maquina.pintar, paradas: Paradas.pintar, registros: Registros.pintar, param: Parametros.pintar, simdes: Simulador.pintar, audit: Auditoria.pintar };
 let listo = false, ultimoLegado = '';
 
 function chip() {
@@ -27,13 +29,18 @@ async function guardarLegado(forzar) {
   await S.BDexp.poner('estado_app', { id: 'legado', fecha: new Date().toISOString(), datos: JSON.parse(txt) });
 }
 
+async function sincronizarLegado() {
+  if (!globalThis.LEGADO || !S.E.periodo) return;
+  const periodos = await S.periodos();
+  globalThis.LEGADO.sincronizar({ periodo: S.E.periodo, periodos, equipos: S.E.equipos, sim: S.E.sim, laborables: S.E.total ? S.E.total.cal.total.laborables : 297 });
+}
 async function arrancar() {
   const btn = $('btnEntrar'); if (btn) { btn.disabled = true; btn.textContent = 'Abriendo base de datos…'; }
   try {
     await S.iniciar();
     const leg = await S.BDexp.uno('estado_app', 'legado');
     if (leg && globalThis.LEGADO) { globalThis.LEGADO.restaurar(leg.datos); ultimoLegado = JSON.stringify(leg.datos); }
-    if (globalThis.LEGADO) await globalThis.LEGADO.asegurarHashes();
+    if (globalThis.LEGADO) { await globalThis.LEGADO.asegurarHashes(); await sincronizarLegado(); }
   } catch (e) {
     console.error(e);
     const m = $('loginMsg'); if (m) { m.className = 'login-msg error'; m.textContent = 'No se pudo abrir la base local: ' + e.message; }
@@ -41,8 +48,11 @@ async function arrancar() {
   } finally { if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; } }
   S.escuchar('recalculo', chip);
   S.escuchar('recalculando', () => { const c = $('chipRecalculo'); if (c) { c.textContent = 'Recalculando…'; c.className = 'marcador m-warn'; } });
-  [Tablero, Calculo, Registros, Parametros, Simulador, Auditoria].forEach(m => m.montar());
-  Tablero.poblarFiltros(true);
+  [Linea, Maquina, Paradas, Registros, Parametros, Simulador, Auditoria].forEach(m => m.montar());
+  /* Automatización: la animación toma D, R, C, MTBF y MTTR del motor cada vez que se recalcula, y el código
+     heredado se resincroniza con Parámetros cuando cambian. */
+  S.escuchar('recalculo', () => { if (globalThis.LEGADO) globalThis.LEGADO.alSimulador(); });
+  S.escuchar('config', async () => { await sincronizarLegado(); S.recalcular('sincronización'); });
   montarExportadores();
   listo = true; chip(); guardarLegado(true);
   /* Al cambiar de tema, los gráficos toman los colores nuevos repintando la vista activa. */
@@ -54,10 +64,11 @@ async function arrancar() {
 
 globalThis.CMMS = {
   alNavegar(v) { if (!listo) return; const f = PINTORES[v]; if (f) f(); montarExportadores(); },
-  alIniciarSesion() { if (!listo) return; const v = document.querySelector('.vista.on'); const id = v ? v.id.slice(2) : 'tablero'; if (PINTORES[id]) PINTORES[id](); },
-  alCambiarLegado() { guardarLegado(false); },
+  alIniciarSesion() { if (!listo) return; const v = document.querySelector('.vista.on'); const id = v ? v.id.slice(2) : 'linea'; if (PINTORES[id]) PINTORES[id](); },
+  alCambiarLegado() { guardarLegado(false); if (listo) S.alCambiarPrograma(); },
   resultado: () => S.E.total,
-  servicio: S
+  servicio: S,
+  pdf: { imprimir, tablaPDF }
 };
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrancar); else arrancar();

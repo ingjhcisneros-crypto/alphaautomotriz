@@ -1,6 +1,6 @@
 /* Parámetros editables: periodo, feriados, equipos, factores topológicos, simulación y catálogos. */
 import { $, esc, h1, n0, aviso, confirmar } from './comun.js';
-import { E, escuchar, guardarPeriodo, guardarEquipos, guardarConfig, guardarSim, guardarListas, periodos, crearPeriodo, activarPeriodo } from '../servicio.js';
+import { E, escuchar, guardarPeriodo, guardarEquipos, guardarConfig, guardarSim, guardarListas, periodos, crearPeriodo, activarPeriodo, rangoNoLaborable } from '../servicio.js';
 import { feriadosPeru } from '../../core/calendario.js';
 import { dialogo } from './comun.js';
 import { calendarioOEE } from '../../core/oee.js';
@@ -10,7 +10,7 @@ const CAMPOS_PERIODO = [
   ['nombre', 'Nombre del periodo', 'text'], ['fecha_inicio', 'Inicio', 'date'], ['fecha_fin', 'Fin', 'date'],
   ['hora_inicio', 'Inicio del turno 1', 'time'], ['hora_corte', 'Fin del turno 2 (día siguiente)', 'time'], ['turnos_dia', 'Turnos por día', 'number'], ['horas_turno', 'Horas por turno', 'number'],
   ['horas_almuerzo', 'Almuerzo por turno (h)', 'number'], ['horas_capacitacion', 'Capacitación semanal por turno (h)', 'number'], ['semanas_capacitacion', 'Semanas de capacitación', 'number'],
-  ['horas_mtto_planificado', 'Mantenimiento planificado (h del periodo)', 'number'], ['retraso_encendido_min', 'Retraso de encendido de calderos (min)', 'number'],
+  ['horas_mtto_planificado', 'Mantenimiento planificado fuera del programa (h del periodo)', 'number'], ['retraso_encendido_min', 'Retraso de encendido de calderos (min)', 'number'], ['dia_capacitacion', 'Día de capacitación (1 = lunes … 6 = sábado)', 'number'],
   ['capacidad_cuello_botella', 'Capacidad del cuello de botella (lám/h)', 'number'], ['equipo_cuello_botella', 'Equipo cuello de botella', 'equipo'],
   ['masa_unitaria_kg', 'Masa unitaria (kg por lámina)', 'number'], ['costo_unitario', 'Costo unitario (S/)', 'number'], ['precio_venta', 'Precio de venta (S/)', 'number'],
   ['margen_unitario', 'Margen unitario (S/)', 'number'], ['benchmark_oee', 'Benchmark OEE (fracción)', 'number'], ['benchmark_fuente', 'Fuente del benchmark', 'text'], ['objetivo_oee', 'Objetivo de la empresa (fracción)', 'number']
@@ -37,12 +37,14 @@ export function montar() {
     await guardarPeriodo(p); aviso('Parámetros guardados; OEE recalculado'); pintar();
   };
   $('parFerAdd').onclick = () => {
-    const f = $('parFerFecha').value, m = $('parFerMotivo').value.trim();
+    const f = $('parFerFecha').value, h = $('parFerHasta').value, m = $('parFerMotivo').value.trim();
     if (!f || !m) return aviso('Indique fecha y motivo', 'warn');
+    if (h && h < f) return aviso('La fecha final es anterior a la inicial', 'warn');
     borrador = borrador || copia(E.periodo);
-    if (borrador.feriados.some(x => x.fecha === f)) return aviso('Esa fecha ya es feriado', 'warn');
-    borrador.feriados.push({ fecha: f, motivo: m }); borrador.feriados.sort((a, b) => a.fecha < b.fecha ? -1 : 1);
-    pintarFeriados(); pintarResumen(); aviso('Feriado agregado; pulse «Guardar y recalcular»', 'warn');
+    const antes = borrador.feriados.length;
+    borrador = rangoNoLaborable(borrador, f, h || f, m);
+    if (borrador.feriados.length === antes) return aviso('Esas fechas ya son no laborables', 'warn');
+    pintarFeriados(); pintarResumen(); aviso((borrador.feriados.length - antes) + ' día(s) no laborable(s) agregado(s); pulse «Guardar y recalcular»', 'warn');
   };
   $('parEqGuardar').onclick = async () => {
     if (!puede()) return aviso('Su perfil no permite modificar equipos', 'warn');

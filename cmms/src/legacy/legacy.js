@@ -156,7 +156,9 @@ let M = base();
 const eq = id => M.equipos[id];
 const nombreEq = id => eq(id) ? eq(id).nombre : (NOM_OEE[id]||id);
 const equiposMant = () => Object.keys(M.equipos).filter(k => M.equipos[k].mant);
-function kgLamina(){ const f = M.ficha; return Math.max(0.001,(f.largo*100)*(f.ancho*100)*(f.espesorMm/10)*f.densidad/1000); }
+/* Fuente única: la masa por lámina viene de Parámetros del periodo (window.CMMS). */
+let MASA_EXT = null;
+function kgLamina(){ if(MASA_EXT) return MASA_EXT; const f = M.ficha; return Math.max(0.001,(f.largo*100)*(f.ancho*100)*(f.espesorMm/10)*f.densidad/1000); }
 const horasDia = () => M.jornada.horas*M.jornada.turnos;
 const extruderKgH = () => M.proceso.cargaKg*60/M.proceso.cicloMin;
 function capKgH(id){
@@ -211,7 +213,9 @@ const FIJOS = [['01-01','Año nuevo'],['05-01','Día del trabajo'],['06-07','Bat
   ['07-23','Fuerzas Armadas'],['07-28','Fiestas Patrias'],['07-29','Fiestas Patrias'],['08-06','Batalla de Junín'],
   ['08-30','Santa Rosa de Lima'],['10-08','Combate de Angamos'],['11-01','Todos los Santos'],['12-08','Inmaculada Concepción'],
   ['12-09','Batalla de Ayacucho'],['12-25','Navidad']];
-let FERIADOS_EXTRA = [], OMITIDOS = [], QUITADOS = [];
+/* Fuente única del calendario: los feriados y días no laborables de los periodos definidos en Parámetros.
+   Fuera de cualquier periodo se usa el calendario nacional calculado. */
+let FER_CMMS = null, RANGOS_CMMS = [];
 const cacheFer = {};
 function feriadosMap(y){
   if(cacheFer[y]) return cacheFer[y];
@@ -222,13 +226,10 @@ function feriadosMap(y){
   cacheFer[y] = m; return m; }
 function motivoFeriado(d){
   const s = iso(d);
-  if(QUITADOS.indexOf(s) >= 0) return null;
-  const e = FERIADOS_EXTRA.find(x => x.f === s);
-  if(e) return e.motivo;
+  if(FER_CMMS && RANGOS_CMMS.some(r => s >= r[0] && s <= r[1])) return FER_CMMS[s] || null;
   return feriadosMap(d.getFullYear())[s] || null; }
 const esFeriado = d => !!motivoFeriado(d);
-function enOmitido(d){ const s = iso(d); return OMITIDOS.find(o => s >= o.a && s <= o.b) || null; }
-const esLaborable = d => d.getDay() !== 0 && !esFeriado(d) && !enOmitido(d);
+const esLaborable = d => d.getDay() !== 0 && !esFeriado(d);
 function proximoHabil(d){ const x = new Date(d); let g = 0; while(!esLaborable(x) && g++ < 120) x.setDate(x.getDate()+1); return x; }
 function bloques(){
   const J = M.jornada, p = J.inicio.split(':'), h0 = (+p[0])+(+p[1])/60, mitad = J.horas/2, b = [];
@@ -245,7 +246,6 @@ function estadoJornada(fecha){
   if(h < h0){ h += 24; diaJor.setDate(diaJor.getDate()-1); }
   if(diaJor.getDay() === 0) return {prod:false, txt:'Domingo, planta detenida', turno:null};
   const fer = motivoFeriado(diaJor); if(fer) return {prod:false, txt:'Feriado: '+fer, turno:null};
-  if(enOmitido(diaJor)) return {prod:false, txt:'Periodo omitido', turno:null};
   const esCap = diaJor.getDay() === +J.capDia && J.cap > 0;
   for(const x of bloques()){
     if(h >= x.a && h < x.b){
@@ -604,7 +604,6 @@ $('btnDesdeMtbf').onclick = function(){
 $('btnGuardar').onclick = function(){
   if(!puedeEditar()){ alert('Tu perfil no permite modificar parámetros de equipo.'); return; }
   const e = eq(editando);
-  if(editando !== 'extruder'){ e.cap = +$('qCap').value||0; e.uni = $('qUni').value; }
   e.D = +$('qD').value; e.R = +$('qR').value; e.C = +$('qC').value;
   e.mtbf = +$('qMtbf').value; e.mttr = +$('qMttr').value;
   e.cambios = +$('qCambios').value||0; e.min = +$('qMin').value||0;
@@ -621,27 +620,21 @@ document.querySelectorAll('.nodo').forEach(function(el){
 
 /* ===== especificaciones ===== */
 function fichaVista(){
-  const f = M.ficha, vol = (f.largo*100)*(f.ancho*100)*(f.espesorMm/10);
-  $('fPeso').textContent = n2(kgLamina());
-  $('fDetalle').textContent = 'Volumen '+n0(vol)+' cm³, espesor '+n2(f.espesorMm)+' mm equivalente a '+
-    n2(f.espesorMm/25.4)+' pulgadas. Este peso convierte kilos en láminas en todo el sistema.'; }
+  const pr = (window.CMMS && CMMS.servicio.E.productos) || [];
+  $('espProductos').innerHTML = '<thead><tr><th>Código</th><th>Formato</th><th class="num">Largo (m)</th><th class="num">Ancho (m)</th><th class="num">Espesor (mm)</th><th class="num">Masa (kg)</th><th class="num">Participación</th><th class="num">Costo (S/)</th><th class="num">Precio (S/)</th></tr></thead><tbody>'+
+    pr.map(p => '<tr><td class="nombre">'+p.id+'</td><td>'+esc(p.formato)+'</td><td class="num">'+n2(p.largo_m)+'</td><td class="num">'+n2(p.ancho_m)+'</td><td class="num">'+n2(p.espesor_mm)+'</td><td class="num">'+n2(p.masa_kg)+'</td><td class="num">'+Math.round(p.participacion*100)+' %</td><td class="num">'+p.costo+'</td><td class="num">'+p.precio+'</td></tr>').join('')+'</tbody>';
+  $('fPeso').textContent = n2(kgLamina()); }
 function pintarCiclos(){
   const tb = $('ciclosTabla'); tb.innerHTML = '';
   MAQUINAS.concat(CALDEROS).forEach(function(id){
     const e = eq(id), esExt = id === 'extruder', sop = e.tipo === 'soporte';
     tb.insertAdjacentHTML('beforeend','<tr><td>'+e.etapa+'</td><td class="nombre">'+e.nombre+'</td>'+
-      '<td class="num">'+(esExt ? n0(extruderKgH()) :
-        '<input type="number" step="0.1" min="0" value="'+e.cap+'" data-cap="'+id+'" style="width:100px;text-align:right">')+'</td>'+
-      '<td>'+(esExt ? 'kg/h derivado' :
-        '<select data-uni="'+id+'" style="width:118px"><option value="kg/h"'+(e.uni==='kg/h'?' selected':'')+'>kg/h</option>'+
-        '<option value="und/h"'+(e.uni==='und/h'?' selected':'')+'>láminas/h</option></select>')+'</td>'+
+      '<td class="num">'+(esExt ? n0(extruderKgH()) : n1(e.cap))+'</td>'+
+      '<td>'+(esExt ? 'kg/h' : e.uni === 'kg/h' ? 'kg/h' : 'láminas/h')+'</td>'+
       '<td class="num">'+n0(capKgH(id))+'</td>'+
       '<td class="num">'+(sop ? '—' : n2(capLamH(id)))+'</td>'+
       '<td class="num">'+(sop ? '—' : n1(60/Math.max(0.001,capLamH(id)))+' min')+'</td></tr>'); });
-  tb.querySelectorAll('[data-cap]').forEach(i => i.onchange = function(){
-    eq(this.dataset.cap).cap = +this.value||0; pintarCiclos(); refrescar(); pintarOEE(); });
-  tb.querySelectorAll('[data-uni]').forEach(i => i.onchange = function(){
-    eq(this.dataset.uni).uni = this.value; pintarCiclos(); refrescar(); pintarOEE(); }); }
+  }
 function pintarTraslados(){
   const c = $('traslados'); c.innerHTML = '';
   TRAMOS.forEach(function(t){
@@ -977,7 +970,7 @@ function pintarAgenda(){
   const cum = dia.length ? hechas/dia.length : null;
   $('agCum').textContent = cum != null ? pc(cum) : '–';
   $('agCum').style.color = cum != null ? banda(cum).c : '';
-  const mot = motivoFeriado(d), om = enOmitido(d);
+  const mot = motivoFeriado(d), om = null;
   $('agAviso').textContent = fechaLarga(d)+(mot ? '. Feriado: '+mot : om ? '. Periodo omitido: '+om.motivo
     : (d.getDay() === 0 ? '. Domingo, no se programa mantenimiento' : ''))+
     (dia.length ? '. '+n1(dia.reduce((a,o)=>a+o.min,0)/60)+' horas-hombre programadas' : '');
@@ -1218,6 +1211,76 @@ document.querySelectorAll('#anFiltro .pest').forEach(function(t){
   t.onclick = function(){ document.querySelectorAll('#anFiltro .pest').forEach(x=>x.classList.remove('on'));
     t.classList.add('on'); anFiltro = t.dataset.f; pintarAnom(); }; });
 
+/* ===== documentos PDF por filtro =====
+   Cada filtro del programa, del historial y de las anomalías emite su propio PDF con el estilo del sistema
+   (motor único de impresión en src/app/ui/pdf.js). */
+function pdfCMMS(){ return window.CMMS && CMMS.pdf; }
+const minH = m => n1(m/60)+' h';
+function pdfPlan(){
+  const P = pdfCMMS(); if(!P) return;
+  const fams = planEqF === 'todos' ? FAMILIAS : [planEqF];
+  const tipos = planFiltro === 'todos' ? TIPOS : [planFiltro];
+  const cols = [{t:'N.º'},{t:'Paso'},{t:'Actividad'},{t:'Criterio de conformidad'},{t:'Frecuencia'},{t:'Responsable'},{t:'Min',n:true}];
+  const secciones = [], resumen = [];
+  let nTot = 0, minTot = 0, otsTot = 0, hOT = 0;
+  fams.forEach(function(fam){
+    const unid = fam === 'caldero' ? 2 : fam === 'prensa' ? 5 : 1;
+    const ts = tareasDe(fam).filter(t => tipos.indexOf(t.tipo) >= 0); if(!ts.length) return;
+    let html = '', n = 0;
+    tipos.forEach(function(tp){
+      const g = ts.filter(t => t.tipo === tp); if(!g.length) return;
+      g.sort((a,b)=> DIAS_FREC[a.frec]-DIAS_FREC[b.frec]);
+      if(tipos.length > 1) html += '<h3>Mantenimiento '+tp.toLowerCase()+'</h3>';
+      html += P.tablaPDF(cols, g.map(t => [++n, t.paso||'', {html: esc(t.act)+(t.loto?' <span class="chip bad">bloqueo</span>':'')}, t.crit||'', t.frec+' (cada '+DIAS_FREC[t.frec]+' d)', t.resp, t.min])); });
+    const ots = OTS.filter(o => eq(o.eqId).familia === fam && tipos.indexOf(o.tipo) >= 0);
+    const ej = ots.filter(o => o.estado === 'Ejecutada').length, vence = ots.filter(o => o.estado !== 'Ejecutada' && o.fecha < HOY()).length;
+    const minF = ts.reduce((a,t)=>a+t.min,0), minO = ots.reduce((a,o)=>a+o.min,0);
+    nTot += ts.length; minTot += minF; otsTot += ots.length; hOT += minO;
+    resumen.push([NOM_FAM[fam], unid, ts.length, minF, ots.length, ej, vence, minH(minO), ej+vence ? pc(ej/(ej+vence)) : '—']);
+    secciones.push({ titulo: NOM_FAM[fam]+(unid > 1 ? ' ('+unid+' unidades)' : ''), html }); });
+  if(!secciones.length){ alert('El filtro actual no tiene tareas.'); return; }
+  secciones.unshift({ titulo: 'Resumen por equipo', html: P.tablaPDF([{t:'Equipo'},{t:'Unid.',n:true},{t:'Tareas',n:true},{t:'Min por ciclo',n:true},{t:'Órdenes del periodo',n:true},{t:'Ejecutadas',n:true},{t:'Vencidas',n:true},{t:'Horas-hombre',n:true},{t:'Cumplimiento',n:true}], resumen) +
+    '<p class="nota">Las órdenes planificadas y de calidad ejecutadas en jornada descuentan del tiempo de carga del equipo en el cálculo del OEE.</p>' });
+  P.imprimir({ titulo: 'Plan maestro', acento: planFiltro === 'todos' ? 'de mantenimiento' : planFiltro.toLowerCase(),
+    subtitulo: 'Línea de láminas antiabrasivas · programa desde '+PROG.ini+' · '+PROG.meses+' meses',
+    archivo: 'Plan_'+(planFiltro === 'todos' ? 'todos' : planFiltro.normalize('NFD').replace(/[^\w]/g,''))+'_'+(planEqF === 'todos' ? 'linea' : planEqF),
+    filtros: ['Pilar: '+(planFiltro === 'todos' ? 'todos' : planFiltro), 'Equipo: '+(planEqF === 'todos' ? 'todos' : NOM_FAM[planEqF])],
+    kpis: [[String(nTot),'Tareas'],[minH(minTot),'Duración de un ciclo'],[n0(otsTot),'Órdenes del periodo'],[n0(hOT/60)+' h','Horas-hombre programadas']],
+    secciones, firmas: true }); }
+function pdfHistorial(){
+  const P = pdfCMMS(); if(!P) return;
+  const d1 = $('hDesde').value || PROG.ini, d2 = $('hHasta').value || HOY(), fe = $('hEq').value, ft = $('hTipo').value;
+  const lista = OTS.filter(o => o.fecha >= d1 && o.fecha <= d2 && (!fe || fe === 'todos' || o.eqId === fe) && (!ft || o.tipo === ft));
+  const por = {};
+  lista.forEach(function(o){ const k = eq(o.eqId).nombre, s = estadoOT(o), r = por[k] = por[k] || {n:0,c:0,no:0,p:0,h:0};
+    r.n++; if(s === 'Cumplida'){ r.c++; if(o.enJornada) r.h += (o.real != null ? o.real : o.min)/60; } else if(s === 'Programada') r.p++; else r.no++; });
+  const T = Object.values(por).reduce((a,r)=>({n:a.n+r.n,c:a.c+r.c,no:a.no+r.no,p:a.p+r.p,h:a.h+r.h}),{n:0,c:0,no:0,p:0,h:0});
+  const cum = r => r.c+r.no ? pc(r.c/(r.c+r.no)) : '—';
+  const inc = lista.filter(o => estadoOT(o) !== 'Cumplida' && estadoOT(o) !== 'Programada');
+  P.imprimir({ titulo: 'Historial de', acento: 'cumplimiento', archivo: 'Historial_cumplimiento',
+    filtros: ['Desde '+d1, 'Hasta '+d2, 'Equipo: '+(fe && fe !== 'todos' ? eq(fe).nombre : 'todos'), 'Pilar: '+(ft || 'todos')],
+    kpis: [[n0(T.n),'Órdenes'],[n0(T.c),'Cumplidas'],[n0(T.no),'No cumplidas o vencidas'],[cum(T),'Cumplimiento'],[n1(T.h)+' h','Horas en jornada']],
+    secciones: [
+      { titulo: 'Resumen por equipo', html: P.tablaPDF([{t:'Equipo'},{t:'Órdenes',n:true},{t:'Cumplidas',n:true},{t:'No cumplidas',n:true},{t:'Programadas',n:true},{t:'Horas',n:true},{t:'Cumplimiento',n:true}],
+        Object.keys(por).map(k => [k, por[k].n, por[k].c, por[k].no, por[k].p, n1(por[k].h), cum(por[k])]).concat([['Total', T.n, T.c, T.no, T.p, n1(T.h), cum(T)]]), Object.keys(por).map(()=>'').concat(['tot'])) },
+      { titulo: 'Órdenes no cumplidas o vencidas ('+inc.length+')', html: inc.length ? P.tablaPDF([{t:'Fecha'},{t:'OT'},{t:'Equipo'},{t:'Pilar'},{t:'Actividad'},{t:'Estado'}],
+        inc.map(o => [o.fecha, o.id, eq(o.eqId).nombre, o.tipo, o.act+(o.motivoNo?' · '+o.motivoNo:''), {html:'<span class="chip bad">'+estadoOT(o)+'</span>'}])) : '<p class="nota">Sin incumplimientos en el filtro.</p>' }
+    ], firmas: true }); }
+function pdfAnom(){
+  const P = pdfCMMS(); if(!P) return;
+  const lista = ANOM.filter(a => anFiltro === 'todos' || (anFiltro === 'pend' ? !a.revisado : a.clase === anFiltro)).slice().reverse();
+  if(!lista.length){ alert('El filtro actual no tiene registros.'); return; }
+  const por = {}; lista.forEach(a => { const k = nombreEq(a.eqId); por[k] = por[k] || {nc:0,ob:0,p:0}; if(a.clase === 'No conformidad') por[k].nc++; else por[k].ob++; if(!a.revisado) por[k].p++; });
+  P.imprimir({ titulo: 'Registro de', acento: 'anomalías', archivo: 'Anomalias',
+    filtros: ['Filtro: '+(anFiltro === 'todos' ? 'todos' : anFiltro === 'pend' ? 'sin revisar' : anFiltro)],
+    kpis: [[String(lista.length),'Registros'],[String(lista.filter(a => a.clase === 'No conformidad').length),'No conformidades'],[String(lista.filter(a => !a.revisado).length),'Sin revisar']],
+    secciones: [
+      { titulo: 'Resumen por equipo', html: P.tablaPDF([{t:'Equipo'},{t:'No conformidades',n:true},{t:'Observaciones',n:true},{t:'Sin revisar',n:true}], Object.keys(por).map(k => [k, por[k].nc, por[k].ob, por[k].p])) },
+      { titulo: 'Detalle', html: P.tablaPDF([{t:'Fecha'},{t:'Equipo'},{t:'Clase'},{t:'Detalle'},{t:'Criterio'},{t:'Origen'},{t:'Revisión'}],
+        lista.map(a => [a.fecha, nombreEq(a.eqId), {html:'<span class="chip '+(a.clase === 'No conformidad'?'bad':'warn')+'">'+esc(a.clase)+'</span>'}, a.punto+(a.nota?' · '+a.nota:''), a.crit||'', a.ot+(a.por?' · '+a.por:''), a.revisado ? 'Revisado '+(a.revPor||'') : 'Sin revisar'])) }
+    ], firmas: true }); }
+$('planPdf').onclick = pdfPlan; $('hPdf').onclick = pdfHistorial; $('anPdf').onclick = pdfAnom;
+
 /* ===== OEE =====
    El cálculo del OEE ya no vive aquí: lo hace el módulo único src/core/oee.js (window.CMMS).
    Se retiraron los datos de ejemplo que este archivo sembraba en memoria. */
@@ -1235,57 +1298,9 @@ function alSimulador(){
     if(c && c.mtbf) { e.mtbf = Math.round(c.mtbf*10)/10; e.mttr = Math.round(c.mttr*100)/100; }
     if(S && S.maq[id]) programarFalla(id); n++; });
   if(S) refrescar(); return n; }
-function pintarOmitidos(){
-  const tb = $('omTabla'); tb.innerHTML = '';
-  OMITIDOS.slice().sort((a,b)=> a.a < b.a ? 1 : -1).forEach(function(o){
-    const d = Math.round((dISO(o.b)-dISO(o.a))/86400000)+1;
-    tb.insertAdjacentHTML('beforeend','<tr><td>'+o.a+'</td><td>'+o.b+'</td><td class="num">'+d+'</td>'+
-      '<td>'+esc(o.motivo)+'</td><td><button class="btn btn-danger btn-sm" data-om="'+o.a+'|'+o.b+'"><i class="fas fa-trash"></i></button></td></tr>'); });
-  if(!OMITIDOS.length) tb.innerHTML = '<tr><td colspan="5" class="chico tenue">No hay periodos omitidos.</td></tr>';
-  tb.querySelectorAll('[data-om]').forEach(b => b.onclick = async function(){
-    if(!(await pedirClave('Eliminar un periodo omitido cambia todo el calendario.'))) return;
-    const p = b.dataset.om.split('|');
-    OMITIDOS = OMITIDOS.filter(x => !(x.a === p[0] && x.b === p[1]));
-    pintarOmitidos(); generarOTs(); pintarSistema(); }); }
-$('omAdd').onclick = function(){
-  const a = $('omIni').value, b = $('omFin').value, m = $('omMotivo').value.trim();
-  if(!a || !b || a > b){ alert('Indica un rango válido.'); return; }
-  if(!m){ alert('Indica el motivo.'); return; }
-  OMITIDOS.push({a:a, b:b, motivo:m}); $('omMotivo').value = '';
-  pintarOmitidos(); generarOTs(); pintarSistema(); };
-function pintarFeriados(){
-  const tb = $('ferTabla'); tb.innerHTML = '';
-  const d0 = dISO(PROG.ini || HOY()), d1 = new Date(d0); d1.setMonth(d1.getMonth()+(PROG.meses||12));
-  const ini = iso(d0), fin = iso(d1), lista = [];
-  FERIADOS_EXTRA.forEach(x => { if(!ini || (x.f >= ini && x.f <= fin)) lista.push({f:x.f, m:x.motivo, o:'Manual'}); });
-  if(ini && fin){
-    const a = dISO(ini), b = dISO(fin);
-    for(let y = a.getFullYear(); y <= b.getFullYear(); y++){
-      const mp = feriadosMap(y);
-      Object.keys(mp).forEach(function(f){
-        if(f >= ini && f <= fin && QUITADOS.indexOf(f) < 0 && !FERIADOS_EXTRA.some(x=>x.f === f))
-          lista.push({f:f, m:mp[f], o:'Calendario'}); }); } }
-  lista.sort((a,b)=> a.f < b.f ? 1 : -1);
-  lista.forEach(function(x){
-    tb.insertAdjacentHTML('beforeend','<tr><td>'+x.f+'</td><td>'+esc(x.m)+'</td>'+
-      '<td><span class="marcador '+(x.o === 'Manual'?'m-info':'m-warn')+'">'+x.o+'</span></td>'+
-      '<td><button class="btn btn-danger btn-sm" data-fer="'+x.f+'|'+x.o+'"><i class="fas fa-trash"></i></button></td></tr>'); });
-  if(!lista.length) tb.innerHTML = '<tr><td colspan="4" class="chico tenue">Sin feriados en el periodo.</td></tr>';
-  tb.querySelectorAll('[data-fer]').forEach(b => b.onclick = async function(){
-    if(!(await pedirClave('Eliminar un feriado modifica el tiempo calendario.'))) return;
-    const p = b.dataset.fer.split('|');
-    if(p[1] === 'Manual') FERIADOS_EXTRA = FERIADOS_EXTRA.filter(x => x.f !== p[0]);
-    else QUITADOS.push(p[0]);
-    pintarFeriados(); generarOTs(); pintarSistema(); }); }
-$('ferAdd').onclick = function(){
-  const f = $('ferFecha').value, m = $('ferMotivo').value.trim();
-  if(!f || !m){ alert('Indica la fecha y el motivo.'); return; }
-  if(FERIADOS_EXTRA.some(x => x.f === f)){ alert('Esa fecha ya está registrada.'); return; }
-  FERIADOS_EXTRA.push({f:f, motivo:m}); $('ferMotivo').value = '';
-  pintarFeriados(); generarOTs(); pintarSistema(); };
 /* ===== administración ===== */
 function pintarSistema(){
-  const d = dISO(FECHA_SIS), mot = motivoFeriado(d), om = enOmitido(d);
+  const d = dISO(FECHA_SIS), mot = motivoFeriado(d), om = null;
   $('sysEstado').textContent = esLaborable(d) ? 'Día laborable' : (mot ? 'Feriado' : om ? 'Periodo omitido' : 'Domingo');
   $('sysEstado2').textContent = fechaLarga(d)+(mot ? '. '+mot : om ? '. '+om.motivo : '');
   $('chipFecha').textContent = fechaLarga(d); }
@@ -1295,9 +1310,6 @@ $('sysReal').onclick = function(){ fijarFecha(iso(new Date())); };
 $('sysM1').onclick = function(){ const d = dISO(FECHA_SIS); d.setDate(d.getDate()-1); fijarFecha(iso(d)); };
 $('sysP1').onclick = function(){ const d = dISO(FECHA_SIS); d.setDate(d.getDate()+1); fijarFecha(iso(d)); };
 $('sysP7').onclick = function(){ const d = dISO(FECHA_SIS); d.setDate(d.getDate()+7); fijarFecha(iso(d)); };
-$('progRegen').onclick = function(){
-  PROG.ini = $('progIni').value || HOY(); PROG.meses = +$('progMeses').value;
-  generarOTs(); $('hDesde').value = PROG.ini; };
 
 /* ===== usuarios ===== */
 function pintarUsuarios(){
@@ -1332,24 +1344,13 @@ $('nuAdd').onclick = async function(){
   ['nuNombre','nuUser','nuPass'].forEach(i => $(i).value = ''); pintarUsuarios(); pintarOEE(); };
 
 /* ===== navegación ===== */
-function cargarGlobales(){
-  $('fLargo').value = M.ficha.largo; $('fAncho').value = M.ficha.ancho;
-  $('fEsp').value = M.ficha.espesorMm; $('fDens').value = M.ficha.densidad;
-  $('gHoras').value = M.jornada.horas; $('gTurnos').value = M.jornada.turnos; $('gDias').value = M.jornada.dias;
-  $('jIni').value = M.jornada.inicio; $('jAlm').value = M.jornada.almuerzo;
-  $('jCap').value = M.jornada.cap; $('jCapDia').value = M.jornada.capDia;
-  $('pLote').value = M.proceso.loteKg; $('pCarga').value = M.proceso.cargaKg;
-  $('pCiclo').value = M.proceso.cicloMin; $('pAuto').value = M.proceso.laminasAutoclave;
-  fichaVista(); pintarCiclos(); pintarTraslados(); }
-[['fLargo','largo'],['fAncho','ancho'],['fEsp','espesorMm'],['fDens','densidad']].forEach(function(p){
-  $(p[0]).addEventListener('input', function(){ M.ficha[p[1]] = +this.value||0.01;
-    fichaVista(); pintarCiclos(); refrescar(); pintarOEE(); pintarEfic(); }); });
-[['gHoras','horas'],['gTurnos','turnos'],['gDias','dias'],['jAlm','almuerzo'],['jCap','cap']].forEach(function(p){
-  $(p[0]).addEventListener('input', function(){ M.jornada[p[1]] = +this.value||0; refrescar(); }); });
-$('jCapDia').addEventListener('change', function(){ M.jornada.capDia = +this.value; refrescar(); });
-$('jIni').addEventListener('input', function(){ if(this.value){ M.jornada.inicio = this.value; inicializar(); refrescar(); } });
-[['pLote','loteKg'],['pCarga','cargaKg'],['pCiclo','cicloMin'],['pAuto','laminasAutoclave']].forEach(function(p){
-  $(p[0]).addEventListener('input', function(){ M.proceso[p[1]] = +this.value||1; refrescar(); pintarCiclos(); pintarOEE(); }); });
+function cargarGlobales(){ fichaVista(); pintarCiclos(); pintarTraslados(); pintarJornadaAdm(); }
+/* Jornada: solo lectura, sale de Parámetros del periodo. */
+function pintarJornadaAdm(){
+  const J = M.jornada, fin = (+J.inicio.slice(0,2) + J.turnos*(J.horas+J.almuerzo)) % 24;
+  $('admJornada').innerHTML = [[J.inicio+' – '+String(fin).padStart(2,'0')+J.inicio.slice(2), 'Ventana operativa'], [J.turnos+' × '+J.horas+' h', 'Turnos × horas netas'],
+    [J.almuerzo+' h', 'Almuerzo por turno'], [J.cap+' h · '+DIAS_SEM[J.capDia], 'Capacitación semanal por turno'], [PROG.ini+' · '+PROG.meses+' meses', 'Programa de mantenimiento']]
+    .map(x => '<div class="m"><div class="v" style="font-size:1rem">'+x[0]+'</div><div class="k">'+x[1]+'</div></div>').join(''); }
 document.querySelectorAll('#menu a').forEach(function(a){
   a.onclick = function(){
     document.querySelectorAll('#menu a').forEach(x=>x.classList.remove('activo'));
@@ -1380,25 +1381,44 @@ function arrancarApp(){
   const hoy = iso(new Date());
   if(!PROG.ini){ const d0 = new Date(); d0.setMonth(d0.getMonth()-3); d0.setDate(1); PROG.ini = iso(d0); PROG.meses = 12; }
   $('sysFecha').value = FECHA_SIS; $('agFecha').value = FECHA_SIS;
-  $('progIni').value = PROG.ini; $('progMeses').value = PROG.meses;
   $('hDesde').value = PROG.ini; $('hHasta').value = hoy;
   generarOTs(); pintarAnom();
-  pintarUsuarios(); pintarSistema(); pintarFeriados(); pintarOmitidos(); aplicarLogos();
+  pintarUsuarios(); pintarSistema(); aplicarLogos();
   if(window.CMMS && CMMS.alIniciarSesion) CMMS.alIniciarSesion(SESION); }
 /* Persistencia del estado propio de los módulos heredados (plan, órdenes, anomalías, usuarios, marca,
    calendario de mantenimiento y parámetros de la animación). Lo guarda src/app/persistencia.js en IndexedDB. */
 window.LEGADO = {
-  instantanea(){ return { M, PROG, OTS, ANOM, SEQ, USUARIOS, LOGOS, FERIADOS_EXTRA, OMITIDOS, QUITADOS, FECHA_SIS, PLANES }; },
+  instantanea(){ return { M, PROG, OTS, ANOM, SEQ, USUARIOS, LOGOS, FECHA_SIS, PLANES }; },
   restaurar(o){
     if(!o) return;
     if(o.M){ const b = base(); M = Object.assign(b, o.M); M.equipos = Object.assign(b.equipos, o.M.equipos||{}); }
     if(o.PROG) PROG = o.PROG; if(o.OTS) OTS = o.OTS; if(o.ANOM) ANOM = o.ANOM; if(o.SEQ != null) SEQ = o.SEQ;
     if(o.USUARIOS && o.USUARIOS.length) USUARIOS = o.USUARIOS; if(o.LOGOS) LOGOS = o.LOGOS;
-    if(o.FERIADOS_EXTRA) FERIADOS_EXTRA = o.FERIADOS_EXTRA; if(o.OMITIDOS) OMITIDOS = o.OMITIDOS; if(o.QUITADOS) QUITADOS = o.QUITADOS;
     if(o.FECHA_SIS) FECHA_SIS = o.FECHA_SIS;
     if(o.PLANES) Object.keys(o.PLANES).forEach(k => PLANES[k] = o.PLANES[k]);
     aplicarLogos(); },
   alSimulador, asegurarHashes,
+  /* Recibe de Parámetros la jornada, los feriados, las capacidades del catálogo, los lotes de la simulación y el
+     periodo; el programa de mantenimiento se genera sobre ese mismo periodo. */
+  sincronizar(c){
+    const P = c.periodo, J = M.jornada;
+    Object.assign(J, { inicio: P.hora_inicio, turnos: P.turnos_dia, almuerzo: P.horas_almuerzo, horas: P.horas_turno - P.horas_almuerzo,
+      cap: P.horas_capacitacion, capDia: P.dia_capacitacion || 1, dias: Math.round(c.laborables / 12) || J.dias });
+    MASA_EXT = +P.masa_unitaria_kg || null;
+    FER_CMMS = {}; RANGOS_CMMS = c.periodos.map(p => [p.fecha_inicio, p.fecha_fin]);
+    c.periodos.forEach(p => (p.feriados || []).forEach(f => FER_CMMS[f.fecha] = f.motivo));
+    const cat = {}; c.equipos.forEach(e => cat[e.id] = e);
+    Object.keys(LEG_A_ID).forEach(function(id){ const e = M.equipos[id], x = cat[LEG_A_ID[id]]; if(!e || !x) return;
+      e.activo = x.activo; if(x.capacidad_ficha && id !== 'extruder'){ e.cap = x.capacidad_ficha; e.uni = x.unidad === 'kg/h' ? 'kg/h' : 'und/h'; } });
+    M.proceso.loteKg = c.sim.molino_lote_kg; M.proceso.cargaKg = c.sim.molino_lote_kg;
+    if(cat.EXT && cat.EXT.capacidad_ficha) M.proceso.cicloMin = Math.round(c.sim.molino_lote_kg*60/cat.EXT.capacidad_ficha*100)/100;
+    M.proceso.laminasAutoclave = c.sim.autoclave_lote;
+    M.equipos.acabado.cap = Math.round(c.sim.acabado_lam_h*kgLamina()); M.equipos.acabado.uni = 'kg/h';
+    const meses = (+P.fecha_fin.slice(0,4) - +P.fecha_inicio.slice(0,4))*12 + (+P.fecha_fin.slice(5,7) - +P.fecha_inicio.slice(5,7)) + 1;
+    const cambia = PROG.ini !== P.fecha_inicio || PROG.meses !== meses;
+    PROG.ini = P.fecha_inicio; PROG.meses = meses;
+    if(arrancado){ if(cambia) generarOTs(); cargarGlobales(); llenarSelects(); pintarSistema(); if(S) refrescar(); }
+    return cambia; },
   sesion(){ return SESION; }
 };
 window.addEventListener('resize', function(){ if(SESION){ dibujar(); encajar(); } });

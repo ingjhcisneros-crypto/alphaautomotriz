@@ -1,5 +1,5 @@
 {
- "fecha": "2026-09-23T15:08:42.296Z",
+ "fecha": "2026-09-23T18:26:42.341Z",
  "fallas": 0,
  "informe": [
   {
@@ -457,6 +457,24 @@
    "verificacion": "Autoclave con los datos completos: OEE 79.17 %",
    "ok": true,
    "detalle": "88.47 × 96.30 × 92.92 = 79.17 % · bruto 4019.5 h (auxiliares 25.58 h por reparto)"
+  },
+  {
+   "auditoria": 4,
+   "verificacion": "Programa ejecutado: 10 h en el autoclave (serie) → carga del autoclave −10 h y carga de línea −10 h",
+   "ok": true,
+   "detalle": "autoclave 4533.4 h · línea 4533.4 h · OEE línea 55.58 %"
+  },
+  {
+   "auditoria": 4,
+   "verificacion": "Programa ejecutado en una prensa (paralelo): solo baja la carga de esa prensa; la línea no se detiene",
+   "ok": true,
+   "detalle": "prensa 1 4533.4 h"
+  },
+  {
+   "auditoria": 4,
+   "verificacion": "Sin órdenes ejecutadas el resultado no cambia",
+   "ok": true,
+   "detalle": ""
   },
   {
    "auditoria": 4,
@@ -984,7 +1002,7 @@
    "auditoria": 12,
    "verificacion": "Simulación ejecutada sin excepción",
    "ok": true,
-   "detalle": "30 réplicas en 4.2 s"
+   "detalle": "30 réplicas en 4.4 s"
   },
   {
    "auditoria": 13,
@@ -1150,7 +1168,7 @@
  ],
  "validacion": {
   "ok": true,
-  "fecha": "2026-09-23T15:08:16.231Z",
+  "fecha": "2026-09-23T18:26:15.887Z",
   "filas": [
    {
     "indicador": "OEE de línea",
