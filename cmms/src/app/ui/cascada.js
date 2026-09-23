@@ -26,7 +26,7 @@ export function tarjetas(cal, x, idPrefijo) {
 export function filasCadena(cal, x) {
   const p = x.perdidas, mt = (x.mttoPrograma || 0);
   return [
-    ['Tiempo calendario', cal.calendario, ''], ['− Domingos', -cal.hDomingos, ''], ['− Feriados', -cal.hFeriados, ''], ['− Turno no laborable', -cal.hNoTurno, ''],
+    ['Tiempo calendario', cal.calendario, ''], ['− Periodos omitidos', -(cal.hOmitidos || 0), ''], ['− Domingos', -cal.hDomingos, ''], ['− Feriados', -cal.hFeriados, ''], ['− Turno no laborable', -cal.hNoTurno, ''],
     ['A · Tiempo total de producción', cal.totalProduccion, 'tot'],
     ['− Almuerzos', -cal.almuerzo, ''], ['− Capacitaciones', -cal.capacitacion, ''], ['− Mantenimiento planificado fuera del programa', -cal.mtto, ''], ['− Mantenimiento del programa ejecutado (planificado y calidad)', -mt, ''],
     ['B · Tiempo de carga', x.carga, 'tot'],

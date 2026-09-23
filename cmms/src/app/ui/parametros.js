@@ -1,6 +1,6 @@
 /* Parámetros editables: periodo, feriados, equipos, factores topológicos, simulación y catálogos. */
 import { $, esc, h1, n0, aviso, confirmar } from './comun.js';
-import { E, escuchar, guardarPeriodo, guardarEquipos, guardarConfig, guardarSim, guardarListas, periodos, crearPeriodo, activarPeriodo, rangoNoLaborable } from '../servicio.js';
+import { E, escuchar, guardarPeriodo, guardarEquipos, guardarConfig, guardarSim, guardarListas, periodos, crearPeriodo, activarPeriodo, rangoNoLaborable, guardarCalendario, validarOmisiones } from '../servicio.js';
 import { feriadosPeru } from '../../core/calendario.js';
 import { dialogo } from './comun.js';
 import { calendarioOEE } from '../../core/oee.js';
@@ -55,6 +55,15 @@ export function montar() {
     });
     await guardarEquipos(lista); aviso('Catálogo de equipos guardado; OEE recalculado');
   };
+  $('parOmAdd').onclick = () => { leerCalendario(); omis.push({ desde: '', hasta: '', motivo: '' }); pintarCalendario(); };
+  $('parCalGuardar').onclick = async () => {
+    if (!puede()) return aviso('Su perfil no permite modificar el calendario', 'warn');
+    leerCalendario();
+    const lista = omis.filter(o => o.desde || o.hasta || o.motivo);
+    try { await guardarCalendario(lista, { inicio: $('parProgIni').value, meses: +$('parProgMeses').value }); }
+    catch (e) { return aviso(e.message, 'bad'); }
+    aviso('Calendario guardado: OEE, simulación y programa recalculados'); pintar();
+  };
   $('parFacGuardar').onclick = async () => {
     if (!puede()) return aviso('Su perfil no permite modificar factores', 'warn');
     const c = copia(E.config);
@@ -85,7 +94,10 @@ export function montar() {
   };
   $('parNuevoPer').onclick = async () => {
     if (!puede()) return aviso('Su perfil no permite crear periodos', 'warn');
-    const f0 = E.periodo.fecha_fin, ini = new Date(Date.UTC(+f0.slice(0, 4), +f0.slice(5, 7) - 1, +f0.slice(8, 10) + 1)).toISOString().slice(0, 10);
+    /* Arranca el día siguiente al fin del periodo activo, saltando los periodos omitidos (p. ej., la fase de planeación). */
+    const sig = f => new Date(Date.parse(f + 'T12:00:00Z') + 86400000).toISOString().slice(0, 10);
+    let ini = sig(E.periodo.fecha_fin), o;
+    while ((o = (E.config.omisiones || []).find(x => ini >= x.desde && ini <= x.hasta))) ini = sig(o.hasta);
     const fin = new Date(Date.UTC(+ini.slice(0, 4) + 1, +ini.slice(5, 7) - 1, +ini.slice(8, 10) - 1)).toISOString().slice(0, 10);
     const v = await dialogo('Nuevo periodo', '<div class="rejilla c3"><div class="campo"><label>Nombre</label><input id="npNom" value="Periodo ' + ini.slice(0, 4) + '–' + fin.slice(0, 4) + '"></div>' +
       '<div class="campo"><label>Inicio</label><input type="date" id="npIni" value="' + ini + '"></div><div class="campo"><label>Fin</label><input type="date" id="npFin" value="' + fin + '"></div></div>' +
@@ -109,10 +121,42 @@ function leerPeriodo() {
   return p;
 }
 
+/* ===== Calendario de operación ===== */
+let omis = [];
+function leerCalendario() {
+  $('parOmisiones').querySelectorAll('tr[data-i]').forEach(tr => { const o = omis[+tr.dataset.i]; tr.querySelectorAll('[data-o]').forEach(i => o[i.dataset.o] = i.value.trim()); });
+}
+const dias = (a, b) => Math.round((Date.parse(b + 'T12:00:00Z') - Date.parse(a + 'T12:00:00Z')) / 86400000) + 1;
+const finPrograma = (ini, m) => { const d = new Date(ini + 'T12:00:00Z'); d.setUTCMonth(d.getUTCMonth() + m); d.setUTCDate(d.getUTCDate() - 1); return d.toISOString().slice(0, 10); };
+function pintarCalendario(ps) {
+  if (ps) pintarCalendario.ps = ps; ps = pintarCalendario.ps || [E.periodo];
+  $('parOmisiones').innerHTML = '<thead><tr><th>Desde</th><th>Hasta</th><th>Motivo</th><th class="num">Días</th><th></th></tr></thead><tbody>' +
+    (omis.length ? omis.map((o, i) => '<tr data-i="' + i + '"><td><input type="date" data-o="desde" value="' + esc(o.desde) + '"></td><td><input type="date" data-o="hasta" value="' + esc(o.hasta) + '"></td><td><input data-o="motivo" value="' + esc(o.motivo) + '" placeholder="Motivo" style="min-width:190px"></td><td class="num">' + (o.desde && o.hasta && o.hasta >= o.desde ? n0(dias(o.desde, o.hasta)) : '—') + '</td><td><button class="btn btn-danger btn-sm" data-qo="' + i + '" title="Quitar"><i class="fas fa-trash"></i></button></td></tr>').join('')
+      : '<tr><td colspan="5" class="tenue">Sin periodos omitidos: todo el calendario cuenta.</td></tr>') + '</tbody>';
+  $('parOmisiones').querySelectorAll('[data-qo]').forEach(b => b.onclick = () => { leerCalendario(); omis.splice(+b.dataset.qo, 1); pintarCalendario(); aviso('Periodo omitido retirado; pulse «Guardar y recalcular»', 'warn'); });
+  $('parOmisiones').querySelectorAll('input').forEach(i => i.onchange = () => { leerCalendario(); pintarCalendario(); });
+  const ini = $('parProgIni').value, m = +$('parProgMeses').value || 12, fin = ini ? finPrograma(ini, m) : '';
+  const err = validarOmisiones(omis.filter(o => o.desde || o.hasta));
+  $('parProgNota').innerHTML = ini ? 'El plan maestro, la agenda y las órdenes rigen del <b>' + ini + '</b> al <b>' + fin + '</b>. Las órdenes planificadas y de calidad cumplidas descuentan del tiempo de carga del periodo de datos en que caen; antes de esa fecha el OEE sale solo de los registros.' : '';
+  /* Línea de tiempo: periodos de datos, omisiones y programa. */
+  const seg = ps.map(p => ({ c: 'datos', a: p.fecha_inicio, b: p.fecha_fin, t: 'Datos · ' + p.nombre })).concat(omis.filter(o => o.desde && o.hasta && o.hasta >= o.desde).map(o => ({ c: 'omit', a: o.desde, b: o.hasta, t: 'Omitido · ' + (o.motivo || '') })), ini ? [{ c: 'prog', a: ini, b: fin, t: 'Programa de mantenimiento' }] : []);
+  if (!seg.length) { $('parLineaTiempo').innerHTML = ''; return; }
+  const a0 = seg.reduce((x, s) => s.a < x ? s.a : x, seg[0].a), b0 = seg.reduce((x, s) => s.b > x ? s.b : x, seg[0].b), tot = dias(a0, b0);
+  /* Los datos van debajo; lo omitido se superpone (también si cae dentro de un periodo de datos). */
+  const orden = { datos: 0, prog: 1, omit: 2 };
+  $('parLineaTiempo').innerHTML = seg.sort((x, y) => orden[x.c] - orden[y.c]).map(s => { const w = dias(s.a, s.b) / tot * 100; return '<div class="seg ' + s.c + '" style="left:' + ((dias(a0, s.a) - 1) / tot * 100).toFixed(3) + '%;width:' + w.toFixed(3) + '%" title="' + esc(s.t + ': ' + s.a + ' a ' + s.b) + '">' + (w >= 9 ? '<b>' + esc(s.t) + '</b>' + s.a + ' → ' + s.b : '') + '</div>'; }).join('');
+  const ley = $('parCalOp').querySelector('.leyenda-lt') || (() => { const d = document.createElement('div'); d.className = 'leyenda-lt'; $('parLineaTiempo').after(d); return d; })();
+  ley.innerHTML = '<span><i style="background:#4cc3ff"></i>Datos recolectados (registros)</span><span><i style="background:#8a94a0"></i>Omitido (no cuenta)</span><span><i style="background:var(--lima)"></i>Programa de mantenimiento</span>' + (err ? '<span style="color:var(--danger)"><i class="fas fa-triangle-exclamation"></i> ' + esc(err) + '</span>' : '');
+}
+
 export async function pintar() {
   borrador = null;
   const ps = (await periodos()).sort((a, b) => a.fecha_inicio < b.fecha_inicio ? -1 : 1);
   $('parPeriodoSel').innerHTML = ps.map(p => '<option value="' + esc(p.id) + '"' + (p.id === E.periodo.id ? ' selected' : '') + '>' + esc(p.nombre) + (p.activo ? ' · activo' : '') + '</option>').join('');
+  omis = copia(E.config.omisiones || []);
+  $('parProgIni').value = (E.config.programa || {}).inicio || ''; $('parProgMeses').value = (E.config.programa || {}).meses || 12;
+  $('parProgIni').onchange = $('parProgMeses').onchange = () => { leerCalendario(); pintarCalendario(); };
+  pintarCalendario(ps);
   const P = E.periodo;
   $('parPeriodo').innerHTML = CAMPOS_PERIODO.map(([k, n, t]) => '<div class="campo"><label>' + n + '</label>' +
     (t === 'equipo' ? '<select data-k="' + k + '">' + E.equipos.map(e => '<option value="' + e.id + '"' + (e.id === P[k] ? ' selected' : '') + '>' + esc(e.nombre) + '</option>').join('') + '</select>'
@@ -150,7 +194,8 @@ function pintarFeriados() {
 function pintarResumen() {
   const p = copia(borrador || E.periodo);
   $('parPeriodo').querySelectorAll('[data-k]').forEach(i => { p[i.dataset.k] = i.type === 'number' ? +i.value : i.value; });
+  p.omisiones = E.config.omisiones || [];
   let c; try { c = calendarioOEE(p).total; } catch (e) { return; }
-  $('parCalendario').innerHTML = [[n0(c.dias), 'Días calendario'], [n0(c.domingos), 'Domingos'], [n0(c.feriados) + (c.feriadosEnDomingo ? ' + ' + c.feriadosEnDomingo : ''), 'Feriados (+ en domingo)'], [n0(c.laborables), 'Días laborables'],
-    [h1(c.totalProduccion) + ' h', 'Tiempo total de producción'], [h1(c.carga) + ' h', 'Tiempo de carga']].map(x => '<div class="m"><div class="v">' + x[0] + '</div><div class="k">' + x[1] + '</div></div>').join('');
+  $('parCalendario').innerHTML = [[n0(c.dias), 'Días calendario']].concat(c.omitidos ? [[n0(c.omitidos), 'Días omitidos']] : [], [ [n0(c.domingos), 'Domingos'], [n0(c.feriados) + (c.feriadosEnDomingo ? ' + ' + c.feriadosEnDomingo : ''), 'Feriados (+ en domingo)'], [n0(c.laborables), 'Días laborables'],
+    [h1(c.totalProduccion) + ' h', 'Tiempo total de producción'], [h1(c.carga) + ' h', 'Tiempo de carga']]).map(x => '<div class="m"><div class="v">' + x[0] + '</div><div class="k">' + x[1] + '</div></div>').join('');
 }

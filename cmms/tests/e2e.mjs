@@ -179,19 +179,34 @@ await P.click('#planTipo .pest[data-t="todos"]'); await P.selectOption('#planEqF
 await ir(P, 'agenda'); await P.click('#hPdf'); await P.waitForTimeout(400);
 check('9b', 'PDF del historial de cumplimiento según su filtro', /Historial de cumplimiento/.test(await ultimoPdf()), '');
 await ir(P, 'anom'); await P.click('#anPdf').catch(() => {});
-const c0L = await E(() => ({ l: CMMS.servicio.E.total.linea.total.carga, a: CMMS.servicio.E.total.maquina.AUT.total.carga, p: CMMS.servicio.E.total.maquina.PR1.total.carga }));
-const cerr = await E(() => { const L = LEGADO.instantanea(), P0 = CMMS.servicio.E.periodo, out = [];
-  for (const [eqId, tipo] of [['autoclave', 'Planificado'], ['prensa1', 'Calidad']]) { const o = L.OTS.find(x => x.eqId === eqId && x.tipo === tipo && x.fecha >= P0.fecha_inicio && x.fecha <= P0.fecha_fin && x.estado !== 'Ejecutada');
-    o.estado = 'Ejecutada'; o.real = 120; o.enJornada = true; out.push(o.id); }
-  CMMS.alCambiarLegado(); return out; });
-await P.waitForTimeout(400);
-const c1L = await E(() => ({ l: CMMS.servicio.E.total.linea.total.carga, a: CMMS.servicio.E.total.maquina.AUT.total.carga, p: CMMS.servicio.E.total.maquina.PR1.total.carga }));
-check('9b', 'OT planificada cumplida en el autoclave (2 h) → carga del autoclave y de la línea −2 h', Math.abs(c0L.a - c1L.a - 2) < 1e-6 && Math.abs(c0L.l - c1L.l - 2) < 1e-6, cerr.join(', ') + ' · línea ' + c0L.l.toFixed(1) + ' → ' + c1L.l.toFixed(1) + ' h');
-check('9b', 'OT de calidad cumplida en la prensa 1 (paralelo) → solo su carga −2 h', Math.abs(c0L.p - c1L.p - 2) < 1e-6, c0L.p.toFixed(1) + ' → ' + c1L.p.toFixed(1) + ' h');
+
+console.log('\nAuditoría 9c · Calendario de operación: periodos omitidos y arranque del programa');
+await ir(P, 'param'); await P.waitForTimeout(300);
+const segs = await P.$$eval('#parLineaTiempo .seg', x => x.map(e => e.className.replace('seg ', '') + ':' + e.title));
+check('9c', 'Línea de tiempo: datos jun-25–may-26, planeación omitida jun–set 2026, programa desde 01-10-2026', segs.some(x => /^datos:.*2025-06-01 a 2026-05-31/.test(x)) && segs.some(x => /^omit:.*2026-06-01 a 2026-09-30/.test(x)) && segs.some(x => /^prog:.*2026-10-01/.test(x)), segs.join(' | '));
+const ots = await E(() => { const o = LEGADO.instantanea().OTS; return { n: o.length, min: o.reduce((a, x) => x.fecha < a ? x.fecha : a, '9999'), enPlan: o.filter(x => x.fecha < '2026-10-01').length }; });
+check('9c', 'El programa arranca el 01-10-2026: ninguna orden en el diagnóstico ni en la planeación', ots.n > 0 && ots.min >= '2026-10-01' && ots.enPlan === 0, ots.n + ' órdenes · primera ' + ots.min);
+const antesOm = await oee();
+await P.click('#parOmAdd');
+const fila = '#parOmisiones tr[data-i]:last-child';
+await P.fill(fila + ' [data-o="desde"]', '2025-08-01'); await P.fill(fila + ' [data-o="hasta"]', '2025-08-31'); await P.fill(fila + ' [data-o="motivo"]', 'Paro de planta');
+await P.click('#parOmAdd');
+await P.fill(fila + ' [data-o="desde"]', '2026-01-01'); await P.fill(fila + ' [data-o="hasta"]', '2026-01-15'); await P.fill(fila + ' [data-o="motivo"]', 'Vacaciones colectivas');
+await P.click('#parCalGuardar'); await P.waitForTimeout(600);
+const conOmUI = await E(() => ({ OEE: CMMS.servicio.E.total.linea.total.OEE, meses: CMMS.servicio.E.total.meses.length, ene: CMMS.servicio.E.total.cal['2026-01'].omitidos, n: CMMS.servicio.E.config.omisiones.length }));
+check('9c', 'Se omiten varios periodos desde la interfaz (agosto completo + 1–15 enero) y todo se recalcula', conOmUI.n === 3 && conOmUI.meses === 11 && conOmUI.ene === 15 && conOmUI.OEE !== antesOm.OEE, (antesOm.OEE * 100).toFixed(2) + ' → ' + (conOmUI.OEE * 100).toFixed(2) + ' % · ' + conOmUI.meses + ' meses');
 await ir(P, 'linea'); await P.waitForTimeout(200);
-check('9b', 'La banda de la línea informa el mantenimiento del programa ejecutado', /2[.,]0 h/.test(await P.textContent('#lBanda')), (await P.textContent('#lBanda')).replace(/\s+/g, ' ').slice(-80));
-await E(ids => { const L = LEGADO.instantanea(); ids.forEach(id => { const o = L.OTS.find(x => x.id === id); o.estado = 'Programada'; o.real = null; }); CMMS.alCambiarLegado(); }, cerr); await P.waitForTimeout(400);
-check('9b', 'Revertir las órdenes devuelve exactamente el OEE anterior', (await oee()).OEE === o0.OEE, '');
+check('9c', 'Las vistas ya no muestran el mes omitido', !(await P.$$eval('#lDesde option', o => o.map(x => x.value))).includes('2025-08'), '');
+await P.screenshot({ path: path.join(SHOTS, '07_oee_con_omisiones.png') });
+await ir(P, 'param'); await P.waitForTimeout(300);
+await P.screenshot({ path: path.join(SHOTS, '08_calendario_operacion.png') });
+await P.click('#parOmAdd'); await P.fill(fila + ' [data-o="desde"]', '2025-08-20'); await P.fill(fila + ' [data-o="hasta"]', '2025-09-05');
+await P.click('#parCalGuardar'); await P.waitForTimeout(400);
+check('9c', 'Rangos superpuestos: se rechazan con un aviso y no se guardan', await E(() => CMMS.servicio.E.config.omisiones.length) === 3, (await P.textContent('#avisos')).replace(/\s+/g, ' ').slice(-90));
+await ir(P, 'param'); await P.waitForTimeout(300);
+for (const d of ['2026-01-01', '2025-08-01']) await P.click('#parOmisiones tr:has(input[value="' + d + '"]) [data-qo]');
+await P.click('#parCalGuardar'); await P.waitForTimeout(600);
+check('9c', 'Quitar las omisiones devuelve exactamente el OEE anterior', (await oee()).OEE === antesOm.OEE, ((await oee()).OEE * 100).toFixed(4) + ' %');
 
 console.log('\nAuditoría 10 · Integridad global (verificaciones en la aplicación)');
 await ir(P, 'audit'); await P.click('#audCorrer');
@@ -203,7 +218,7 @@ await ir(P, 'simdes'); await P.click('#simAjustar'); await P.waitForSelector('#s
 const nDist = await P.$$eval('#simDist tbody tr', t => t.length);
 check(11, 'Distribuciones ajustadas y tabla de bondad de ajuste visible', nDist > 20, nDist + ' ajustes');
 check(11, 'Advertencia permanente por validez limitada o insuficiente', /Advertencia metodológica permanente/.test(await P.textContent('#simAvisos')), '');
-await P.screenshot({ path: path.join(SHOTS, '07_distribuciones.png'), fullPage: true });
+await P.screenshot({ path: path.join(SHOTS, '09_distribuciones.png'), fullPage: true });
 await P.click('#simTabs .pest[data-t="escenarios"]');
 check(13, 'Escenarios de mejora bloqueados antes de validar', await P.isDisabled('[data-run="E1"]'), '');
 await P.click('#simTabs .pest[data-t="validacion"]');
@@ -214,7 +229,7 @@ const val = await E(() => CMMS.servicio.E.validacion);
 check(12, 'Worker de simulación: línea base ejecutada sin bloquear la interfaz', true, ((Date.now() - t0) / 1000).toFixed(1) + ' s · ' + val.replicas + ' réplicas');
 val.verificaciones.forEach(x => check(12, x.verificacion, x.ok, x.detalle));
 val.filas.forEach(f => check(13, f.indicador + ' dentro de tolerancia', f.ok, 'desvío ' + f.desvio.toFixed(2) + ' ' + f.unidad + (f.icContiene ? ' · IC contiene el real' : ' · IC no contiene el real')));
-await P.screenshot({ path: path.join(SHOTS, '08_validacion.png'), fullPage: true });
+await P.screenshot({ path: path.join(SHOTS, '10_validacion.png'), fullPage: true });
 await P.click('#simTabs .pest[data-t="escenarios"]');
 check(13, 'Validación aprobada habilita los escenarios', !(await P.isDisabled('[data-run="E1"]')), '');
 await P.click('#simCorrerTodos');
@@ -223,7 +238,7 @@ await P.click('#simTabs .pest[data-t="resultados"]'); await P.waitForTimeout(300
 const comp = await P.$$eval('#simComp tbody tr', t => t.map(r => Array.from(r.cells).map(c => c.textContent.trim())));
 check(14, 'Tabla comparativa con los siete escenarios', comp.length === 7, comp.map(c => c[0].slice(0, 3) + ' ' + c[2] + ' Δ' + c[4] + ' ' + c[6]).join(' | '));
 check(14, 'Todas las mejoras E1–E6 significativas al 95 %', comp.slice(1).every(c => c[6] === 'Sí'), '');
-await P.screenshot({ path: path.join(SHOTS, '09_resultados.png'), fullPage: true });
+await P.screenshot({ path: path.join(SHOTS, '11_resultados.png'), fullPage: true });
 
 console.log('\nMejoras finales · PDF, tema, periodos y portal');
 await P.click('#simPdf'); await P.waitForTimeout(800);
@@ -239,7 +254,19 @@ await P.click('#parNuevoPer'); await P.waitForSelector('#npIni');
 const npIni = await P.inputValue('#npIni'), npFin = await P.inputValue('#npFin');
 await P.click('.capa.abierta .btn-primary'); await P.waitForTimeout(600);
 const nuevoP = await E(() => ({ id: CMMS.servicio.E.periodo.id, dias: CMMS.servicio.E.total.cal.total.dias, fer: CMMS.servicio.E.periodo.feriados.length, reg: Object.values(CMMS.servicio.E.total.conteos).reduce((a, b) => a + b, 0) }));
-check('F', 'Nuevo periodo creado y activado, con feriados generados y sin registros', nuevoP.reg === 0 && nuevoP.fer >= 14 && npIni === '2026-06-01', npIni + ' a ' + npFin + ' · ' + nuevoP.dias + ' días · ' + nuevoP.fer + ' feriados');
+check('F', 'Nuevo periodo creado y activado, con feriados generados y sin registros', nuevoP.reg === 0 && nuevoP.fer >= 14 && npIni === '2026-10-01', npIni + ' a ' + npFin + ' · ' + nuevoP.dias + ' días · ' + nuevoP.fer + ' feriados');
+const c0L = await E(() => ({ l: CMMS.servicio.E.total.linea.total.carga, a: CMMS.servicio.E.total.maquina.AUT.total.carga, p: CMMS.servicio.E.total.maquina.PR1.total.carga }));
+const cerr = await E(() => { const L = LEGADO.instantanea(), P0 = CMMS.servicio.E.periodo, out = [];
+  for (const [eqId, tipo] of [['autoclave', 'Planificado'], ['prensa1', 'Calidad']]) { const o = L.OTS.find(x => x.eqId === eqId && x.tipo === tipo && x.fecha >= P0.fecha_inicio && x.fecha <= P0.fecha_fin && x.estado !== 'Ejecutada');
+    o.estado = 'Ejecutada'; o.real = 120; o.enJornada = true; out.push(o.id); }
+  CMMS.alCambiarLegado(); return out; });
+await P.waitForTimeout(400);
+const c1L = await E(() => ({ l: CMMS.servicio.E.total.linea.total.carga, a: CMMS.servicio.E.total.maquina.AUT.total.carga, p: CMMS.servicio.E.total.maquina.PR1.total.carga }));
+check('F', 'Periodo 2026–2027: OT planificada cumplida en el autoclave (2 h) → carga del autoclave y de la línea −2 h', Math.abs(c0L.a - c1L.a - 2) < 1e-6 && Math.abs(c0L.l - c1L.l - 2) < 1e-6, cerr.join(', ') + ' · línea ' + c0L.l.toFixed(1) + ' → ' + c1L.l.toFixed(1) + ' h');
+check('F', 'OT de calidad cumplida en la prensa 1 (paralelo) → solo su carga −2 h', Math.abs(c0L.p - c1L.p - 2) < 1e-6, c0L.p.toFixed(1) + ' → ' + c1L.p.toFixed(1) + ' h');
+check('F', 'El resultado informa el mantenimiento del programa ejecutado (2 órdenes, 4 h)', await E(() => { const m = CMMS.servicio.E.total.mantenimiento; return m.ordenes === 2 && Math.abs(m.horas - 4) < 1e-9; }), '');
+await E(ids => { const L = LEGADO.instantanea(); ids.forEach(id => { const o = L.OTS.find(x => x.id === id); o.estado = 'Programada'; o.real = null; }); CMMS.alCambiarLegado(); }, cerr); await P.waitForTimeout(400);
+check('F', 'Revertir las órdenes devuelve exactamente la carga anterior', await E(c => CMMS.servicio.E.total.linea.total.carga === c, c0L.l), '');
 await P.selectOption('#parPeriodoSel', 'P2025'); await P.waitForSelector('.capa.abierta'); await P.click('.capa.abierta .btn-primary'); await P.waitForTimeout(600);
 check('F', 'Al volver al periodo 2025–2026 sus registros siguen intactos (OEE 55.68 %)', (await oee()).OEE === o0.OEE, ((await oee()).OEE * 100).toFixed(4) + ' %');
 
@@ -257,7 +284,7 @@ check('P', 'El usuario creado inicia sesión con su clave tras recargar', await 
 check('P', 'Tras recargar, persiste el estado de los módulos heredados (usuario creado)', await E(() => LEGADO.instantanea().USUARIOS.some(u => u.user === 'persistencia@lexacaucho.pe')), '');
 const movil = await navegador.newContext({ viewport: { width: 820, height: 1180 } }); const pm = await movil.newPage();
 await pm.goto('file://' + path.resolve(import.meta.dirname, '../dist/cmms_lexacaucho_v6.html')); await pm.waitForFunction(() => window.CMMS && CMMS.servicio.E.resultado);
-await entrar(pm); await pm.waitForTimeout(400); await pm.screenshot({ path: path.join(SHOTS, '10_tableta.png'), fullPage: false });
+await entrar(pm); await pm.waitForTimeout(400); await pm.screenshot({ path: path.join(SHOTS, '12_tableta.png'), fullPage: false });
 const desborde = await pm.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 check(9, 'Responsive: tableta 820 px sin desplazamiento horizontal de la página', desborde <= 2, desborde + ' px');
 

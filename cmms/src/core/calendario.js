@@ -76,19 +76,26 @@ export function feriadosPeru(desde, hasta) {
   return out.filter(x => x.fecha >= desde && x.fecha <= hasta).sort((a, b) => a.fecha < b.fecha ? -1 : 1);
 }
 
-/* Clasificación de cada día del periodo y resumen por mes. */
+/* Periodos omitidos (p. ej., fase de planeación sin operación): rangos [desde, hasta] que no cuentan para nada.
+   Son globales (pueden cruzar periodos) y se definen una sola vez en Parámetros. */
+export function enOmision(fecha, omisiones) {
+  const f = String(fecha).slice(0, 10);
+  return (omisiones || []).find(o => f >= o.desde && f <= o.hasta) || null;
+}
+/* Clasificación de cada día del periodo y resumen por mes. Un día omitido no es domingo, feriado ni laborable. */
 export function diasDelPeriodo(periodo) {
-  const fer = new Set((periodo.feriados || []).map(f => f.fecha));
+  const fer = new Set((periodo.feriados || []).map(f => f.fecha)), om = periodo.omisiones || [];
   const out = [];
   for (let f = periodo.fecha_inicio; f <= periodo.fecha_fin; f = sumarDias(f, 1)) {
-    const dom = diaSemana(f) === 0, esFer = fer.has(f);
-    out.push({ fecha: f, mes: mesDe(f), domingo: dom, feriado: esFer && !dom, feriadoDomingo: esFer && dom,
-      laborable: !dom && !esFer, dow: diaSemana(f) });
+    const omitido = !!enOmision(f, om), dom = !omitido && diaSemana(f) === 0, esFer = !omitido && fer.has(f);
+    out.push({ fecha: f, mes: mesDe(f), omitido, domingo: dom, feriado: esFer && !dom, feriadoDomingo: esFer && dom,
+      laborable: !omitido && !dom && !esFer, dow: diaSemana(f) });
   }
   return out;
 }
 export function esLaborable(fecha, periodo) {
   if (diaSemana(fecha) === 0) return false;
+  if (enOmision(fecha, periodo.omisiones)) return false;
   return !(periodo.feriados || []).some(f => f.fecha === fecha);
 }
 export function mesesDelPeriodo(periodo) {
@@ -98,10 +105,17 @@ export function mesesDelPeriodo(periodo) {
   for (;;) {
     const k = y + '-' + String(m).padStart(2, '0');
     if (k > fin) break;
-    out.push(k);
+    if (!mesOmitido(k, periodo)) out.push(k);
     if (++m > 12) { m = 1; y++; }
   }
   return out;
+}
+/* Un mes cuyos días (dentro del periodo) están todos omitidos no se muestra ni se calcula. */
+function mesOmitido(k, periodo) {
+  const om = periodo.omisiones || []; if (!om.length) return false;
+  const a = k + '-01' < periodo.fecha_inicio ? periodo.fecha_inicio : k + '-01';
+  for (let f = a; f.slice(0, 7) === k && f <= periodo.fecha_fin; f = sumarDias(f, 1)) if (!enOmision(f, om)) return false;
+  return true;
 }
 export const etiquetaMes = k => MESES_CORTOS[+k.slice(5, 7) - 1] + '-' + k.slice(2, 4);
 

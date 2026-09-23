@@ -50,6 +50,11 @@ async function cargarTodo() {
   const periodos = await BD.todos('periodos');
   E.periodo = periodos.find(p => p.activo) || periodos[0];
   E.config = await BD.uno('config', 'general');
+  /* Bases anteriores a v6.1: se agrega el calendario de operación (omisiones y programa) una sola vez. */
+  if (E.config && (!E.config.omisiones || !E.config.programa)) {
+    E.config = Object.assign({ omisiones: copia(CONFIG_SEMILLA.omisiones), programa: copia(CONFIG_SEMILLA.programa) }, E.config);
+    await BD.poner('config', E.config);
+  }
   E.sim = Object.assign(copia(SIM_SEMILLA), await BD.uno('config', 'simulacion'));
   E.estado = (await BD.uno('config', 'estado')) || { id: 'estado', versionDatos: 0 };
   E.versionDatos = E.estado.versionDatos || 0;
@@ -81,7 +86,9 @@ export function alCambiarPrograma() {
   huellaMtto = h; E.versionDatos++; if (E.estado) { E.estado.versionDatos = E.versionDatos; BD.poner('config', E.estado); }
   recalcular('programa'); return true;
 }
-export const ctx = () => ({ periodo: E.periodo, config: E.config, equipos: E.equipos, listas: E.listas, codigos: E.codigos, mantenimiento: mantenimientoEjecutado() });
+/* El periodo con los rangos omitidos aplicados: es lo que ven el motor, la validación, la simulación y las vistas. */
+export const periodoVigente = () => E.periodo ? Object.assign({}, E.periodo, { omisiones: (E.config && E.config.omisiones) || [] }) : null;
+export const ctx = () => ({ periodo: periodoVigente(), config: E.config, equipos: E.equipos, listas: E.listas, codigos: E.codigos, mantenimiento: mantenimientoEjecutado() });
 const registrosPeriodo = () => { const o = {}; Object.keys(E.registros).forEach(k => o[k] = E.registros[k].filter(r => r.periodo_id === E.periodo.id)); return o; };
 
 /* Recálculo (sección 9.1): horas por equipo y mes → OEE por máquina → factores topológicos → OEE de línea →
@@ -181,6 +188,25 @@ export async function vaciarRegistro(defId) {
 export async function guardarPeriodo(p) { E.periodo = p; await BD.poner('periodos', p); await bitacora('Parámetros del periodo', 'Actualizados'); E.versionDatos++; E.estado.versionDatos = E.versionDatos; await BD.poner('config', E.estado); recalcular('parámetros'); emitir('config'); }
 export async function guardarEquipos(lista) { E.equipos = lista.slice().sort((a, b) => a.orden - b.orden); await BD.ponerVarios('equipos', lista); await bitacora('Catálogo de equipos', 'Actualizado'); E.versionDatos++; E.estado.versionDatos = E.versionDatos; await BD.poner('config', E.estado); recalcular('equipos'); emitir('config'); }
 export async function guardarConfig(c) { E.config = c; await BD.poner('config', c); await bitacora('Factores topológicos', 'Actualizados'); recalcular('configuración'); emitir('config'); }
+/* Calendario de operación: rangos omitidos (uno o varios) e inicio del programa de mantenimiento. */
+export function validarOmisiones(lista) {
+  const o = lista.slice().sort((a, b) => a.desde < b.desde ? -1 : 1);
+  for (let i = 0; i < o.length; i++) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(o[i].desde || '') || !/^\d{4}-\d{2}-\d{2}$/.test(o[i].hasta || '')) return 'Fechas incompletas en el rango ' + (i + 1);
+    if (o[i].hasta < o[i].desde) return 'El rango ' + o[i].desde + ' – ' + o[i].hasta + ' termina antes de empezar';
+    if (i && o[i].desde <= o[i - 1].hasta) return 'Los rangos ' + o[i - 1].desde + ' – ' + o[i - 1].hasta + ' y ' + o[i].desde + ' – ' + o[i].hasta + ' se superponen';
+  }
+  return null;
+}
+export async function guardarCalendario(omisiones, programa) {
+  const err = validarOmisiones(omisiones); if (err) throw new Error(err);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(programa.inicio || '') || !(programa.meses >= 1 && programa.meses <= 36)) throw new Error('Programa: indique fecha de inicio y de 1 a 36 meses');
+  E.config = Object.assign({}, E.config, { omisiones: omisiones.slice().sort((a, b) => a.desde < b.desde ? -1 : 1).map(o => ({ desde: o.desde, hasta: o.hasta, motivo: o.motivo || 'Periodo omitido' })), programa: { inicio: programa.inicio, meses: +programa.meses } });
+  await BD.poner('config', E.config);
+  await bitacora('Calendario de operación', E.config.omisiones.map(o => o.desde + '→' + o.hasta).join(', ') + ' · programa desde ' + programa.inicio);
+  E.versionDatos++; E.estado.versionDatos = E.versionDatos; await BD.poner('config', E.estado);
+  recalcular('calendario'); emitir('config');
+}
 export async function guardarSim(s) { E.sim = s; await BD.poner('config', s); await bitacora('Parámetros de simulación', 'Actualizados'); emitir('config'); }
 export async function guardarListas(obj) { E.listas = obj; await BD.ponerVarios('listas', Object.entries(obj).map(([nombre, valores]) => ({ nombre, valores }))); await bitacora('Catálogos', 'Listas actualizadas'); emitir('config'); }
 export async function guardarEscenario(e) { await BD.poner('escenarios', e); E.escenarios = (await BD.todos('escenarios')).sort((a, b) => a.id < b.id ? -1 : 1); emitir('escenarios'); }

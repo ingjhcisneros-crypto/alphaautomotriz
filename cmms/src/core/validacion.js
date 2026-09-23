@@ -1,6 +1,6 @@
 /* Validación y normalización de los registros que llegan por Excel o por formulario. Pura: no toca la base. */
 import { REGISTROS, claveDuplicado, esFilaEjemplo } from './registros.js';
-import { parsearFecha, diaProduccion, mesDe, horasEntre, deMin, aMin, hhmm, esLaborable } from './calendario.js';
+import { parsearFecha, diaProduccion, mesDe, horasEntre, deMin, aMin, hhmm, esLaborable, enOmision } from './calendario.js';
 import { norm, normCmp } from './util.js';
 
 /* Busca la fila de encabezados en las primeras filas: la plantilla del sistema la tiene en la fila 1
@@ -131,6 +131,7 @@ export function validarFilas(defId, encabezados, filas, ctx, opciones) {
       r.inicio = ini;
       if (r.dia_prod < P.fecha_inicio || r.dia_prod > P.fecha_fin)
         E(def.columnas.find(c => c.k === def.inicio).h, 'Fuera del periodo declarado (' + P.fecha_inicio + ' a ' + P.fecha_fin + '); día de producción ' + r.dia_prod);
+      else if (enOmision(r.dia_prod, P.omisiones)) A(def.columnas.find(c => c.k === def.inicio).h, 'El día ' + r.dia_prod + ' está en un periodo omitido («' + enOmision(r.dia_prod, P.omisiones).motivo + '»): se guarda, pero no entra al cálculo mientras la omisión exista');
       else if (!esLaborable(r.dia_prod, P)) A(def.columnas.find(c => c.k === def.inicio).h, 'El día de producción ' + r.dia_prod + ' es domingo o feriado');
       const h = hhmm(ini);
       if (!(h >= P.hora_inicio || h < P.hora_corte)) A(def.columnas.find(c => c.k === def.inicio).h, 'Hora ' + h + ' fuera de la ventana operativa ' + P.hora_inicio + ' – ' + P.hora_corte);

@@ -49,6 +49,13 @@ body.claro .calor-c.mal{ background:#f9c4cc; } body.claro .calor-c.reg{ backgrou
 @media (max-width:980px){ .rail .grupo{ flex-wrap:nowrap; } .lienzo-graf{ height:260px; } }
 @media print{ .export, .filtros, #simTabs, .btn{ display:none !important; } }
 
+/* Línea de tiempo del calendario de operación */
+.linea-tiempo{ position:relative; height:54px; margin-top:var(--s3); border-radius:var(--r2); background:var(--border); overflow:hidden; }
+.linea-tiempo .seg{ position:absolute; top:0; bottom:0; display:flex; flex-direction:column; justify-content:center; padding:0 8px; font-size:var(--t-2xs); line-height:1.25; color:#0b1117; overflow:hidden; white-space:nowrap; border-right:2px solid var(--bg); }
+.linea-tiempo .seg b{ font-size:var(--t-xs); }
+.linea-tiempo .datos{ background:#4cc3ff; } .linea-tiempo .omit{ background:repeating-linear-gradient(45deg,#8a94a0,#8a94a0 6px,#a3acb6 6px,#a3acb6 12px); } .linea-tiempo .prog{ background:var(--lima); }
+.leyenda-lt{ display:flex; gap:var(--s4); flex-wrap:wrap; margin-top:var(--s2); font-size:var(--t-2xs); color:var(--muted); }
+.leyenda-lt i{ display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:4px; vertical-align:-1px; }
 /* Resumen primero, detalle a pedido: todo lo clicable se señala igual. */
 tr.clic, td.clic, .celda-par{ cursor:pointer; }
 tr.clic:hover td, td.clic:hover{ background:rgba(61,234,36,0.06); }

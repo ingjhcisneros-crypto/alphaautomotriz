@@ -1,6 +1,6 @@
 /* Registros operativos: plantilla, carga por Excel en dos modos, informe de validación, alta/edición manual. */
 import { $, esc, h1, n0, aviso, dialogo, confirmar, descargar, XLSX_MIME, fechaArchivo, libroTabla } from './comun.js';
-import { E, escuchar, validarArchivo, insertar, existentes, guardarManual, borrarRegistros, vaciarRegistro, BDexp } from '../servicio.js';
+import { E, escuchar, validarArchivo, insertar, existentes, guardarManual, borrarRegistros, vaciarRegistro, BDexp, periodoVigente } from '../servicio.js';
 import { REGISTROS, ORDEN_REGISTROS } from '../../core/registros.js';
 import { generarPlantilla } from '../../core/plantillas.js';
 import { etiquetaMes, mesesDelPeriodo } from '../../core/calendario.js';
@@ -54,7 +54,7 @@ export function pintar() {
   const d = REGISTROS[actual];
   $('regTitulo').textContent = d.nombre;
   $('regSub').textContent = 'Tabla ' + d.tabla + ' · alimenta ' + d.componente.toLowerCase() + ' · archivo de referencia ' + d.archivo + ' · ' + d.columnas.length + ' columnas';
-  const meses = mesesDelPeriodo(E.periodo);
+  const meses = mesesDelPeriodo(periodoVigente());
   $('regFMes').innerHTML = '<option value="">Todos los meses</option>' + meses.map(m => '<option value="' + m + '">' + etiquetaMes(m) + '</option>').join('');
   const eqCol = d.columnas.find(c => c.k === d.equipo);
   const vals = eqCol && eqCol.tipo === 'equipo' ? E.equipos.map(e => [e.id, e.nombre]) : (E.listas[eqCol ? eqCol.lista : ''] || []).map(v => [v, v]);

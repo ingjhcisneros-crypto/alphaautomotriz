@@ -102,7 +102,10 @@ export const CONFIG_SEMILLA = {
     'Toda la línea': ['MOL', 'EXT', 'PR1', 'PR2', 'PR3', 'PR4', 'PR5', 'AUT', 'CAL1', 'CAL2']
   },
   umbral_validez: { suficiente: 30, limitada: 5 },
-  tolerancia_duracion_h: 0.05
+  tolerancia_duracion_h: 0.05,
+  /* Calendario de operación: rangos que no cuentan para nada y arranque del programa de mantenimiento. */
+  omisiones: [{ desde: '2026-06-01', hasta: '2026-09-30', motivo: 'Fase de planeación (sin operación ni programa)' }],
+  programa: { inicio: '2026-10-01', meses: 12 }
 };
 
 /* Parámetros del modelo de simulación (sección 11.1 y 11.5). */

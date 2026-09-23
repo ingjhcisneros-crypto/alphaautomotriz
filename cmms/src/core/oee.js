@@ -1,7 +1,7 @@
 /* Motor único de cálculo del OEE (Nakajima). No conoce el DOM ni la base de datos: recibe el periodo,
    la configuración, el catálogo de equipos y los registros, y devuelve todos los indicadores.
    Lo usan la interfaz, el módulo de simulación (valores reales de validación) y las auditorías. */
-import { diasDelPeriodo, mesesDelPeriodo } from './calendario.js';
+import { diasDelPeriodo, mesesDelPeriodo, enOmision } from './calendario.js';
 import { normCmp, suma } from './util.js';
 
 export const CATEGORIAS = [
@@ -38,15 +38,16 @@ export function calendarioOEE(periodo, factorTurno = 1) {
   const hOp = periodo.turnos_dia * periodo.horas_turno;
   const porMes = {};
   const armar = (ds) => {
-    const n = ds.length, dom = ds.filter(d => d.domingo).length, fer = ds.filter(d => d.feriado).length;
+    const n = ds.length, dom = ds.filter(d => d.domingo).length, fer = ds.filter(d => d.feriado).length, om = ds.filter(d => d.omitido).length;
     const lab = ds.filter(d => d.laborable).length;
-    const calendario = n * 24, hDom = dom * 24, hFer = fer * 24, noTurno = lab * (24 - hOp);
-    const totalProd = (calendario - hDom - hFer - noTurno) * factorTurno;
+    const calendario = n * 24, hOm = om * 24, hDom = dom * 24, hFer = fer * 24, noTurno = lab * (24 - hOp);
+    const totalProd = (calendario - hOm - hDom - hFer - noTurno) * factorTurno;
     const almuerzo = lab * periodo.turnos_dia * periodo.horas_almuerzo * factorTurno;
-    const capacitacion = periodo.semanas_capacitacion * (n / diasTot) * periodo.turnos_dia * periodo.horas_capacitacion * factorTurno;
+    /* Las semanas de capacitación se reparten por día calendario: un día omitido no lleva capacitación. */
+    const capacitacion = diasTot ? periodo.semanas_capacitacion * ((n - om) / diasTot) * periodo.turnos_dia * periodo.horas_capacitacion * factorTurno : 0;
     const mtto = labTot ? periodo.horas_mtto_planificado * lab / labTot * factorTurno : 0;
-    return { dias: n, domingos: dom, feriados: fer, feriadosEnDomingo: ds.filter(d => d.feriadoDomingo).length, laborables: lab,
-      calendario, hDomingos: hDom, hFeriados: hFer, hNoTurno: noTurno + (calendario - hDom - hFer - noTurno) * (1 - factorTurno),
+    return { dias: n, omitidos: om, hOmitidos: hOm, domingos: dom, feriados: fer, feriadosEnDomingo: ds.filter(d => d.feriadoDomingo).length, laborables: lab,
+      calendario, hDomingos: hDom, hFeriados: hFer, hNoTurno: noTurno + (calendario - hOm - hDom - hFer - noTurno) * (1 - factorTurno),
       totalProduccion: totalProd, almuerzo, capacitacion, mtto, carga: totalProd - almuerzo - capacitacion - mtto };
   };
   meses.forEach(m => porMes[m] = armar(dias.filter(d => d.mes === m)));
@@ -105,7 +106,8 @@ export function calcularOEE(ctx) {
     && (!filtros.etapa || e.etapa === filtros.etapa) && (!filtros.topologia || e.topologia === filtros.topologia));
   const selSet = new Set(selEq.map(e => e.id));
 
-  const pasa = r => enMeses.has(r.mes) && (!turnoF || String(r.turno) === turnoF) && (!r.periodo_id || r.periodo_id === periodo.id);
+  const omis = periodo.omisiones || [];
+  const pasa = r => enMeses.has(r.mes) && (!turnoF || String(r.turno) === turnoF) && (!r.periodo_id || r.periodo_id === periodo.id) && !(omis.length && enOmision(r.dia_prod || r.inicio || '', omis));
   const R = {};
   ['correctivo', 'paradas_cortas', 'cambio_formato', 'no_conformidades', 'equipos_auxiliares', 'reuniones_emergencia']
     .forEach(k => R[k] = (registros[k] || []).filter(pasa));
@@ -149,7 +151,7 @@ export function calcularOEE(ctx) {
      planificada, así que se descuenta del tiempo de carga de su propio equipo. En la línea pesa según la topología
      (un preventivo del autoclave detiene la línea; el de una prensa no). */
   const mtto = {}; activos.forEach(e => { mtto[e.id] = {}; meses.forEach(m => mtto[e.id][m] = 0); });
-  (ctx.mantenimiento || []).forEach(x => { const m = String(x.dia).slice(0, 7); if (mtto[x.equipo_id] && mtto[x.equipo_id][m] != null) mtto[x.equipo_id][m] += (+x.horas || 0) * factorTurno; });
+  (ctx.mantenimiento || []).filter(x => !enOmision(x.dia, omis)).forEach(x => { const m = String(x.dia).slice(0, 7); if (mtto[x.equipo_id] && mtto[x.equipo_id][m] != null) mtto[x.equipo_id][m] += (+x.horas || 0) * factorTurno; });
   const cargaEq = (id, m) => cal[m].carga - mtto[id][m];
 
   /* Resultados por máquina. */

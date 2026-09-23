@@ -5,8 +5,8 @@ Entregable: **`dist/cmms_lexacaucho_v6.html`**. Es un solo archivo de 1.2 MB y f
 ```
 npm install            # solo para desarrollar
 npm run build          # regenera dist/cmms_lexacaucho_v6.html
-npm test               # auditorías del núcleo (181 verificaciones)
-node tests/e2e.mjs     # auditorías en Chromium sobre el HTML (107 verificaciones)
+npm test               # auditorías del núcleo (185 verificaciones)
+node tests/e2e.mjs     # auditorías en Chromium sobre el HTML (113 verificaciones)
 ```
 
 Las pruebas necesitan los diez Excel de especificación en `DIR_REF` (variable de entorno). Esos archivos se usan solo para armar datos de prueba y obtener los valores de referencia. **El sistema no siembra ningún registro operativo.**
@@ -53,6 +53,20 @@ Las pruebas necesitan los diez Excel de especificación en `DIR_REF` (variable d
 
 **Análisis de paradas por máquina.** La matriz de máquinas por los 6 tipos (correctivo, cambio de formato, auxiliares, paradas cortas, operación en vacío y reuniones de emergencia) se puede ver en horas o en eventos y sale del mismo motor de cálculo. Un clic en una celda muestra los eventos, la duración media, el evento más largo, las causas principales, la evolución mensual y la exportación a Excel. Un clic en la máquina muestra su perfil por tipo.
 
+## Calendario de operación (v6.2)
+
+```
+ jun-2025 ─────────── may-2026 │ jun-2026 ──── set-2026 │ oct-2026 ──────────────►
+  DATOS RECOLECTADOS            │ OMITIDO (planeación)   │ PROGRAMA DE MANTENIMIENTO
+  OEE, paradas y confiabilidad  │ no cuenta para nada    │ plan maestro, agenda, OT;
+  salen solo de los registros   │                        │ OT cumplidas → tiempo de carga
+```
+
+- **Parámetros → Calendario de operación** tiene una línea de tiempo, la tabla editable de **periodos omitidos** (desde, hasta, motivo; se admiten varios) y el **inicio del programa** con su horizonte en meses. «Guardar y recalcular» actualiza el OEE, las paradas, la simulación y el programa.
+- **Qué hace un día omitido:** no suma al tiempo calendario (aparece como «− Periodos omitidos» en la cascada), no lleva almuerzo, capacitación ni arranques, y sus registros se conservan pero no entran al cálculo. Tampoco se programan órdenes en esos días. Un mes omitido por completo desaparece de los selectores y de las tablas mensuales.
+- **Controles:** no se aceptan rangos superpuestos ni rangos que terminan antes de empezar. Un registro nuevo con fecha omitida se acepta con una advertencia. Quitar la omisión devuelve exactamente el valor anterior.
+- **Programa:** es independiente del periodo de datos. Por defecto arranca el 01-10-2026 y dura 12 meses, así que antes de esa fecha no hay órdenes y el diagnóstico sale solo de los registros. «Nuevo periodo» propone empezar después de lo omitido, es decir, 01-10-2026 a 30-09-2027.
+
 ## Estructura
 
 ```
@@ -81,7 +95,8 @@ tests/         auditorias.mjs, e2e.mjs, informe/ (JSON y capturas)
 | 7 | Carga incremental: 309 registros la primera vez y 0 al repetir el archivo (309 duplicados). Carga completa: confirma, genera respaldo y reemplaza. El archivo con errores deliberados detecta las 8 filas con error y las 3 advertencias; el informe se descarga en Excel |
 | 8 | Insertar un registro cambia el OEE; borrarlo lo devuelve al valor exacto. El recálculo es idempotente |
 | 9 | OEE de línea 55.68 % con cascada de 6 etapas (detalle a pedido). OEE por máquina con 10 equipos y el autoclave en 79.17 %. La matriz de paradas usa el mismo motor. Los filtros cambian todos los bloques. 16 exportaciones y 3 informes PDF. Tableta de 820 px sin desbordes |
-| 9b | El PDF «Planificado · Caldero» contiene solo ese pilar y ese equipo. Una OT cumplida de 2 h en el autoclave reduce 2 h la carga del autoclave y la de la línea; en la prensa 1 solo reduce la de esa prensa. Revertirla devuelve el OEE exacto |
+| 9b | El PDF «Planificado · Caldero» contiene solo ese pilar y ese equipo. En el periodo 2026–2027, una OT cumplida de 2 h en el autoclave reduce 2 h la carga del autoclave y la de la línea; en la prensa 1 solo reduce la de esa prensa |
+| 9c | Línea de tiempo con los datos, la planeación omitida y el programa. Ninguna OT antes del 01-10-2026. Al omitir agosto y del 1 al 15 de enero desde la interfaz, quedan 11 meses y todo se recalcula. Los rangos superpuestos se rechazan. Quitar las omisiones devuelve el OEE exacto |
 | 10 | Suma de los registros = tablero, con diferencia de 0.000 h en las 6 categorías |
 | 11 | Autoclave (167) y extrusora (126): suficiente, con K-S sobre 5 candidatos. Molino (5): limitada. Prensas y calderos individuales: insuficiente. Prensas agregadas (7 eventos, 9.3 h) y calderos agregados (4 eventos, 4.7 h) |
 | 12 | El autoclave tiene la mayor utilización (≈ 60 %). El balance de tiempos cierra al 0.0000 %. Sin interbloqueos |

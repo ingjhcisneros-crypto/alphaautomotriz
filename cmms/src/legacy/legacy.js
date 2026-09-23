@@ -215,7 +215,8 @@ const FIJOS = [['01-01','Año nuevo'],['05-01','Día del trabajo'],['06-07','Bat
   ['12-09','Batalla de Ayacucho'],['12-25','Navidad']];
 /* Fuente única del calendario: los feriados y días no laborables de los periodos definidos en Parámetros.
    Fuera de cualquier periodo se usa el calendario nacional calculado. */
-let FER_CMMS = null, RANGOS_CMMS = [];
+let FER_CMMS = null, RANGOS_CMMS = [], OMIT_CMMS = [];
+const omision = d => { const s = iso(d); return OMIT_CMMS.find(o => s >= o.desde && s <= o.hasta) || null; };
 const cacheFer = {};
 function feriadosMap(y){
   if(cacheFer[y]) return cacheFer[y];
@@ -229,7 +230,7 @@ function motivoFeriado(d){
   if(FER_CMMS && RANGOS_CMMS.some(r => s >= r[0] && s <= r[1])) return FER_CMMS[s] || null;
   return feriadosMap(d.getFullYear())[s] || null; }
 const esFeriado = d => !!motivoFeriado(d);
-const esLaborable = d => d.getDay() !== 0 && !esFeriado(d);
+const esLaborable = d => d.getDay() !== 0 && !esFeriado(d) && !omision(d);
 function proximoHabil(d){ const x = new Date(d); let g = 0; while(!esLaborable(x) && g++ < 120) x.setDate(x.getDate()+1); return x; }
 function bloques(){
   const J = M.jornada, p = J.inicio.split(':'), h0 = (+p[0])+(+p[1])/60, mitad = J.horas/2, b = [];
@@ -970,7 +971,7 @@ function pintarAgenda(){
   const cum = dia.length ? hechas/dia.length : null;
   $('agCum').textContent = cum != null ? pc(cum) : '–';
   $('agCum').style.color = cum != null ? banda(cum).c : '';
-  const mot = motivoFeriado(d), om = null;
+  const mot = motivoFeriado(d), om = omision(d);
   $('agAviso').textContent = fechaLarga(d)+(mot ? '. Feriado: '+mot : om ? '. Periodo omitido: '+om.motivo
     : (d.getDay() === 0 ? '. Domingo, no se programa mantenimiento' : ''))+
     (dia.length ? '. '+n1(dia.reduce((a,o)=>a+o.min,0)/60)+' horas-hombre programadas' : '');
@@ -1300,7 +1301,7 @@ function alSimulador(){
   if(S) refrescar(); return n; }
 /* ===== administración ===== */
 function pintarSistema(){
-  const d = dISO(FECHA_SIS), mot = motivoFeriado(d), om = null;
+  const d = dISO(FECHA_SIS), mot = motivoFeriado(d), om = omision(d);
   $('sysEstado').textContent = esLaborable(d) ? 'Día laborable' : (mot ? 'Feriado' : om ? 'Periodo omitido' : 'Domingo');
   $('sysEstado2').textContent = fechaLarga(d)+(mot ? '. '+mot : om ? '. '+om.motivo : '');
   $('chipFecha').textContent = fechaLarga(d); }
@@ -1398,8 +1399,8 @@ window.LEGADO = {
     if(o.PLANES) Object.keys(o.PLANES).forEach(k => PLANES[k] = o.PLANES[k]);
     aplicarLogos(); },
   alSimulador, asegurarHashes,
-  /* Recibe de Parámetros la jornada, los feriados, las capacidades del catálogo, los lotes de la simulación y el
-     periodo; el programa de mantenimiento se genera sobre ese mismo periodo. */
+  /* Recibe de Parámetros la jornada, los feriados, los periodos omitidos, las capacidades del catálogo, los lotes
+     de la simulación y el inicio del programa de mantenimiento (independiente del periodo de datos recolectados). */
   sincronizar(c){
     const P = c.periodo, J = M.jornada;
     Object.assign(J, { inicio: P.hora_inicio, turnos: P.turnos_dia, almuerzo: P.horas_almuerzo, horas: P.horas_turno - P.horas_almuerzo,
@@ -1407,6 +1408,7 @@ window.LEGADO = {
     MASA_EXT = +P.masa_unitaria_kg || null;
     FER_CMMS = {}; RANGOS_CMMS = c.periodos.map(p => [p.fecha_inicio, p.fecha_fin]);
     c.periodos.forEach(p => (p.feriados || []).forEach(f => FER_CMMS[f.fecha] = f.motivo));
+    const omAntes = JSON.stringify(OMIT_CMMS); OMIT_CMMS = (c.omisiones || []).slice();
     const cat = {}; c.equipos.forEach(e => cat[e.id] = e);
     Object.keys(LEG_A_ID).forEach(function(id){ const e = M.equipos[id], x = cat[LEG_A_ID[id]]; if(!e || !x) return;
       e.activo = x.activo; if(x.capacidad_ficha && id !== 'extruder'){ e.cap = x.capacidad_ficha; e.uni = x.unidad === 'kg/h' ? 'kg/h' : 'und/h'; } });
@@ -1414,9 +1416,9 @@ window.LEGADO = {
     if(cat.EXT && cat.EXT.capacidad_ficha) M.proceso.cicloMin = Math.round(c.sim.molino_lote_kg*60/cat.EXT.capacidad_ficha*100)/100;
     M.proceso.laminasAutoclave = c.sim.autoclave_lote;
     M.equipos.acabado.cap = Math.round(c.sim.acabado_lam_h*kgLamina()); M.equipos.acabado.uni = 'kg/h';
-    const meses = (+P.fecha_fin.slice(0,4) - +P.fecha_inicio.slice(0,4))*12 + (+P.fecha_fin.slice(5,7) - +P.fecha_inicio.slice(5,7)) + 1;
-    const cambia = PROG.ini !== P.fecha_inicio || PROG.meses !== meses;
-    PROG.ini = P.fecha_inicio; PROG.meses = meses;
+    const G = c.programa || {inicio: P.fecha_inicio, meses: 12};
+    const cambia = PROG.ini !== G.inicio || PROG.meses !== G.meses || omAntes !== JSON.stringify(OMIT_CMMS);
+    PROG.ini = G.inicio; PROG.meses = G.meses;
     if(arrancado){ if(cambia) generarOTs(); cargarGlobales(); llenarSelects(); pintarSistema(); if(S) refrescar(); }
     return cambia; },
   sesion(){ return SESION; }

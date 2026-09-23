@@ -32,7 +32,7 @@ async function guardarLegado(forzar) {
 async function sincronizarLegado() {
   if (!globalThis.LEGADO || !S.E.periodo) return;
   const periodos = await S.periodos();
-  globalThis.LEGADO.sincronizar({ periodo: S.E.periodo, periodos, equipos: S.E.equipos, sim: S.E.sim, laborables: S.E.total ? S.E.total.cal.total.laborables : 297 });
+  globalThis.LEGADO.sincronizar({ periodo: S.E.periodo, periodos, omisiones: S.E.config.omisiones || [], programa: S.E.config.programa, equipos: S.E.equipos, sim: S.E.sim, laborables: S.E.total ? S.E.total.cal.total.laborables : 297 });
 }
 async function arrancar() {
   const btn = $('btnEntrar'); if (btn) { btn.disabled = true; btn.textContent = 'Abriendo base de datos…'; }

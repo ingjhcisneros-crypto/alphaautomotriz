@@ -1,6 +1,6 @@
 /* OEE de LÍNEA: horas de línea (cuánto de cada pérdida detuvo efectivamente la producción). */
 import { $, esc, h1, n0, pc, pp, soles, banda, cssVar, dialogo, registrarExportador } from './comun.js';
-import { E, escuchar, resultadoPara } from '../servicio.js';
+import { E, escuchar, resultadoPara, periodoVigente } from '../servicio.js';
 import { CATEGORIAS } from '../../core/oee.js';
 import { etiquetaMes, mesesDelPeriodo } from '../../core/calendario.js';
 import * as Cascada from './cascada.js';
@@ -10,14 +10,14 @@ let grafico = null;
 const visible = () => $('v-linea').classList.contains('on');
 
 export function poblarMeses(idD, idH) {
-  const meses = mesesDelPeriodo(E.periodo), op = meses.map(m => '<option value="' + m + '">' + etiquetaMes(m) + '</option>').join('');
+  const meses = mesesDelPeriodo(periodoVigente()), op = meses.map(m => '<option value="' + m + '">' + etiquetaMes(m) + '</option>').join('');
   const d = $(idD).value, h = $(idH).value;
   $(idD).innerHTML = op; $(idH).innerHTML = op;
   $(idD).value = meses.indexOf(d) >= 0 ? d : meses[0]; $(idH).value = meses.indexOf(h) >= 0 ? h : meses[meses.length - 1];
 }
 export function leerMeses(idD, idH) {
   let d = $(idD).value, h = $(idH).value; if (d > h) { const t = d; d = h; h = t; $(idD).value = d; $(idH).value = h; }
-  const meses = mesesDelPeriodo(E.periodo);
+  const meses = mesesDelPeriodo(periodoVigente());
   return (d === meses[0] && h === meses[meses.length - 1]) ? {} : { desde: d, hasta: h };
 }
 export function avisoVacio(vista, r) {

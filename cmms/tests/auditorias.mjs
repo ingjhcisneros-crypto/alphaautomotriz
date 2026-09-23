@@ -116,6 +116,15 @@ check(4, 'Programa ejecutado: 10 h en el autoclave (serie) → carga del autocla
 const RP = conMtto([{ equipo_id: 'PR1', dia: '2025-07-10', horas: 10, tipo: 'Planificado' }]);
 check(4, 'Programa ejecutado en una prensa (paralelo): solo baja la carga de esa prensa; la línea no se detiene', cerca(RL.maquina.PR1.total.carga - RP.maquina.PR1.total.carga, 10, 1e-9) && cerca(RP.linea.total.carga, L.carga, 1e-9) && cerca(RP.maquina.PR2.total.carga, RL.maquina.PR2.total.carga, 1e-9), 'prensa 1 ' + RP.maquina.PR1.total.carga.toFixed(1) + ' h');
 check(4, 'Sin órdenes ejecutadas el resultado no cambia', cerca(conMtto([]).linea.total.OEE, L.OEE, 1e-15), '');
+/* Periodos omitidos: omitir agosto 2025 quita el mes, sus registros y su tiempo; el resto del año no cambia. */
+const conOm = om => calcularOEE(Object.assign({}, ctx, { periodo: Object.assign({}, ctx.periodo, { omisiones: om }), registros: regRef }));
+const RO = conOm([{ desde: '2025-08-01', hasta: '2025-08-31', motivo: 'prueba' }]);
+check(4, 'Omitir un mes completo: desaparece de la tabla mensual y su tiempo de carga sale del total', RO.meses.length === 11 && RO.meses.indexOf('2025-08') < 0 && cerca(RO.linea.total.carga, L.carga - RL.linea['2025-08'].carga, 1e-6),
+  RO.meses.length + ' meses · carga ' + L.carga.toFixed(1) + ' → ' + RO.linea.total.carga.toFixed(1) + ' h');
+check(4, 'Omitir un mes: sus registros no entran (correctivo de línea = total − agosto)', cerca(RO.lineaHM.total.correctivo, RL.lineaHM.total.correctivo - RL.lineaHM['2025-08'].correctivo, 1e-6) && cerca(RO.linea['2025-09'].OEE, RL.linea['2025-09'].OEE, 1e-12), RO.lineaHM.total.correctivo.toFixed(1) + ' h');
+const RO2 = conOm([{ desde: '2025-08-01', hasta: '2025-08-31', motivo: 'a' }, { desde: '2026-01-01', hasta: '2026-01-15', motivo: 'b' }]);
+check(4, 'Varios periodos omitidos (mes completo + medio mes): enero queda con sus días restantes', RO2.meses.length === 11 && RO2.cal['2026-01'].omitidos === 15 && RO2.cal['2026-01'].carga < RL.cal['2026-01'].carga && RO2.cal['2026-01'].carga > 0, 'enero: ' + RO2.cal['2026-01'].laborables + ' días laborables');
+check(4, 'Omisión fuera del periodo (junio–setiembre 2026, planeación) no altera el diagnóstico', cerca(conOm([{ desde: '2026-06-01', hasta: '2026-09-30', motivo: 'planeación' }]).linea.total.OEE, L.OEE, 1e-15), '');
 const direct = calcularOEE(Object.assign({}, ctx, { registros: Object.assign({}, ref, { operacion_en_vacio: regRef.operacion_en_vacio, reuniones_emergencia: regRef.reuniones_emergencia }) })).linea.total;
 check(4, 'Archivos adjuntos subidos sin modificación (encabezado en fila 4) dan el mismo resultado', cerca(direct.OEE, L.OEE, 1e-12), p2(direct.OEE) + ' %');
 check(4, 'Regla del turno 2: eventos 00:00–02:00 asignados al día anterior', ref.no_conformidades.filter(r => r.inicio.slice(11, 13) < '02').every(r => r.dia_prod < r.inicio.slice(0, 10)), ref.no_conformidades.filter(r => r.inicio.slice(11, 13) < '02').length + ' no conformidades entre 00:00 y 02:00');
