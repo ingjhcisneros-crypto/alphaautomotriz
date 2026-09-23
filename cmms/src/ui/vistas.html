@@ -1,0 +1,257 @@
+      <!-- OEE DE LÍNEA -->
+      <section class="vista on stack" id="v-linea">
+        <div class="panel filtros">
+          <div class="rejilla c5">
+            <div class="campo"><label>Desde (mes)</label><select id="lDesde"></select></div>
+            <div class="campo"><label>Hasta (mes)</label><select id="lHasta"></select></div>
+            <div class="campo"><label>Turno</label><select id="lTurno"><option value="">Ambos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select></div>
+            <div class="campo"><label>&nbsp;</label><button class="btn btn-ghost" id="lLimpiar"><i class="fas fa-rotate-left"></i> Todo el periodo</button></div>
+            <div class="campo"><label>&nbsp;</label><button class="btn btn-primary" id="lPdf"><i class="fas fa-file-pdf"></i> Informe PDF</button></div>
+          </div>
+          <p class="nota" id="lAviso">El OEE de línea se calcula con horas de línea: cuánto de cada pérdida detuvo efectivamente la producción según la topología. No es el promedio de las máquinas.</p>
+        </div>
+        <div class="panel aviso-vacio vacio-oee" style="display:none"></div>
+        <div class="con-datos stack">
+          <div class="bloque" id="lb1">
+            <div class="bloque-cab"><h2>Indicadores de la línea</h2><div class="export" data-bloque="lb1"></div></div>
+            <div class="kpis" id="lKpis"></div>
+            <div class="banda chica" id="lBanda"></div>
+          </div>
+          <div class="panel bloque" id="lb2">
+            <header><h2>Cascada de tiempos de la línea</h2><span class="chico tenue">Resumen del periodo · clic en una etapa para ver el detalle y la evolución mensual</span></header>
+            <div class="etapas cascada" id="lCascada"></div>
+          </div>
+          <div class="rejilla c2 dos-bloques lin-graf">
+            <div class="panel bloque" id="lb3">
+              <header><h2>Evolución mensual</h2><div class="export" data-bloque="lb3"></div></header>
+              <div class="lienzo-graf"><canvas id="gLEvol"></canvas></div>
+            </div>
+            <div class="panel bloque" id="lb4">
+              <header><h2>Pérdidas de la línea</h2><div class="export" data-bloque="lb4"></div></header>
+              <div class="tabla-caja"><table id="lPerdidas"></table></div>
+              <p class="nota">Horas-máquina: suma de lo que perdió cada equipo. Horas de línea: lo que efectivamente detuvo la producción. Clic en una categoría para ver su reparto por máquina y por mes.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- OEE POR MÁQUINA -->
+      <section class="vista stack" id="v-maquina">
+        <div class="panel filtros">
+          <div class="rejilla c6">
+            <div class="campo"><label>Desde (mes)</label><select id="mDesde"></select></div>
+            <div class="campo"><label>Hasta (mes)</label><select id="mHasta"></select></div>
+            <div class="campo"><label>Etapa</label><select id="mEtapa"></select></div>
+            <div class="campo"><label>Topología</label><select id="mTopo"><option value="">Todas</option><option value="serie">Serie</option><option value="paralelo">Paralelo</option><option value="soporte">Soporte</option></select></div>
+            <div class="campo"><label>Turno</label><select id="mTurno"><option value="">Ambos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select></div>
+            <div class="campo"><label>&nbsp;</label><button class="btn btn-primary" id="mPdf"><i class="fas fa-file-pdf"></i> Informe PDF</button></div>
+          </div>
+          <div class="campo" style="margin-top:var(--s3)"><label>Equipos</label><div class="chips" id="mEquipos"></div></div>
+          <p class="nota">El OEE de cada máquina parte de su propio tiempo de carga y descuenta sus propias paradas en horas-máquina.</p>
+        </div>
+        <div class="panel aviso-vacio vacio-oee" style="display:none"></div>
+        <div class="con-datos stack">
+          <div class="panel bloque" id="mb1">
+            <header><h2>Resumen por máquina</h2><div class="export" data-bloque="mb1"></div></header>
+            <div class="tabla-caja"><table id="mResumen"></table></div>
+            <p class="nota">Clic en una máquina para ver su cascada de tiempos (6 etapas) y su evolución mensual. Validez estadística: suficiente ≥ 30 fallas, limitada 5 a 29, insuficiente &lt; 5.</p>
+          </div>
+          <div class="panel bloque" id="mb2">
+            <header><h2>OEE por máquina y por mes</h2><div class="export" data-bloque="mb2"></div></header>
+            <details class="fold"><summary>Ver el detalle mensual <span class="hint">se muestra solo a pedido</span></summary><div class="cuerpo">
+            <div class="tabla-caja"><table class="calor" id="mCruzada"></table></div>
+            <p class="nota">Escala: rojo &lt; 65 %, ámbar &lt; 75 %, verde claro &lt; 85 %, verde ≥ 85 %. Clic en una celda para ver el detalle del mes.</p></div></details>
+          </div>
+          <div class="panel bloque" id="mb3">
+            <header><h2>Pérdidas por máquina (horas-máquina)</h2><div class="export" data-bloque="mb3"></div></header>
+            <div class="lienzo-graf alto"><canvas id="gMPerdidas"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ANÁLISIS DE PARADAS -->
+      <section class="vista stack" id="v-paradas">
+        <div class="panel filtros">
+          <div class="rejilla c5">
+            <div class="campo"><label>Desde (mes)</label><select id="pDesde"></select></div>
+            <div class="campo"><label>Hasta (mes)</label><select id="pHasta"></select></div>
+            <div class="campo"><label>Turno</label><select id="pTurno"><option value="">Ambos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select></div>
+            <div class="campo"><label>Medida</label><select id="pMedida"><option value="h">Horas</option><option value="n">Eventos</option></select></div>
+            <div class="campo"><label>&nbsp;</label><button class="btn btn-primary" id="pPdf"><i class="fas fa-file-pdf"></i> Informe PDF</button></div>
+          </div>
+        </div>
+        <div class="panel aviso-vacio vacio-oee" style="display:none"></div>
+        <div class="con-datos stack">
+          <div class="panel bloque" id="pb1">
+            <header><h2>Paradas por máquina y tipo</h2><div class="export" data-bloque="pb1"></div></header>
+            <div class="tabla-caja"><table class="calor" id="pMatriz"></table></div>
+            <p class="nota">Horas-máquina de cada tipo de parada. Clic en una celda para ver eventos, causas y evolución; clic en el nombre de la máquina para ver todos sus tipos.</p>
+          </div>
+          <div class="panel bloque" id="pb2">
+            <header><h2>Análisis de causas (Pareto)</h2><div class="export" data-bloque="pb2"></div></header>
+            <div class="rejilla c3" style="margin-bottom:var(--s3)">
+              <div class="campo"><label>Tipo de parada</label><select id="pCat"></select></div>
+              <div class="campo"><label>Máquina</label><select id="pEq"></select></div>
+              <div class="campo"><label>Mostrar</label><select id="pTop"><option value="10">10 causas principales</option><option value="20">20 causas</option><option value="999">Todas</option></select></div>
+            </div>
+            <div class="lienzo-graf alto"><canvas id="gPPareto"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- REGISTROS Y CARGA -->
+      <section class="vista stack" id="v-registros">
+        <div class="pestanas pest-grandes" id="regTabs"></div>
+        <div class="panel">
+          <header><div><h2 id="regTitulo">Registro</h2><div class="chico tenue" id="regSub"></div></div>
+            <div class="fila">
+              <button class="btn btn-ghost" id="regPlantilla"><i class="fas fa-file-arrow-down"></i> Descargar plantilla</button>
+              <button class="btn btn-ghost" id="regNuevo"><i class="fas fa-plus"></i> Registro manual</button>
+              <button class="btn btn-ghost" id="regExportar"><i class="fas fa-file-export"></i> Exportar registros</button>
+            </div></header>
+          <div class="carga">
+            <div class="campo"><label>Archivo Excel (.xlsx)</label><input type="file" id="regArchivo" accept=".xlsx,.xls,.xlsm"></div>
+            <div class="modos">
+              <label class="modo"><input type="radio" name="regModo" value="incremental" checked><div><b>B · Carga incremental</b><span>Conserva lo existente e inserta solo los registros nuevos (duplicado: misma fecha y hora, equipo y duración).</span></div></label>
+              <label class="modo"><input type="radio" name="regModo" value="completa"><div><b>A · Carga completa (reemplazo)</b><span>Borra los registros del periodo y carga los del archivo. Pide confirmación y genera un respaldo descargable.</span></div></label>
+            </div>
+            <label class="interruptor"><input type="checkbox" id="regForzar"> Forzar filas con advertencia (domingo, feriado u hora fuera de la ventana 08:00 – 02:00)</label>
+            <div class="fila"><button class="btn btn-primary" id="regValidar" disabled><i class="fas fa-magnifying-glass"></i> Validar archivo</button>
+              <button class="btn btn-primary" id="regInsertar" disabled><i class="fas fa-database"></i> Insertar</button>
+              <button class="btn btn-ghost" id="regInforme" disabled><i class="fas fa-file-excel"></i> Descargar informe de validación</button></div>
+          </div>
+          <div id="regResultado"></div>
+        </div>
+        <div class="panel">
+          <header><h2>Registros cargados <span class="marcador m-info" id="regConteo">0</span></h2>
+            <div class="fila"><select id="regFMes" style="width:150px"></select><select id="regFEq" style="width:160px"></select>
+              <input type="search" id="regBuscar" placeholder="Buscar texto" style="width:190px">
+              <button class="btn btn-danger btn-sm" id="regVaciar"><i class="fas fa-trash"></i> Vaciar registro</button></div></header>
+          <div class="tabla-caja alta"><table id="regTabla"></table></div>
+          <div class="fila" style="margin-top:var(--s3)"><button class="btn btn-ghost btn-sm" id="regAnt"><i class="fas fa-chevron-left"></i></button><span class="chico tenue" id="regPag"></span><button class="btn btn-ghost btn-sm" id="regSig"><i class="fas fa-chevron-right"></i></button></div>
+        </div>
+      </section>
+
+      <!-- SIMULACIÓN DE ESCENARIOS -->
+      <section class="vista stack" id="v-simdes">
+        <div id="simAvisos"></div>
+        <div class="pestanas pest-grandes" id="simTabs">
+          <button class="pest on" data-t="config">1 · Configuración y distribuciones</button>
+          <button class="pest" data-t="validacion">2 · Validación de la línea base</button>
+          <button class="pest" data-t="escenarios">3 · Escenarios</button>
+          <button class="pest" data-t="resultados">4 · Resultados</button>
+        </div>
+        <div class="sub-vista on stack" id="sim-config">
+          <div class="panel">
+            <header><h2>Modelo de simulación</h2><div class="fila"><button class="btn btn-primary" id="simAjustar"><i class="fas fa-wand-magic-sparkles"></i> Ajustar distribuciones desde los registros</button></div></header>
+            <div id="simEstadoModelo"></div>
+          </div>
+          <div class="panel">
+            <header><h2>Distribuciones ajustadas</h2><div class="export" data-bloque="simDist"></div></header>
+            <div id="simDist"></div>
+          </div>
+          <div class="panel">
+            <header><h2>Gráfico de ajuste</h2><select id="simDistSel" style="max-width:420px"></select></header>
+            <div class="lienzo-graf"><canvas id="gAjuste"></canvas></div>
+            <p class="nota">Función de distribución acumulada empírica frente a la ajustada. El estadístico D de Kolmogorov-Smirnov es la máxima distancia vertical entre ambas curvas.</p>
+          </div>
+        </div>
+        <div class="sub-vista stack" id="sim-validacion">
+          <div class="panel">
+            <header><h2>Validación y verificación del escenario base</h2><button class="btn btn-primary" id="simValidar"><i class="fas fa-play"></i> Ejecutar línea base (E0)</button></header>
+            <div class="progreso" id="simProgV"><i></i><span></span></div>
+            <div id="simValidacion"></div>
+          </div>
+        </div>
+        <div class="sub-vista stack" id="sim-escenarios">
+          <div class="panel">
+            <header><h2>Escenarios</h2><div class="fila"><button class="btn btn-ghost" id="simNuevoEsc"><i class="fas fa-plus"></i> Nuevo escenario</button><button class="btn btn-primary" id="simCorrerTodos"><i class="fas fa-forward"></i> Ejecutar todos</button></div></header>
+            <div class="progreso" id="simProgE"><i></i><span></span></div>
+            <div id="simEscenarios"></div>
+          </div>
+        </div>
+        <div class="sub-vista stack" id="sim-resultados">
+          <div class="panel">
+            <header><h2>Comparación contra la línea base</h2><div class="fila"><div class="export" data-bloque="simComp"></div><button class="btn btn-ghost btn-sm" id="simPdf"><i class="fas fa-file-pdf"></i> PDF</button></div></header>
+            <div id="simComp"></div>
+          </div>
+          <div class="panel">
+            <header><h2>Indicador por escenario</h2><select id="simIndicador" style="width:220px"><option value="OEE">OEE</option><option value="D">Disponibilidad</option><option value="R">Rendimiento</option><option value="Q">Calidad</option><option value="produccion">Producción</option></select></header>
+            <div class="lienzo-graf"><canvas id="gEscenarios"></canvas></div>
+          </div>
+          <div class="panel">
+            <header><h2>Recursos, colas y buffer</h2><select id="simEscRec" style="width:260px"></select></header>
+            <div id="simRecursos"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PARÁMETROS -->
+      <section class="vista stack" id="v-param">
+        <div class="panel" id="parCalOp">
+          <header><h2>Calendario de operación</h2><div class="fila"><button class="btn btn-primary" id="parCalGuardar"><i class="fas fa-floppy-disk"></i> Guardar y recalcular</button></div></header>
+          <p class="nota" style="margin-top:0">Define qué tramos cuentan. <b>Datos recolectados</b>: el periodo activo (solo registros; sin programa de mantenimiento). <b>Periodos omitidos</b>: rangos que no cuentan para nada (no suman calendario, no se muestran sus meses, sus registros no entran al cálculo y no se programan órdenes). <b>Programa de mantenimiento</b>: desde qué fecha rigen el plan maestro, la agenda y las órdenes.</p>
+          <div class="linea-tiempo" id="parLineaTiempo"></div>
+          <div class="rejilla c2" style="margin-top:var(--s4)">
+            <div>
+              <h3>Periodos omitidos</h3>
+              <div class="tabla-caja"><table id="parOmisiones"></table></div>
+              <button class="btn btn-ghost btn-sm" id="parOmAdd" style="margin-top:var(--s3)"><i class="fas fa-plus"></i> Agregar periodo omitido</button>
+            </div>
+            <div>
+              <h3>Programa de mantenimiento</h3>
+              <div class="rejilla c2"><div class="campo"><label>Inicio del programa</label><input type="date" id="parProgIni"></div>
+                <div class="campo"><label>Horizonte (meses)</label><input type="number" min="1" max="36" id="parProgMeses"></div></div>
+              <p class="nota" id="parProgNota"></p>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <header><h2>Parámetros del periodo</h2><div class="fila"><select id="parPeriodoSel" style="width:230px" title="Periodo activo"></select>
+            <button class="btn btn-ghost" id="parNuevoPer"><i class="fas fa-calendar-plus"></i> Nuevo periodo</button>
+            <button class="btn btn-primary" id="parGuardar"><i class="fas fa-floppy-disk"></i> Guardar y recalcular</button></div></header>
+          <p class="nota" style="margin-top:0">Cada registro pertenece a un periodo. Al activar otro periodo, el tablero, el cálculo y la simulación trabajan solo con sus registros; los del periodo anterior se conservan.</p>
+          <div class="rejilla c4" id="parPeriodo"></div>
+          <div class="banda chica" id="parCalendario" style="margin-top:var(--s4)"></div>
+        </div>
+        <div class="panel">
+          <header><h2>Feriados y días no laborables</h2><div class="fila"><input type="date" id="parFerFecha" style="width:160px" title="Desde"><input type="date" id="parFerHasta" style="width:160px" title="Hasta (opcional: paro de planta, vacaciones colectivas)"><input type="text" id="parFerMotivo" placeholder="Motivo" style="width:220px"><button class="btn btn-ghost btn-sm" id="parFerAdd"><i class="fas fa-plus"></i> Agregar</button></div></header>
+          <div class="tabla-caja"><table id="parFeriados"></table></div>
+        </div>
+        <div class="panel">
+          <header><h2>Catálogo de equipos</h2><button class="btn btn-primary btn-sm" id="parEqGuardar"><i class="fas fa-floppy-disk"></i> Guardar equipos</button></header>
+          <div class="tabla-caja"><table id="parEquipos"></table></div>
+        </div>
+        <div class="panel">
+          <header><h2>Conversión a horas de línea por topología</h2><button class="btn btn-primary btn-sm" id="parFacGuardar"><i class="fas fa-floppy-disk"></i> Guardar factores</button></header>
+          <div id="parFactores"></div>
+        </div>
+        <div class="panel">
+          <header><h2>Parámetros de la simulación</h2><button class="btn btn-primary btn-sm" id="parSimGuardar"><i class="fas fa-floppy-disk"></i> Guardar parámetros</button></header>
+          <div class="rejilla c4" id="parSim"></div>
+        </div>
+        <div class="panel">
+          <header><h2>Catálogos (listas de valores válidos)</h2><button class="btn btn-primary btn-sm" id="parListGuardar"><i class="fas fa-floppy-disk"></i> Guardar catálogos</button></header>
+          <p class="nota" style="margin-top:0">Un valor por línea. Estas listas alimentan las validaciones de carga y los desplegables de las plantillas.</p>
+          <div class="rejilla c3" id="parListas"></div>
+        </div>
+      </section>
+
+      <!-- AUDITORÍA -->
+      <section class="vista stack" id="v-audit">
+        <div class="panel">
+          <header><h2>Verificaciones del sistema</h2><div class="fila"><button class="btn btn-primary" id="audCorrer"><i class="fas fa-play"></i> Ejecutar verificaciones</button><div class="export" data-bloque="audTabla"></div></div></header>
+          <div id="audTabla"></div>
+        </div>
+        <div class="panel">
+          <header><h2>Respaldo completo</h2></header>
+          <div class="fila"><button class="btn btn-ghost" id="audRespaldo"><i class="fas fa-download"></i> Descargar respaldo (JSON)</button>
+            <label class="btn btn-ghost"><i class="fas fa-upload"></i> Restaurar respaldo<input type="file" id="audRestaurar" accept=".json" hidden></label></div>
+          <p class="nota">El sistema guarda todo en IndexedDB del navegador de este equipo; los datos sobreviven al cierre del navegador. Descargue respaldos periódicos: borrar los datos del sitio en el navegador los elimina.</p>
+          <div class="tabla-caja" style="margin-top:var(--s3)"><table id="audRespaldos"></table></div>
+        </div>
+        <div class="panel">
+          <header><h2>Bitácora</h2></header>
+          <div class="tabla-caja alta"><table id="audBitacora"></table></div>
+        </div>
+      </section>

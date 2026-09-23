@@ -1,0 +1,450 @@
+
+
+<div class="portal" id="portal">
+  <canvas id="redes"></canvas>
+  <div class="portal-caja">
+    <div class="portal-head">
+      <div class="wordmark">CMMS<span>4.0</span></div>
+      <div class="wordmark-sub">gestión de mantenimiento asistida</div>
+      <div class="kicker">Sistema desarrollado para sustentar trabajos de suficiencia profesional</div>
+      <h1>Modelo de gestión basado en TPM 4.0 y SMED para incrementar el OEE en la línea de láminas
+          antiabrasivas de una empresa procesadora de caucho</h1>
+      <div class="sub">Trabajo de suficiencia profesional para optar el título profesional de Ingeniero Industrial</div>
+      <div class="autores">
+        <div class="autor"><b>Gutierrez, Angelica Xiomara</b><span>ORCID 0009-0002-4293-8825</span></div>
+        <div class="autor"><b>Cisneros, Jhober Lobaton</b><span>ORCID 0009-0005-7875-0797</span></div>
+      </div>
+    </div>
+    <div class="portal-logos">
+      <div class="slot-logo" id="slotUpc"><span class="ph">Logo UPC</span></div>
+      <div class="slot-logo" id="slotEmp"><span class="ph">Logo de la empresa</span></div>
+    </div>
+    <div class="portal-form">
+      <h2>Iniciar sesión</h2>
+      <div class="rejilla c2">
+        <div class="campo"><label for="inUser">Usuario</label><input type="text" id="inUser" autocomplete="off" placeholder="correo institucional" autofocus></div>
+        <div class="campo"><label for="inPass">Clave</label><input type="password" id="inPass" placeholder="••••••"></div>
+      </div>
+      <button class="btn btn-primary btn-block" id="btnEntrar" style="margin-top:var(--s4)">Entrar</button>
+      <div class="login-msg" id="loginMsg"></div>
+      <div class="pistas">Solicite su usuario y clave al administrador del sistema. Las claves se guardan cifradas.</div>
+    </div>
+  </div>
+</div>
+
+<div class="app" id="app">
+  <aside class="rail">
+    <div class="marcas">
+      <div class="slot" id="railUpc"><span class="ph">Logo UPC</span></div>
+      <div class="by">by</div>
+      <div class="slot" id="railEmp"><span class="marca-txt">LEXACAUCHO</span></div>
+    </div>
+    <nav id="menu">
+      <div class="grupo"><h3>Indicadores</h3>
+        <a data-vista="linea" data-tit="OEE de|línea" data-sub="Horas de línea: lo que efectivamente detuvo la producción" class="activo"><i class="fas fa-chart-line"></i> OEE de línea</a>
+        <a data-vista="maquina" data-tit="OEE por|máquina" data-sub="Horas-máquina: cada equipo frente a su propio tiempo de carga"><i class="fas fa-gauge-high"></i> OEE por máquina</a>
+        <a data-vista="paradas" data-tit="Análisis de|paradas" data-sub="Correctivo, formatos, auxiliares, paradas cortas, vacío y paradas de emergencia por máquina"><i class="fas fa-triangle-exclamation"></i> Análisis de paradas</a>
+        <a data-vista="registros" data-tit="Registros y|carga" data-sub="Siete registros operativos: plantillas, carga por Excel y edición"><i class="fas fa-file-excel"></i> Registros y carga</a>
+      </div>
+      <div class="grupo"><h3>Simulación</h3>
+        <a data-vista="simdes" data-tit="Simulación de|escenarios" data-sub="Eventos discretos con réplicas, validación y comparación de escenarios"><i class="fas fa-flask"></i> Escenarios</a>
+        <a data-vista="sim" data-tit="Animación de la|línea" data-sub="Producción por lotes sobre el calendario real de turnos"><i class="fas fa-diagram-project"></i> Animación</a>
+        <a data-vista="espec" data-tit="Especificaciones|técnicas" data-sub="Ficha del producto, tiempos de ciclo y de traslado"><i class="fas fa-ruler-combined"></i> Especificaciones</a>
+      </div>
+      <div class="grupo"><h3>Mantenimiento</h3>
+        <a data-vista="plan" data-tit="Programa de|mantenimiento" data-sub="Plan maestro de los tres pilares"><i class="fas fa-list-check"></i> Programa</a>
+        <a data-vista="agenda" data-tit="Agenda del|día" data-sub="Qué le toca a cada equipo, con historial de cumplimiento"><i class="fas fa-calendar-day"></i> Agenda del día</a>
+        <a data-vista="anom" data-tit="Anomalías y|observaciones" data-sub="Hallazgos levantados en las rutinas"><i class="fas fa-flag"></i> Anomalías</a>
+      </div>
+      <div class="grupo"><h3>Sistema</h3>
+        <a data-vista="param" data-tit="Parámetros del|periodo" data-sub="Periodo, equipos, topología, catálogos y parámetros de simulación"><i class="fas fa-sliders"></i> Parámetros</a>
+        <a data-vista="audit" data-tit="Auditoría del|sistema" data-sub="Verificaciones de integridad, recálculo y respaldo"><i class="fas fa-shield-halved"></i> Auditoría</a>
+        <a data-vista="admin" data-tit="Administración del|sistema" data-sub="Fecha, jornada de trabajo y arranque del programa"><i class="fas fa-gear"></i> Administración</a>
+        <a data-vista="marca" data-tit="Usuarios y|marca" data-sub="Perfiles, logotipos e ícono del sistema"><i class="fas fa-users-gear"></i> Usuarios y marca</a>
+      </div>
+    </nav>
+    <div class="pie">Línea de laminado<br>Área de producción</div>
+  </aside>
+
+  <div class="lienzo-app">
+    <header class="barra">
+      <div><div class="titulo" id="vTit">OEE de <span>línea</span></div><div class="sub" id="vSub">Horas de línea: lo que efectivamente detuvo la producción</div></div>
+      <div class="sesion">
+        <span class="marcador m-ok" id="chipRecalculo" title="Último recálculo del OEE">Sin recálculo</span>
+        <span class="marcador m-info" id="chipNube" hidden></span>
+        <span class="marcador m-info" id="chipFecha">—</span>
+        <button class="btn btn-ghost btn-sm" id="btnTema"><i class="fas fa-moon"></i></button>
+        <div class="quien"><b id="uNombre">—</b><span id="uRol">—</span></div>
+        <button class="btn btn-ghost btn-sm" id="btnSalir"><i class="fas fa-right-from-bracket"></i></button>
+      </div>
+    </header>
+
+    <div class="contenido">
+
+      <!-- SIMULACIÓN -->
+      <section class="vista stack" id="v-sim">
+        <div class="banda">
+          <div class="m"><div class="v" id="kBuenas">0</div><div class="k">Láminas terminadas</div></div>
+          <div class="m"><div class="v" id="kRitmo">–</div><div class="k">Ritmo real, láminas por hora</div></div>
+          <div class="m"><div class="v" id="kOee">–</div><div class="k">OEE medido en la corrida</div></div>
+          <div class="m"><div class="v" id="kCuello" style="font-size:1.4rem">–</div><div class="k">Equipo que restringe</div></div>
+        </div>
+        <div class="panel">
+          <div class="jornada">
+            <div><div class="fh" id="simHora">08:00:00</div><div class="fecha" id="simFecha">—</div></div>
+            <div class="col"><div class="k">Estado de la planta</div><div class="estado" id="simEstado">—</div></div>
+            <div class="col"><div class="k">Turno</div><div class="v" id="simTurno">—</div></div>
+            <div class="col"><div class="k">Tiempo simulado</div><div class="v" id="simTrans">0 h</div></div>
+            <div class="col"><div class="k">Horas produciendo</div><div class="v" id="simProd">0 h</div></div>
+            <div class="franja" id="simFranja"></div>
+          </div>
+          <div class="consola">
+            <button class="btn btn-primary" id="btnCero"><i class="fas fa-power-off"></i> Iniciar de cero</button>
+            <button class="btn btn-ghost" id="btnPlay"><i class="fas fa-play"></i> Continuar</button>
+            <button class="btn btn-ghost" id="btnDetener"><i class="fas fa-stop"></i> Detener</button>
+            <div class="velos"><button class="velo" data-v="1">×1</button><button class="velo on" data-v="120">×120</button>
+              <button class="velo" data-v="600">×600</button><button class="velo" data-v="1800">×1800</button>
+              <button class="velo" data-v="5400">×5400</button></div>
+            <div class="dcha">
+              <label class="interruptor"><input type="checkbox" id="chkDatos"> Datos nominales</label>
+              <button class="btn btn-ghost btn-sm" id="zOut"><i class="fas fa-magnifying-glass-minus"></i></button>
+              <span class="val" id="zVal">100%</span>
+              <button class="btn btn-ghost btn-sm" id="zIn"><i class="fas fa-magnifying-glass-plus"></i></button>
+              <button class="btn btn-ghost btn-sm" id="zHome"><i class="fas fa-house"></i></button>
+            </div>
+          </div>
+          <div class="diagrama" id="diagrama">
+            <div class="lienzo" id="lienzo">
+              <svg class="cables" id="cables"></svg>
+              <div class="hilera hilera-cald">
+                <div class="nodo soporte" data-id="caldero1" tabindex="0"><span class="pin"></span>
+                  <div class="etapa">Generación de vapor</div><div class="nombre">Caldero 1</div>
+                  <div class="alimenta">Alimenta laminado, prensado y curado</div><div class="datos"></div></div>
+                <div class="nodo soporte" data-id="caldero2" tabindex="0"><span class="pin"></span>
+                  <div class="etapa">Generación de vapor</div><div class="nombre">Caldero 2</div>
+                  <div class="alimenta">Alimenta laminado, prensado y curado</div><div class="datos"></div></div>
+              </div>
+              <div class="hilera hilera-main">
+                <div class="punta" data-id="inicio"></div>
+                <div class="nodo" data-id="dosificado" tabindex="0"><span class="pin"></span><span class="espera"></span><span class="marca">cuello</span>
+                  <div class="etapa">Dosificado</div><div class="nombre">Dosificado</div><div class="vivo"></div><div class="datos"></div><div class="prog"><i></i></div><span class="merma"></span></div>
+                <div class="nodo" data-id="molino" tabindex="0"><span class="pin"></span><span class="espera"></span><span class="marca">cuello</span>
+                  <div class="etapa">Molienda</div><div class="nombre">Molino</div><div class="vivo"></div><div class="datos"></div><div class="prog"><i></i></div><span class="merma"></span></div>
+                <div class="nodo" data-id="extruder" tabindex="0"><span class="pin"></span><span class="espera"></span><span class="marca">cuello</span>
+                  <div class="etapa">Laminado</div><div class="nombre">Extruder</div><div class="vivo"></div><div class="datos"></div><div class="prog"><i></i></div><span class="merma"></span></div>
+                <div class="col-prensas" data-id="grupo-prensas">
+                  <div class="nodo" data-id="prensa1" tabindex="0"><span class="pin"></span><span class="espera"></span><span class="marca">cuello</span><div class="etapa">Prensado</div><div class="nombre">Prensa 1</div><div class="vivo"></div><div class="datos"></div><div class="prog"><i></i></div><span class="merma"></span></div>
+                  <div class="nodo" data-id="prensa2" tabindex="0"><span class="pin"></span><span class="espera"></span><span class="marca">cuello</span><div class="etapa">Prensado</div><div class="nombre">Prensa 2</div><div class="vivo"></div><div class="datos"></div><div class="prog"><i></i></div><span class="merma"></span></div>
+                  <div class="nodo" data-id="prensa3" tabindex="0"><span class="pin"></span><span class="espera"></span><span class="marca">cuello</span><div class="etapa">Prensado</div><div class="nombre">Prensa 3</div><div class="vivo"></div><div class="datos"></div><div class="prog"><i></i></div><span class="merma"></span></div>
+                  <div class="nodo" data-id="prensa4" tabindex="0"><span class="pin"></span><span class="espera"></span><span class="marca">cuello</span><div class="etapa">Prensado</div><div class="nombre">Prensa 4</div><div class="vivo"></div><div class="datos"></div><div class="prog"><i></i></div><span class="merma"></span></div>
+                  <div class="nodo" data-id="prensa5" tabindex="0"><span class="pin"></span><span class="espera"></span><span class="marca">cuello</span><div class="etapa">Prensado</div><div class="nombre">Prensa 5</div><div class="vivo"></div><div class="datos"></div><div class="prog"><i></i></div><span class="merma"></span></div>
+                </div>
+                <div class="nodo" data-id="autoclave" tabindex="0"><span class="pin"></span><span class="espera"></span><span class="marca">cuello</span>
+                  <div class="etapa">Curado</div><div class="nombre">Autoclave</div><div class="vivo"></div><div class="datos"></div><div class="prog"><i></i></div><span class="merma"></span></div>
+                <div class="nodo" data-id="acabado" tabindex="0"><span class="pin"></span><span class="espera"></span><span class="marca">cuello</span>
+                  <div class="etapa">Acabado</div><div class="nombre">Acabado</div><div class="vivo"></div><div class="datos"></div><div class="prog"><i></i></div><span class="merma"></span></div>
+                <div class="punta" data-id="fin"></div>
+              </div>
+            </div>
+          </div>
+          <div class="leyenda">
+            <span><i class="pt" style="background:var(--lima)"></i>Lote o lámina en traslado</span>
+            <span><i class="pt" style="background:var(--warning)"></i>Almuerzo, capacitación o espera</span>
+            <span><i class="pt" style="background:var(--danger)"></i>Merma acumulada</span>
+            <span><i class="pt" style="background:var(--info)"></i>Bloqueado por la etapa siguiente</span>
+          </div>
+        </div>
+        <div class="banda chica">
+          <div class="m"><div class="v" id="kMerma">0</div><div class="k">Merma acumulada, kg</div></div>
+          <div class="m"><div class="v" id="kRend">–</div><div class="k">Aprovechamiento</div></div>
+          <div class="m"><div class="v" id="kD">–</div><div class="k">Disponibilidad de la restricción</div></div>
+          <div class="m"><div class="v" id="kMes">–</div><div class="k">Proyección mensual</div></div>
+          <div class="m"><div class="v" id="tActual">0</div><div class="k">Láminas del turno</div></div>
+        </div>
+        <div class="panel">
+          <header><h2>Eficiencia por equipo</h2>
+            <div class="escala">
+              <span><i style="background:var(--danger)"></i>Malo</span><span><i style="background:var(--warning)"></i>Regular</span>
+              <span><i style="background:var(--accent2)"></i>Bueno</span><span><i style="background:var(--lima)"></i>Excelente</span>
+            </div></header>
+          <div class="rejilla c6" id="eqCards"></div>
+        </div>
+        <details class="fold"><summary>Producción por turno <span class="hint" id="turnoInfo"></span></summary>
+          <div class="cuerpo">
+            <div class="rejilla c4" style="margin-bottom:var(--s4)">
+              <div class="pastilla"><div class="v" id="turnoActual">Turno 1</div><div class="k">Turno en curso</div></div>
+              <div class="pastilla"><div class="v" id="tPromedio">–</div><div class="k">Promedio por turno cerrado</div></div>
+              <div class="pastilla"><div class="v" id="tMejor">–</div><div class="k">Mejor turno</div></div>
+              <div class="pastilla"><div class="v" id="tTotal">0</div><div class="k">Acumulado</div></div>
+            </div><div class="turnos" id="turnoTira"></div></div>
+        </details>
+        <details class="fold"><summary>Detalle por etapa</summary>
+          <div class="cuerpo"><div class="tabla-caja"><table>
+            <thead><tr><th>Etapa</th><th>Equipo</th><th class="num">Nominal</th><th class="num">Ciclo</th>
+              <th>Utilización</th><th class="num">Espera</th><th class="num">Entrada</th><th class="num">Merma</th><th>Paradas</th></tr></thead>
+            <tbody id="tablaEtapas"></tbody></table></div></div>
+        </details>
+      </section>
+
+      <!-- ESPECIFICACIONES -->
+      <section class="vista stack" id="v-espec">
+        <p class="nota" style="margin:0">Producto, capacidades y lotes tienen una sola fuente: <b>Parámetros</b> (catálogo de equipos, periodo y simulación). Aquí se muestran en solo lectura; la animación los toma automáticamente.</p>
+        <div class="panel">
+          <header><h2>Producto patrón y formatos</h2><span class="chico tenue">Masa unitaria vigente: <b id="fPeso">–</b> kg por lámina</span></header>
+          <div class="tabla-caja"><table id="espProductos"></table></div>
+        </div>
+        <div class="panel">
+          <header><h2>Capacidad y ciclo por máquina</h2><span class="chico tenue">Capacidad de ficha del catálogo de equipos</span></header>
+          <div class="tabla-caja"><table>
+            <thead><tr><th>Etapa</th><th>Máquina</th><th class="num">Capacidad</th><th>Unidad</th>
+              <th class="num">Equivale en kg/h</th><th class="num">Equivale en láminas/h</th><th class="num">Ciclo por lámina</th></tr></thead>
+            <tbody id="ciclosTabla"></tbody></table></div>
+        </div>
+        <div class="panel">
+          <header><h2>Tiempos de traslado</h2><span class="chico tenue">Diez mediciones por tramo, el sistema usa el promedio</span></header>
+          <div id="traslados" class="stack" style="--s5:var(--s4)"></div>
+        </div>
+      </section>
+
+      <!-- PROGRAMA -->
+      <section class="vista stack" id="v-plan">
+        <div class="banda chica">
+          <div class="m"><div class="v" id="plTareas">0</div><div class="k">Tareas en el filtro</div></div>
+          <div class="m"><div class="v" id="plPlan">0</div><div class="k">Planificado</div></div>
+          <div class="m"><div class="v" id="plAuto">0</div><div class="k">Autónomo</div></div>
+          <div class="m"><div class="v" id="plCal">0</div><div class="k">Calidad</div></div>
+          <div class="m"><div class="v" id="plHoras">–</div><div class="k">Horas-hombre programadas</div></div>
+          <div class="m"><div class="v" id="plDia">–</div><div class="k">Carga autónoma diaria</div></div>
+        </div>
+        <div class="panel">
+          <header><h2>Plan maestro</h2>
+            <div class="fila">
+              <select id="planEqF" style="width:170px"></select>
+              <div class="pestanas" id="planTipo"><button class="pest on" data-t="todos">Todos</button>
+                <button class="pest" data-t="Planificado">Planificado</button><button class="pest" data-t="Autónomo">Autónomo</button>
+                <button class="pest" data-t="Calidad">Calidad</button></div>
+              <button class="btn btn-ghost btn-sm" id="planPdf" title="Plan del filtro actual en PDF"><i class="fas fa-file-pdf"></i> PDF</button>
+              <button class="btn btn-primary btn-sm" id="btnNuevaTarea"><i class="fas fa-plus"></i> Nueva tarea</button>
+            </div></header>
+          <div class="tabla-caja alta"><table>
+            <thead><tr><th>Equipo</th><th>Paso</th><th>Actividad</th><th>Criterio de conformidad</th>
+              <th>Pilar</th><th>Frecuencia</th><th>Responsable</th><th class="num">Tiempo</th><th></th></tr></thead>
+            <tbody id="planTabla"></tbody></table></div>
+        </div>
+      </section>
+
+      <!-- AGENDA -->
+      <section class="vista stack" id="v-agenda">
+        <div class="panel">
+          <header><h2>Qué le toca hoy a cada equipo</h2>
+            <div class="fila">
+              <div class="con-btn" style="width:230px"><input type="date" id="agFecha">
+                <button class="btn btn-ghost btn-sm" id="agHoy">Hoy</button></div>
+              <button class="btn btn-ghost btn-sm" id="agAnt"><i class="fas fa-chevron-left"></i></button>
+              <button class="btn btn-ghost btn-sm" id="agSig"><i class="fas fa-chevron-right"></i></button>
+            </div></header>
+          <div class="banda chica">
+            <div class="m"><div class="v" id="agTot">0</div><div class="k">Órdenes del día</div></div>
+            <div class="m"><div class="v" id="agPla">0</div><div class="k">Planificado</div></div>
+            <div class="m"><div class="v" id="agAut">0</div><div class="k">Autónomo</div></div>
+            <div class="m"><div class="v" id="agCal">0</div><div class="k">Calidad</div></div>
+            <div class="m"><div class="v" id="agCum">–</div><div class="k">Cumplimiento del día</div></div>
+          </div>
+          <p class="nota" id="agAviso"></p>
+        </div>
+        <div id="agLista" class="stack"></div>
+        <div class="panel">
+          <header><h2>Historial de cumplimiento</h2>
+            <div class="fila">
+              <input type="date" id="hDesde" style="width:165px"><input type="date" id="hHasta" style="width:165px">
+              <select id="hEq" style="width:160px"></select>
+              <select id="hTipo" style="width:145px"><option value="">Todos los pilares</option>
+                <option>Planificado</option><option>Autónomo</option><option>Calidad</option></select>
+              <button class="btn btn-ghost btn-sm" id="hReset">Desde el inicio</button>
+              <button class="btn btn-ghost btn-sm" id="hPdf" title="Historial del filtro actual en PDF"><i class="fas fa-file-pdf"></i> PDF</button>
+            </div></header>
+          <div class="banda chica">
+            <div class="m"><div class="v" id="hTot">0</div><div class="k">Órdenes del periodo</div></div>
+            <div class="m"><div class="v" id="hEje">0</div><div class="k">Cumplidas</div></div>
+            <div class="m"><div class="v" id="hNo">0</div><div class="k">No cumplidas</div></div>
+            <div class="m"><div class="v" id="hPen">0</div><div class="k">Aún programadas</div></div>
+            <div class="m"><div class="v" id="hCum">–</div><div class="k">Cumplimiento</div></div>
+            <div class="m"><div class="v" id="hHrs">–</div><div class="k">Horas en jornada</div></div>
+          </div>
+          <div class="tabla-caja alta" style="margin-top:var(--s4)"><table>
+            <thead><tr><th>Fecha</th><th>Equipo</th><th>Pilar</th><th>Actividad</th><th class="num">Tiempo</th>
+              <th>Jornada</th><th>Resultado</th><th>Ejecutó</th><th></th></tr></thead>
+            <tbody id="hTabla"></tbody></table></div>
+        </div>
+      </section>
+
+      <!-- ANOMALÍAS -->
+      <section class="vista stack" id="v-anom">
+        <div class="banda">
+          <div class="m"><div class="v" id="anTot">0</div><div class="k">Registros</div></div>
+          <div class="m"><div class="v" id="anNC">0</div><div class="k">No conformidades</div></div>
+          <div class="m"><div class="v" id="anObs">0</div><div class="k">Observaciones</div></div>
+          <div class="m"><div class="v" id="anPend">0</div><div class="k">Sin revisar</div></div>
+          <div class="m"><div class="v" id="anEq" style="font-size:1.4rem">–</div><div class="k">Equipo con más registros</div></div>
+        </div>
+        <div class="panel">
+          <header><h2>Registro</h2>
+            <div class="pestanas" id="anFiltro"><button class="pest on" data-f="todos">Todos</button>
+              <button class="pest" data-f="No conformidad">No conformidades</button>
+              <button class="pest" data-f="Observación">Observaciones</button>
+              <button class="pest" data-f="pend">Sin revisar</button></div>
+            <button class="btn btn-ghost btn-sm" id="anPdf" title="Registro del filtro actual en PDF"><i class="fas fa-file-pdf"></i> PDF</button></header>
+          <div class="tabla-caja alta"><table>
+            <thead><tr><th>Fecha</th><th>Equipo</th><th>Clase</th><th>Detalle</th><th>Criterio esperado</th><th>Origen</th><th>Revisión</th><th></th></tr></thead>
+            <tbody id="anTabla"></tbody></table></div>
+        </div>
+      </section>
+
+      <!--VISTAS_NUEVAS-->
+
+      <!-- ADMINISTRACIÓN -->
+      <section class="vista stack" id="v-admin">
+        <div class="panel">
+          <header><h2>Fecha del sistema</h2></header>
+          <div class="rejilla c3">
+            <div class="campo"><label>Día simulado</label>
+              <div class="con-btn"><input type="date" id="sysFecha"><button class="btn btn-ghost btn-sm" id="sysReal">Real</button></div></div>
+            <div class="campo"><label>Avanzar</label>
+              <div class="fila"><button class="btn btn-ghost btn-sm" id="sysM1">−1 día</button>
+                <button class="btn btn-ghost btn-sm" id="sysP1">+1 día</button>
+                <button class="btn btn-ghost btn-sm" id="sysP7">+7 días</button></div></div>
+            <div class="campo"><label>Estado del día</label>
+              <div class="pastilla"><div class="v" id="sysEstado">—</div><div class="k" id="sysEstado2">—</div></div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <header><h2>Jornada y programa de mantenimiento</h2><span class="chico tenue">Se definen en Parámetros del periodo</span></header>
+          <div class="banda chica" id="admJornada"></div>
+          <p class="nota" id="jHorario"></p>
+          <p class="nota" id="progNota"></p>
+          <p class="nota">Feriados y días no laborables: una sola lista, en <b>Parámetros → Feriados del periodo</b>. El programa de mantenimiento, el OEE y la simulación usan el mismo calendario.</p>
+        </div>
+      </section>
+
+      <!-- USUARIOS Y MARCA -->
+      <section class="vista stack" id="v-marca">
+        <div class="panel">
+          <header><h2>Logotipos e ícono</h2></header>
+          <div class="rejilla c3">
+            <div class="campo"><label>Logo de la universidad</label><input type="file" id="logoUpc" accept="image/*"></div>
+            <div class="campo"><label>Logo de la empresa</label><input type="file" id="logoEmp" accept="image/*"></div>
+            <div class="campo"><label>Ícono del sistema, favicon</label><input type="file" id="logoFav" accept="image/*"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <header><h2>Crear un usuario</h2></header>
+          <div class="rejilla c4">
+            <div class="campo"><label>Nombre y apellido</label><input type="text" id="nuNombre"></div>
+            <div class="campo"><label>Usuario</label><input type="text" id="nuUser"></div>
+            <div class="campo"><label>Clave</label><input type="text" id="nuPass"></div>
+            <div class="campo"><label>Perfil</label><select id="nuRol">
+              <option>Administrador</option><option>Ingeniero de mantenimiento</option>
+              <option>Técnico de mantenimiento</option><option>Operador de línea</option></select></div>
+          </div>
+          <button class="btn btn-primary" id="nuAdd" style="margin-top:var(--s4)">Crear usuario</button>
+        </div>
+        <div class="panel">
+          <header><h2>Usuarios registrados</h2>
+            <button class="btn btn-ghost btn-sm" id="verClaves"><i class="fas fa-lock"></i> Claves cifradas</button></header>
+          <div class="tabla-caja"><table><thead><tr><th>Nombre</th><th>Usuario</th><th>Clave</th><th>Perfil</th><th>Alcance</th><th></th></tr></thead>
+            <tbody id="usTabla"></tbody></table></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="capa lado" id="telon"><div class="cajon stack">
+  <div class="fila" style="justify-content:space-between"><div><div class="mini tenue" id="qEtapa">Etapa</div><h2 id="qNombre">Equipo</h2></div>
+    <button class="btn btn-ghost btn-sm" id="btnCerrar"><i class="fas fa-xmark"></i></button></div>
+  <div id="qAviso"></div>
+  <div class="oee-box"><div><div class="chico tenue">OEE del equipo</div><div class="mini tenue" id="qTipo">–</div></div>
+    <div style="text-align:right"><div class="v" id="qOee">–</div><div class="mini" id="qJuicio"></div></div></div>
+  <div class="rejilla c2" id="bloqueCap">
+    <div class="campo"><label>Capacidad nominal</label><input type="number" id="qCap" step="0.1" min="0" disabled title="Se edita en Parámetros → Catálogo de equipos"></div>
+    <div class="campo"><label>Unidad</label><select id="qUni" disabled title="Se edita en Parámetros → Catálogo de equipos"><option value="kg/h">kg/h</option><option value="und/h">láminas/h</option></select></div></div>
+  <div class="rejilla c3">
+    <div class="campo"><label>Disponibilidad %</label><input type="number" id="qD" step="0.1" min="0" max="100"></div>
+    <div class="campo"><label>Rendimiento %</label><input type="number" id="qR" step="0.1" min="0" max="100"></div>
+    <div class="campo"><label>Calidad %</label><input type="number" id="qC" step="0.1" min="0" max="100"></div></div>
+  <div class="rejilla c2">
+    <div class="campo"><label>MTBF en horas</label><input type="number" id="qMtbf" step="0.1" min="0"></div>
+    <div class="campo"><label>MTTR en horas</label><input type="number" id="qMttr" step="0.1" min="0"></div></div>
+  <button class="btn btn-ghost btn-sm btn-block" id="btnDesdeMtbf">Calcular disponibilidad desde MTBF y MTTR</button>
+  <div class="rejilla c2" id="bloqueSetup">
+    <div class="campo"><label>Cambios de formato por día</label><input type="number" id="qCambios" step="1" min="0"></div>
+    <div class="campo"><label>Minutos por cambio</label><input type="number" id="qMin" step="1" min="0"></div></div>
+  <div class="campo" id="bloqueVapor"><label>Aporte a la demanda de vapor %</label><input type="number" id="qVapor" step="1" min="0" max="200"></div>
+  <label class="interruptor"><input type="checkbox" id="qActivo"> Equipo en servicio</label>
+  <button class="btn btn-primary btn-block" id="btnGuardar">Guardar</button>
+  <p class="chico tenue" id="qNota" style="margin:0"></p>
+</div></div>
+
+<div class="capa medio" id="telonOT"><div class="dialogo">
+  <div class="fila" style="justify-content:space-between;margin-bottom:var(--s4)">
+    <div><div class="mini tenue" id="cOT">Orden</div><h2 id="cTitulo">Cierre</h2></div>
+    <button class="btn btn-ghost btn-sm" id="cCerrar"><i class="fas fa-xmark"></i></button></div>
+  <div id="cLoto" style="margin-bottom:var(--s3)"></div>
+  <div class="rejilla c2">
+    <div><div class="chico tenue" style="margin-bottom:var(--s2)">Puntos a verificar</div>
+      <div id="cLista" style="max-height:300px;overflow-y:auto;padding-right:4px"></div></div>
+    <div class="stack" style="--s5:var(--s3)">
+      <div class="campo"><label>Evidencia fotográfica, obligatoria</label><input type="file" id="cFoto" accept="image/*"></div>
+      <div class="evi" id="cPreview"><span class="ph">Sin evidencia cargada</span></div>
+      <div class="campo"><label>Observación del ejecutante, mínimo 15 caracteres</label>
+        <textarea id="cObs" style="min-height:70px"></textarea></div>
+      <div class="rejilla c2">
+        <div class="campo"><label>Tiempo real en minutos</label><input type="number" id="cReal" min="0" step="5"></div>
+        <div class="campo"><label>¿Se ejecutó en jornada?</label><select id="cJor">
+          <option value="si">Sí, en horario laboral</option><option value="no">No, fuera de turno</option></select></div>
+      </div>
+      <p class="mini tenue" id="cJorNota" style="margin:0"></p>
+    </div></div>
+  <div class="fila" style="margin-top:var(--s4)">
+    <button class="btn btn-primary" id="cConfirmar" disabled>Marcar como completada</button>
+    <button class="btn btn-ghost" id="cNoCumple">Registrar como no cumplida</button>
+    <span class="chico" id="cAviso" style="color:var(--warning)"></span>
+  </div>
+</div></div>
+
+<div class="capa medio" id="telonTarea"><div class="dialogo">
+  <div class="fila" style="justify-content:space-between;margin-bottom:var(--s4)"><h2 id="tTitulo">Nueva tarea</h2>
+    <button class="btn btn-ghost btn-sm" id="tCerrar"><i class="fas fa-xmark"></i></button></div>
+  <div class="rejilla c3">
+    <div class="campo"><label>Equipo</label><select id="tEq"></select></div>
+    <div class="campo"><label>Pilar</label><select id="tTipo"><option>Planificado</option><option>Autónomo</option><option>Calidad</option></select></div>
+    <div class="campo"><label>Paso</label><select id="tPaso">
+      <option>Limpieza</option><option>Inspección</option><option>Lubricación</option><option>Ajustes menores</option>
+      <option>Preventivo</option><option>Control de calidad</option></select></div>
+  </div>
+  <div class="campo" style="margin-top:var(--s4)"><label>Actividad</label><input type="text" id="tAct"></div>
+  <div class="campo" style="margin-top:var(--s4)"><label>Criterio de conformidad</label><textarea id="tCrit" style="min-height:70px"></textarea></div>
+  <div class="rejilla c4" style="margin-top:var(--s4)">
+    <div class="campo"><label>Frecuencia</label><select id="tFrec"></select></div>
+    <div class="campo"><label>Responsable</label><select id="tResp">
+      <option>Operario</option><option>Técnico</option><option>Especialista</option><option>Inspector</option><option>Ingeniero</option></select></div>
+    <div class="campo"><label>Tiempo en minutos</label><input type="number" id="tMin" min="1" step="1" value="15"></div>
+    <div class="campo"><label>Bloqueo y etiquetado</label>
+      <select id="tLoto"><option value="no">No requiere</option><option value="si">Requiere</option></select></div>
+  </div>
+  <p class="nota" id="tAviso"></p>
+  <div class="fila" style="margin-top:var(--s5)">
+    <button class="btn btn-primary" id="tGuardar">Guardar tarea</button>
+    <button class="btn btn-ghost" id="tCancelar">Cancelar</button>
+  </div>
+</div></div>
+
+<div class="capa medio" id="telonDoc"><div class="dialogo papel">
+  <div class="fila no-print" style="justify-content:space-between;margin-bottom:var(--s4)">
+    <h2>Documento de orden de trabajo</h2>
+    <div class="fila"><button class="btn btn-primary btn-sm" id="dPdf"><i class="fas fa-file-pdf"></i> Guardar en PDF</button>
+      <button class="btn btn-ghost btn-sm" id="dCerrar"><i class="fas fa-xmark"></i></button></div></div>
+  <div class="hoja" id="docOT"></div>
+</div></div>
+

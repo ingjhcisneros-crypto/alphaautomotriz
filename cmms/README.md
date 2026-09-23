@@ -1,0 +1,144 @@
+# CMMS 4.0 · Línea de láminas antiabrasivas — v6 (OEE + simulación)
+
+Entregable: **`dist/cmms_lexacaucho_v6.html`**. Es un solo archivo de 1.2 MB y funciona sin internet: fuentes, íconos, SheetJS, Chart.js y el worker de simulación van incluidos. Se abre con doble clic en Chrome o Edge. Usuario principal: `gutierres&cisneros@upc.pe`, clave `grupo29`.
+
+```
+npm install            # solo para desarrollar
+npm run build          # regenera dist/cmms_lexacaucho_v6.html
+npm test               # auditorías del núcleo (185 verificaciones)
+node tests/e2e.mjs     # auditorías en Chromium sobre el HTML (113 verificaciones)
+```
+
+Las pruebas necesitan los diez Excel de especificación en `DIR_REF` (variable de entorno). Esos archivos se usan solo para armar datos de prueba y obtener los valores de referencia. **El sistema no siembra ningún registro operativo.**
+
+---
+
+## Auditoría 1 · Diagnóstico del avance v5
+
+| Aspecto | Hallazgo |
+|---|---|
+| Módulos que funcionaban | Portal y usuarios por rol, animación de la línea sobre el calendario de turnos, especificaciones, plan maestro TPM, agenda y órdenes con cierre y evidencia, anomalías, administración de calendario, marca |
+| Persistencia | **Ninguna.** Todo vivía en variables de memoria y se perdía al cerrar el navegador |
+| Estructura | Un solo HTML de 2,819 líneas. El cálculo, la vista y los datos estaban mezclados en funciones globales |
+| Dependencias | Google Fonts y Font Awesome se cargaban desde CDN, así que sin internet la app quedaba sin íconos ni tipografía |
+| Deuda técnica | (1) Un IIFE sembraba **datos inventados** de fallas, setups, calidad y vacío. (2) El **OEE de línea era el promedio** de los OEE por máquina. (3) El vacío se estimaba con 10 mediciones y no se consideraba el camino crítico. (4) No existía el día de producción del turno 2. (5) Los valores estaban codificados (capacidad del autoclave 28 lám/h, lote de 3,000 kg). (6) Sin carga por Excel ni validación. (7) Claves de usuario en texto plano |
+| Qué se conservó | La identidad visual (tokens de color, Orbitron/Poppins, rail y barra), la navegación, el portal, el plan, la agenda, las órdenes, las anomalías, la administración y la animación. Los parámetros de la animación ahora salen de la especificación |
+| Qué se rehízo | El cálculo del OEE (vista «Cálculo del OEE» nueva, con el mismo recorrido de 6 etapas), la captura de paradas (reemplazada por los 7 registros), los datos sembrados (eliminados) y la persistencia |
+
+**Decisión de persistencia: IndexedDB.** La planta opera sin internet estable y con un puesto de ingeniería, así que un backend agregaría un servidor que mantener sin resolver el problema real. IndexedDB guarda los datos en el equipo, sobrevive al cierre del navegador, soporta transacciones (el reemplazo en la carga completa es atómico) y el HTML sigue siendo portátil. Hay respaldo JSON completo y restauración en *Auditoría*. Si más adelante se necesita acceso multiusuario, basta reemplazar `src/app/db.js` por un cliente HTTP; el motor de cálculo no cambia.
+
+## Optimización v6.1 · los 5 principios aplicados
+
+| Paso | Qué se hizo |
+|---|---|
+| 1 · Cuestionar cada requisito | ¿Por qué hay tres pantallas con el OEE por máquina (tablero, cálculo, especificaciones)? ¿Por qué la jornada se escribe en Administración **y** en Parámetros? Cada dato quedó con un solo dueño |
+| 2 · Eliminar | Se borraron las vistas «Tablero» y «Cálculo del OEE» (duplicaban la cascada y la tabla por máquina), los feriados y días omitidos de Administración, los campos de jornada, masa de lámina, capacidades y lotes editables en la parte heredada, y el «mantenimiento planificado» manual cuando ya existe el programa |
+| 3 · Simplificar | Tres vistas con una pregunta cada una: **OEE de línea** (horas de línea, qué detuvo la producción), **OEE por máquina** (horas-máquina frente a su propia carga) y **Análisis de paradas** (6 tipos × máquina). Se muestra el resumen del periodo; el mes a mes y la cadena completa se abren con un clic |
+| 4 · Acelerar | Caché de resultados por filtro (se invalida en cada recálculo); con los filtros vacíos se reutiliza el cálculo total; el programa solo recalcula si cambió el mantenimiento ejecutado (huella) |
+| 5 · Automatizar | Parámetros → especificaciones, jornada, feriados, capacidades, lotes y periodo del programa se sincronizan solos. Cerrar una OT planificada o de calidad descuenta su tiempo real del tiempo de carga. Cada recálculo actualiza la animación |
+
+**Un dato, un lugar.**
+
+| Dato | Único dueño | Antes |
+|---|---|---|
+| Periodo, jornada, almuerzo, capacitación, feriados y días no laborables | Parámetros | también en Administración y en la animación |
+| Masa de lámina, productos y capacidades | Parámetros (catálogo) | también en Especificaciones, editable |
+| Lotes (molino, autoclave) | Parámetros · simulación | también en la animación |
+| Mantenimiento planificado y de calidad | Programa (OT cumplidas) | horas escritas a mano en Parámetros |
+| OEE por máquina, confiabilidad y Pareto | OEE por máquina y Análisis de paradas | repetidos en tablero y cálculo |
+
+**Mantenimiento del programa → tiempo de carga.** Cada OT **planificada o de calidad** cumplida en jornada y dentro del periodo descuenta su tiempo real del tiempo de carga de su equipo. En la línea el efecto depende de la topología: un equipo en serie detiene la línea (−h), mientras que una prensa en paralelo o un caldero de soporte no la detienen. El mantenimiento autónomo no descuenta porque se hace con la máquina en marcha o dentro del arranque. El campo de Parámetros queda solo para el mantenimiento **fuera del programa**.
+
+**PDF por filtro.** Cada filtro emite su documento A4 con el estilo del sistema: el encabezado verde, los filtros aplicados, los KPI, las tablas agrupadas y las firmas. Por ejemplo, el plan maestro «Planificado · Caldero» se agrupa por equipo y frecuencia e incluye el resumen de órdenes, ejecutadas, vencidas y cumplimiento. Hay PDF en OEE de línea, OEE por máquina, Análisis de paradas, Programa, Historial de cumplimiento, Anomalías, las órdenes diarias y los resultados de simulación.
+
+**Análisis de paradas por máquina.** La matriz de máquinas por los 6 tipos (correctivo, cambio de formato, auxiliares, paradas cortas, operación en vacío y paradas de emergencia) se puede ver en horas o en eventos y sale del mismo motor de cálculo. Un clic en una celda muestra los eventos, la duración media, el evento más largo, las causas principales, la evolución mensual y la exportación a Excel. Un clic en la máquina muestra su perfil por tipo.
+
+## Calendario de operación (v6.2)
+
+```
+ jun-2025 ─────────── may-2026 │ jun-2026 ──── set-2026 │ oct-2026 ──────────────►
+  DATOS RECOLECTADOS            │ OMITIDO (planeación)   │ PROGRAMA DE MANTENIMIENTO
+  OEE, paradas y confiabilidad  │ no cuenta para nada    │ plan maestro, agenda, OT;
+  salen solo de los registros   │                        │ OT cumplidas → tiempo de carga
+```
+
+- **Parámetros → Calendario de operación** tiene una línea de tiempo, la tabla editable de **periodos omitidos** (desde, hasta, motivo; se admiten varios) y el **inicio del programa** con su horizonte en meses. «Guardar y recalcular» actualiza el OEE, las paradas, la simulación y el programa.
+- **Qué hace un día omitido:** no suma al tiempo calendario (aparece como «− Periodos omitidos» en la cascada), no lleva almuerzo, capacitación ni arranques, y sus registros se conservan pero no entran al cálculo. Tampoco se programan órdenes en esos días. Un mes omitido por completo desaparece de los selectores y de las tablas mensuales.
+- **Controles:** no se aceptan rangos superpuestos ni rangos que terminan antes de empezar. Un registro nuevo con fecha omitida se acepta con una advertencia. Quitar la omisión devuelve exactamente el valor anterior.
+- **Programa:** es independiente del periodo de datos. Por defecto arranca el 01-10-2026 y dura 12 meses, así que antes de esa fecha no hay órdenes y el diagnóstico sale solo de los registros. «Nuevo periodo» propone empezar después de lo omitido, es decir, 01-10-2026 a 30-09-2027.
+
+## Versión artefacto (claude.ai): datos compartidos y asistente de IA
+
+`npm run build` genera también **`dist/artefacto/cmms_lexacaucho.html`**, que se publica como artefacto de claude.ai. Es el mismo sistema, con tres cosas que solo se activan dentro del visor:
+
+- **Datos compartidos.** Lo que guarda un usuario (registros, parámetros, calendario, programa, órdenes, anomalías, usuarios y simulación) queda en la base del artefacto, y quien entra después, desde cualquier equipo, ve lo último. IndexedDB sigue siendo la base de trabajo; `src/app/nube.js` la replica en trozos de ≤ 80 000 caracteres (el límite es 256 KB por documento). Si otro usuario guarda mientras uno trabaja, el cambio llega en vivo con el aviso «Datos actualizados por …». La cabecera muestra el estado: «Guardado en la nube», «Guardando…» o «Solo lectura».
+- **Asistente de IA** (botón flotante abajo a la derecha, con la sesión iniciada). Recibe un resumen de todo lo calculado (unos 12 KB): OEE de línea y por máquina, mes a mes, paradas por tipo y máquina, causas principales, calendario, programa, anomalías y simulación. Además tiene tres herramientas para el detalle: registros filtrados, OEE con filtros y órdenes de trabajo. Cada consulta usa la cuenta de Claude de quien pregunta.
+- **Descargas y PDF.** El visor no permite imprimir ni usar enlaces de descarga, así que Excel, PNG y PDF se entregan con la capacidad de descargas (el visor pide confirmación). Los PDF se dibujan con html2canvas y jsPDF, paginados sin cortar filas. Los diálogos nativos (alert, confirm, prompt) se reemplazaron por los propios de la aplicación.
+
+**Limitaciones de la versión artefacto:**
+- Si dos usuarios cambian la misma tabla en el mismo instante, prevalece el último que guarda. Las demás tablas se combinan.
+- La base admite hasta 5 000 documentos; el sistema actual usa unos 130.
+- Solo pueden abrirlo miembros de la organización, porque la base compartida lo exige.
+- Las claves de usuario viajan cifradas (SHA-256) dentro de la base compartida.
+
+Prueba con un visor simulado: `node tests/artefacto.mjs` (dos usuarios, sincronización en vivo, asistente, descargas y PDF).
+
+**Formatos de carga actualizados:**
+- **Paradas de emergencia** (antes «reuniones de emergencia»): N°, Fecha y hora, Turno, Duración (h), Motivo, Categoría, Equipos afectados.
+- **Operación en vacío**: N°, Máquina, Arranque de jornada (min), Después de setup (min), Sustento del arranque de jornada, Sustento del tiempo posterior al setup.
+
+## Estructura
+
+```
+src/core/      lógica pura, sin DOM (se prueba en Node)
+  oee.js         motor ÚNICO del OEE por máquina y por línea
+  calendario.js  días laborables, feriados, día de producción del turno 2
+  registros.js   7 registros con columnas exactas de los adjuntos
+  validacion.js  reglas de la sección 8.4 · lector.js (SheetJS, encabezado en fila 1 o 4)
+  xlsx.js        escritor .xlsx propio con dataValidation · plantillas.js
+  estadistica.js ajuste MLE, K-S, IC, t pareada/Welch · modelo.js · simulacion.js (DES)
+  catalogos.js   semillas de catálogos y parámetros (se copian a la base una sola vez)
+src/app/       db.js (IndexedDB), servicio.js (recálculo automático), ejecutor/worker, ui/*
+src/legacy/    código v5 conservado (marcado, estilos, script sin los datos inventados)
+tests/         auditorias.mjs, e2e.mjs, informe/ (JSON y capturas)
+```
+
+## Resultados de las auditorías
+
+| # | Resultado |
+|---|---|
+| 2 | Las 7 tablas tienen todos los campos de la sección 7. Los 19 catálogos coinciden con la sección 8.2 y con las hojas «Listas» de los 5 registros adjuntos |
+| 3 | Ejemplo 4.4 cargado con la plantilla del sistema: carga 4,543.4 h, bruto **4,019.7 h**, D **88.47 %**, R **96.30 %**, C **92.92 %**, OEE **79.17 %** |
+| 4 | Los 3,816 registros de referencia pasan por la plantilla del sistema: D **76.42 %**, R **82.86 %**, C **87.93 %**, OEE **55.68 %**, **20,237** láminas, brecha **−27.69 pp** |
+| 5 | Instalación nueva con 0 registros operativos, catálogos sembrados y parámetros editables en la interfaz |
+| 6 | 7 plantillas con encabezados idénticos a los adjuntos, desplegables (verificados también con openpyxl), fechas `dd/mm/aaaa hh:mm`, 3 ejemplos en gris y hoja de instrucciones |
+| 7 | Carga incremental: 309 registros la primera vez y 0 al repetir el archivo (309 duplicados). Carga completa: confirma, genera respaldo y reemplaza. El archivo con errores deliberados detecta las 8 filas con error y las 3 advertencias; el informe se descarga en Excel |
+| 8 | Insertar un registro cambia el OEE; borrarlo lo devuelve al valor exacto. El recálculo es idempotente |
+| 9 | OEE de línea 55.68 % con cascada de 6 etapas (detalle a pedido). OEE por máquina con 10 equipos y el autoclave en 79.17 %. La matriz de paradas usa el mismo motor. Los filtros cambian todos los bloques. 16 exportaciones y 3 informes PDF. Tableta de 820 px sin desbordes |
+| 9b | El PDF «Planificado · Caldero» contiene solo ese pilar y ese equipo. En el periodo 2026–2027, una OT cumplida de 2 h en el autoclave reduce 2 h la carga del autoclave y la de la línea; en la prensa 1 solo reduce la de esa prensa |
+| 9c | Línea de tiempo con los datos, la planeación omitida y el programa. Ninguna OT antes del 01-10-2026. Al omitir agosto y del 1 al 15 de enero desde la interfaz, quedan 11 meses y todo se recalcula. Los rangos superpuestos se rechazan. Quitar las omisiones devuelve el OEE exacto |
+| 10 | Suma de los registros = tablero, con diferencia de 0.000 h en las 6 categorías |
+| 11 | Autoclave (167) y extrusora (126): suficiente, con K-S sobre 5 candidatos. Molino (5): limitada. Prensas y calderos individuales: insuficiente. Prensas agregadas (7 eventos, 9.3 h) y calderos agregados (4 eventos, 4.7 h) |
+| 12 | El autoclave tiene la mayor utilización (≈ 60 %). El balance de tiempos cierra al 0.0000 %. Sin interbloqueos |
+| 13 | 30 réplicas. OEE **55.64 %** [55.28–55.99], D 76.50 % [76.12–76.88], C 87.90 % [87.69–88.11], producción **20,222** [20,094–20,350] y correctivo 687.3 h: todos dentro de tolerancia y con un IC que contiene el valor real. **Rendimiento 82.73 % [82.63–82.83]: dentro de tolerancia (−0.12 pp); su IC queda a 0.03 pp de contener el 82.86 %** |
+| 14 | E1 +3.76 pp · E2 +1.43 · E3 +5.13 · E4 +0.99 · E5 +5.13 (vacío 454.2 → 181.7 h) · E6 **+17.94 pp**, distinto de la suma de los individuales (16.44). Todas las mejoras son significativas (t pareada, 95 %). Margen de S/ 180 por lámina: E6 ≈ **S/ 1.12 millones** al año |
+| Mejoras finales | El portal ya no muestra credenciales. El PDF de resultados se imprime desde un marco interno, sin ventana emergente. Los gráficos se repintan al cambiar de tema. Hay gestión de periodos y setup simulado por tipo de cambio |
+| Seguridad | Las claves se guardan como SHA-256 (usuario:clave); ninguna queda en texto plano en la base. Crear o eliminar usuarios exige perfil de administrador; restablecer una clave exige la clave del usuario principal |
+
+## Decisiones y discrepancias que conviene conocer
+
+1. **Factor de las prensas en disponibilidad.** El prompt menciona un 8 %, pero el ejemplo verificado (hoja «6. Máquina vs línea», 685.9 h y 149.9 h) computa **0 h** para las prensas. Se dejó 0 para reproducir el ejemplo y el 8 % queda documentado y editable en *Parámetros*. Si se aplica, el OEE de línea baja a ≈ 55.4 %.
+2. **Auxiliares del autoclave.** El consolidado dice 25.3 h y el prompt 25.4 h. Con el reparto de cada falla entre los equipos de la etapa afectada, los registros dan 25.58 h. Los cuatro porcentajes coinciden de todos modos; el ejemplo 4.4 exacto se verificó con datos de 25.4 h.
+3. **Rendimiento 82.86 %.** El valor sin redondear es 82.8558 %: el prompt redondea los tiempos intermedios y se obtiene 82.85. La diferencia es menor que 0.01 pp.
+4. **Paradas de emergencia** (antes «reuniones de emergencia»). Columnas: N°, Fecha y hora, Turno, Duración (h), Motivo, Categoría y Equipos afectados. La categoría es una lista abierta y editable en Parámetros: un valor nuevo se acepta con advertencia. No hay archivo adjunto; la prueba usa 72 paradas de 2 h, que suman las 144 h del consolidado.
+5. **Calibración de la simulación**, con parámetros del catálogo y no con ajustes arbitrarios:
+   - El ciclo del autoclave usa la capacidad **demostrada** (7.7 lám/h), que es una pérdida de velocidad no registrada.
+   - Los equipos en serie usan **acople rígido**, según la regla «la línea se detiene por completo».
+   - Las fallas y microparadas no pueden ocurrir sobre un equipo ya detenido.
+   - Las tres opciones son configurables. En modo «flujo con buffers», el modelo sobreestima la producción en un +18 %.
+6. **Duplicados en el registro SMED.** Allí una fila corresponde a una actividad, así que el criterio de duplicado también incluye el N° de cambio y la actividad.
+7. **SheetJS 0.18.5** (npm). La versión 0.20 del CDN oficial estuvo bloqueada por la red del entorno. La 0.18.5 solo se usa para leer archivos que el propio usuario sube.
+8. **Sesgo residual del rendimiento simulado (−0.12 pp).** Es sistemático: el modelo calibra la velocidad con la capacidad demostrada del autoclave y absorbe físicamente los setups simultáneos, que la contabilidad de referencia suma. No se forzó un ajuste adicional para no sobreajustar el modelo.
+9. **Periodos.** En *Parámetros* se crea un periodo nuevo (copia los parámetros del activo y genera los feriados nacionales) y se cambia el periodo activo. Cada registro pertenece a su periodo; al volver a uno anterior, sus registros siguen intactos.
+10. **Setup simulado por tipo de cambio.** Cada cambio de formato sortea su tipo (saliente → entrante) según la frecuencia del registro y usa una triangular por equipo y tipo cuando hay 3 o más cambios de ese tipo.
+11. **Limitaciones conocidas:** solo probado en Chrome/Edge (en Firefox, un archivo abierto desde el disco puede no conservar los datos); un equipo por base local, sin acceso multiusuario simultáneo; el calendario de la simulación reparte el tiempo de carga por día sin modelar por separado almuerzos y capacitación (los totales coinciden); SheetJS 0.18.5 tiene vulnerabilidades conocidas y solo lee archivos del propio usuario.
