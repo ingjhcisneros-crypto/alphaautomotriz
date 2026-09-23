@@ -56,6 +56,8 @@ export function replica(M, semilla) {
   let tolva = 0, buffer = [], bufArea = 0, bufMax = 0, bufT = 0, sumaEspera = 0, nEspera = 0;
   let producidas = 0, ultimaSalida = 0, maxHueco = 0;
   const takt = P.sincronizar_al_cuello ? 60 / M.cap : 0;
+  /* Tiempo real de autoclave que consume cada lámina (ciclo efectivo ÷ lote): lo que ya costó una lámina descartada. */
+  const horaPorLamina = P.autoclave_ciclo_min / 60 / P.autoclave_lote;
   let proxCuerda = 0, cuerdaPend = false;
   const calderosAbajo = {}; let vaporOK = true, vaporDesde = 0;
   const horasCat = {}; CATS.forEach(c => horasCat[c] = 0);
@@ -155,7 +157,7 @@ export function replica(M, semilla) {
       if (q && q.pEfectiva > 0 && r() < q.pEfectiva) {
         const ev = (q.pool || q.eventos)[Math.floor(r() * (q.pool || q.eventos).length)];
         let extraH = ev.h, perdidas = 0;
-        if (ev.tipo === 'D') { perdidas = Math.min(s.item.n || 1, Math.round(ev.lam)); extraH = Math.max(0, ev.h - perdidas / M.cap); }
+        if (ev.tipo === 'D') { perdidas = Math.min(s.item.n || 1, Math.round(ev.lam)); extraH = Math.max(0, ev.h - perdidas * horaPorLamina); }
         if (enVentana(ahora)) horasLinea[ev.tipo === 'D' ? 'defectos' : 'reprocesos'] += ev.h * s.fQ;
         if (perdidas) s.item = { n: Math.max(0, (s.item.n || 1) - perdidas) };
         if (extraH > 0) {

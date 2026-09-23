@@ -1,5 +1,5 @@
 {
- "fecha": "2026-09-23T14:47:01.182Z",
+ "fecha": "2026-09-23T14:59:48.641Z",
  "fallas": 0,
  "informe": [
   {
@@ -114,7 +114,7 @@
    "auditoria": 7,
    "verificacion": "Informe de validación descargable en Excel",
    "ok": true,
-   "detalle": "12 filas en Informe_validacion_mantenimiento_correctivo_2026-09-23-14-45.xlsx"
+   "detalle": "12 filas en Informe_validacion_mantenimiento_correctivo_2026-09-23-14-58.xlsx"
   },
   {
    "auditoria": 7,
@@ -192,7 +192,7 @@
    "auditoria": 8,
    "verificacion": "Fecha del último recálculo visible en la cabecera",
    "ok": true,
-   "detalle": "Recalculado 02:45:57 p. m."
+   "detalle": "Recalculado 02:58:46 p. m."
   },
   {
    "auditoria": 9,
@@ -246,73 +246,73 @@
    "auditoria": 9,
    "verificacion": "Exportación b1 a XLSX",
    "ok": true,
-   "detalle": "Indicadores_de_linea_2026-09-23-14-46.xlsx · 7875 bytes"
+   "detalle": "Indicadores_de_linea_2026-09-23-14-58.xlsx · 7875 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b1 a PNG",
    "ok": true,
-   "detalle": "Indicadores_de_linea_2026-09-23-14-46.png · 33148 bytes"
+   "detalle": "Indicadores_de_linea_2026-09-23-14-58.png · 33148 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b2 a XLSX",
    "ok": true,
-   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-14-46.xlsx · 14095 bytes"
+   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-14-58.xlsx · 14095 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b2 a PNG",
    "ok": true,
-   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-14-46.png · 107346 bytes"
+   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-14-58.png · 107346 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b3 a XLSX",
    "ok": true,
-   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-14-46.xlsx · 9226 bytes"
+   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-14-58.xlsx · 9226 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b3 a PNG",
    "ok": true,
-   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-14-46.png · 41578 bytes"
+   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-14-58.png · 41578 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b4 a XLSX",
    "ok": true,
-   "detalle": "Composicion_de_perdidas_horas_de_linea_2026-09-23-14-46.xlsx · 10689 bytes"
+   "detalle": "Composicion_de_perdidas_horas_de_linea_2026-09-23-14-58.xlsx · 10689 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b4 a PNG",
    "ok": true,
-   "detalle": "Composicion_de_perdidas_horas_de_linea_2026-09-23-14-46.png · 40304 bytes"
+   "detalle": "Composicion_de_perdidas_horas_de_linea_2026-09-23-14-58.png · 40304 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b5 a XLSX",
    "ok": true,
-   "detalle": "Confiabilidad_por_equipo_2026-09-23-14-46.xlsx · 11590 bytes"
+   "detalle": "Confiabilidad_por_equipo_2026-09-23-14-58.xlsx · 11590 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b5 a PNG",
    "ok": true,
-   "detalle": "Confiabilidad_por_equipo_2026-09-23-14-46.png · 70206 bytes"
+   "detalle": "Confiabilidad_por_equipo_2026-09-23-14-58.png · 70206 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b6 a XLSX",
    "ok": true,
-   "detalle": "Pareto_de_causas_por_horas_perdidas_2026-09-23-14-46.xlsx · 9154 bytes"
+   "detalle": "Pareto_de_causas_por_horas_perdidas_2026-09-23-14-58.xlsx · 9154 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación b6 a PNG",
    "ok": true,
-   "detalle": "Pareto_de_causas_por_horas_perdidas_2026-09-23-14-46.png · 83816 bytes"
+   "detalle": "Pareto_de_causas_por_horas_perdidas_2026-09-23-14-58.png · 83816 bytes"
   },
   {
    "auditoria": 10,
@@ -396,7 +396,7 @@
    "auditoria": 12,
    "verificacion": "El autoclave es el recurso de mayor utilización",
    "ok": true,
-   "detalle": "Autoclave 60.1 % · Acabado 52.3 % · Molino 50.1 % · Prensa 1 49.2 % · Extruder 47.2 % · Prensa 2 42.6 % · Prensa 3 39.5 % · Prensa 4 38.8 % · Prensa 5 38.0 %"
+   "detalle": "Autoclave 59.9 % · Acabado 52.2 % · Molino 50.0 % · Prensa 1 49.1 % · Extruder 47.1 % · Prensa 2 42.5 % · Prensa 3 39.4 % · Prensa 4 38.7 % · Prensa 5 37.9 %"
   },
   {
    "auditoria": 12,
@@ -414,37 +414,37 @@
    "auditoria": 13,
    "verificacion": "OEE de línea dentro de tolerancia",
    "ok": true,
-   "detalle": "desvío -0.08 pp · IC contiene el real"
+   "detalle": "desvío -0.26 pp · IC contiene el real"
   },
   {
    "auditoria": 13,
    "verificacion": "Disponibilidad dentro de tolerancia",
    "ok": true,
-   "detalle": "desvío -0.00 pp · IC contiene el real"
+   "detalle": "desvío -0.09 pp · IC contiene el real"
   },
   {
    "auditoria": 13,
    "verificacion": "Rendimiento dentro de tolerancia",
    "ok": true,
-   "detalle": "desvío -0.25 pp · IC no contiene el real"
+   "detalle": "desvío -0.21 pp · IC no contiene el real"
   },
   {
    "auditoria": 13,
    "verificacion": "Calidad dentro de tolerancia",
    "ok": true,
-   "detalle": "desvío 0.14 pp · IC contiene el real"
+   "detalle": "desvío -0.09 pp · IC contiene el real"
   },
   {
    "auditoria": 13,
    "verificacion": "Producción (láminas) dentro de tolerancia",
    "ok": true,
-   "detalle": "desvío -0.15 % · IC contiene el real"
+   "detalle": "desvío -0.47 % · IC contiene el real"
   },
   {
    "auditoria": 13,
    "verificacion": "Horas de parada por correctivo (línea) dentro de tolerancia",
    "ok": true,
-   "detalle": "desvío 1.41 % · IC contiene el real"
+   "detalle": "desvío 0.05 % · IC contiene el real"
   },
   {
    "auditoria": 13,
@@ -456,7 +456,7 @@
    "auditoria": 14,
    "verificacion": "Tabla comparativa con los siete escenarios",
    "ok": true,
-   "detalle": "E0  55.60 % Δ— — | E1  59.37 % Δ+3.77 pp Sí | E2  56.88 % Δ+1.29 pp Sí | E3  60.74 % Δ+5.14 pp Sí | E4  56.65 % Δ+1.06 pp Sí | E5  60.75 % Δ+5.15 pp Sí | E6  73.36 % Δ+17.76 pp Sí"
+   "detalle": "E0  55.42 % Δ— — | E1  59.56 % Δ+4.14 pp Sí | E2  57.41 % Δ+2.00 pp Sí | E3  61.00 % Δ+5.58 pp Sí | E4  56.43 % Δ+1.01 pp Sí | E5  60.72 % Δ+5.31 pp Sí | E6  73.60 % Δ+18.18 pp Sí"
   },
   {
    "auditoria": 14,
@@ -473,6 +473,18 @@
   {
    "auditoria": "P",
    "verificacion": "Tras recargar, persisten los resultados de simulación",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": "P",
+   "verificacion": "Claves guardadas cifradas (SHA-256), ninguna en texto plano",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": "P",
+   "verificacion": "El usuario creado inicia sesión con su clave tras recargar",
    "ok": true,
    "detalle": ""
   },

@@ -22,10 +22,17 @@ function banda(v){
 }
 let FECHA_SIS = iso(new Date());
 const HOY = () => FECHA_SIS;
-function pedirClave(msg){
+/* Las claves se guardan como SHA-256 de «usuario:clave», nunca en texto plano. */
+async function hashClave(user, pass){
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(user).toLowerCase()+':'+pass));
+  return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join(''); }
+async function asegurarHashes(){
+  for(const u of USUARIOS){ if(u.pass != null){ u.hash = await hashClave(u.user, u.pass); delete u.pass; } } }
+async function claveValida(u, p){ return !!u && !!u.hash && u.hash === await hashClave(u.user, p); }
+async function pedirClave(msg){
   const c = prompt(msg+'\n\nIngresa la clave del usuario principal.');
   if(c === null) return false;
-  if(c !== USUARIOS[0].pass){ alert('Clave incorrecta. No se realizó ningún cambio.'); return false; }
+  if(!(await claveValida(USUARIOS[0], c))){ alert('Clave incorrecta. No se realizó ningún cambio.'); return false; }
   return true;
 }
 function abrirCapa(id){ $(id).classList.add('abierta'); document.body.classList.add('bloqueado'); }
@@ -75,9 +82,11 @@ let USUARIOS = [
 let SESION = null, LOGOS = {upc:null, emp:null, fav:null}, verClaves = false;
 $('btnEntrar').onclick = entrar;
 ['inUser','inPass'].forEach(i => $(i).addEventListener('keydown', e=>{ if(e.key === 'Enter') entrar(); }));
-function entrar(){
+async function entrar(){
   const u = $('inUser').value.trim(), p = $('inPass').value;
-  const x = USUARIOS.find(a => a.user.toLowerCase() === u.toLowerCase() && a.pass === p);
+  await asegurarHashes();
+  const cand = USUARIOS.find(a => a.user.toLowerCase() === u.toLowerCase());
+  const x = (await claveValida(cand, p)) ? cand : null;
   if(!x){ $('loginMsg').className = 'login-msg error'; $('loginMsg').textContent = 'Usuario o clave incorrectos.'; return; }
   SESION = x;
   $('loginMsg').className = 'login-msg ok'; $('loginMsg').textContent = 'Acceso concedido.';
@@ -1233,8 +1242,8 @@ function pintarOmitidos(){
     tb.insertAdjacentHTML('beforeend','<tr><td>'+o.a+'</td><td>'+o.b+'</td><td class="num">'+d+'</td>'+
       '<td>'+esc(o.motivo)+'</td><td><button class="btn btn-danger btn-sm" data-om="'+o.a+'|'+o.b+'"><i class="fas fa-trash"></i></button></td></tr>'); });
   if(!OMITIDOS.length) tb.innerHTML = '<tr><td colspan="5" class="chico tenue">No hay periodos omitidos.</td></tr>';
-  tb.querySelectorAll('[data-om]').forEach(b => b.onclick = function(){
-    if(!pedirClave('Eliminar un periodo omitido cambia todo el calendario.')) return;
+  tb.querySelectorAll('[data-om]').forEach(b => b.onclick = async function(){
+    if(!(await pedirClave('Eliminar un periodo omitido cambia todo el calendario.'))) return;
     const p = b.dataset.om.split('|');
     OMITIDOS = OMITIDOS.filter(x => !(x.a === p[0] && x.b === p[1]));
     pintarOmitidos(); generarOTs(); pintarSistema(); }); }
@@ -1262,8 +1271,8 @@ function pintarFeriados(){
       '<td><span class="marcador '+(x.o === 'Manual'?'m-info':'m-warn')+'">'+x.o+'</span></td>'+
       '<td><button class="btn btn-danger btn-sm" data-fer="'+x.f+'|'+x.o+'"><i class="fas fa-trash"></i></button></td></tr>'); });
   if(!lista.length) tb.innerHTML = '<tr><td colspan="4" class="chico tenue">Sin feriados en el periodo.</td></tr>';
-  tb.querySelectorAll('[data-fer]').forEach(b => b.onclick = function(){
-    if(!pedirClave('Eliminar un feriado modifica el tiempo calendario.')) return;
+  tb.querySelectorAll('[data-fer]').forEach(b => b.onclick = async function(){
+    if(!(await pedirClave('Eliminar un feriado modifica el tiempo calendario.'))) return;
     const p = b.dataset.fer.split('|');
     if(p[1] === 'Manual') FERIADOS_EXTRA = FERIADOS_EXTRA.filter(x => x.f !== p[0]);
     else QUITADOS.push(p[0]);
@@ -1297,21 +1306,30 @@ function pintarUsuarios(){
     const bg = u.rol === 'Administrador' ? 'm-ok' : u.rol.indexOf('Ingeniero') === 0 ? 'm-info'
       : u.rol.indexOf('Técnico') === 0 ? 'm-warn' : 'm-bad';
     tb.insertAdjacentHTML('beforeend','<tr><td class="nombre">'+esc(u.nombre)+'</td><td>'+esc(u.user)+'</td>'+
-      '<td class="chico">'+(verClaves ? esc(u.pass) : '••••••')+'</td>'+
+      '<td class="chico">•••••• <button class="btn btn-ghost btn-sm" data-rc="'+i+'" title="Restablecer clave"><i class="fas fa-key"></i></button></td>'+
       '<td><span class="marcador '+bg+'">'+u.rol+'</span></td><td class="chico tenue">'+ALCANCE[u.rol]+'</td>'+
       '<td>'+(i === 0?'<span class="chico tenue">principal</span>':'<button class="btn btn-danger btn-sm" data-du="'+i+'"><i class="fas fa-trash"></i></button>')+'</td></tr>'); });
-  tb.querySelectorAll('[data-du]').forEach(b => b.onclick = function(){ USUARIOS.splice(+b.dataset.du,1); pintarUsuarios(); }); }
+  tb.querySelectorAll('[data-du]').forEach(b => b.onclick = async function(){
+    if(!SESION || SESION.rol !== 'Administrador'){ alert('Solo un administrador puede eliminar usuarios.'); return; }
+    if(!(await pedirClave('Eliminar al usuario '+USUARIOS[+b.dataset.du].user+'.'))) return;
+    USUARIOS.splice(+b.dataset.du,1); pintarUsuarios(); pintarOEE(); });
+  tb.querySelectorAll('[data-rc]').forEach(b => b.onclick = async function(){
+    const x = USUARIOS[+b.dataset.rc];
+    if(!SESION || (SESION !== x && SESION.rol !== 'Administrador')){ alert('Solo el propio usuario o un administrador puede cambiar esta clave.'); return; }
+    if(!(await pedirClave('Restablecer la clave de '+x.user+'.'))) return;
+    const n = prompt('Nueva clave para '+x.user+' (mínimo 6 caracteres):');
+    if(n == null) return; if(n.length < 6){ alert('La clave debe tener al menos 6 caracteres.'); return; }
+    x.hash = await hashClave(x.user, n); delete x.pass; pintarOEE(); alert('Clave actualizada.'); }); }
 $('verClaves').onclick = function(){
-  if(!verClaves && !pedirClave('Mostrar las claves de todos los usuarios.')) return;
-  verClaves = !verClaves;
-  this.innerHTML = verClaves ? '<i class="fas fa-eye-slash"></i> Ocultar claves' : '<i class="fas fa-eye"></i> Ver claves';
-  pintarUsuarios(); };
-$('nuAdd').onclick = function(){
+  alert('Por seguridad las claves se guardan cifradas (SHA-256) y no pueden mostrarse. Use el botón de llave de cada usuario para restablecerla.'); };
+$('nuAdd').onclick = async function(){
   const n = $('nuNombre').value.trim(), u = $('nuUser').value.trim(), p = $('nuPass').value.trim();
   if(!n||!u||!p){ alert('Completa nombre, usuario y clave.'); return; }
+  if(!SESION || SESION.rol !== 'Administrador'){ alert('Solo un administrador puede crear usuarios.'); return; }
+  if(p.length < 4){ alert('La clave debe tener al menos 4 caracteres.'); return; }
   if(USUARIOS.some(x => x.user.toLowerCase() === u.toLowerCase())){ alert('Ese usuario ya existe.'); return; }
-  USUARIOS.push({nombre:n,user:u,pass:p,rol:$('nuRol').value});
-  ['nuNombre','nuUser','nuPass'].forEach(i => $(i).value = ''); pintarUsuarios(); };
+  USUARIOS.push({nombre:n,user:u,hash:await hashClave(u,p),rol:$('nuRol').value});
+  ['nuNombre','nuUser','nuPass'].forEach(i => $(i).value = ''); pintarUsuarios(); pintarOEE(); };
 
 /* ===== navegación ===== */
 function cargarGlobales(){
@@ -1380,7 +1398,7 @@ window.LEGADO = {
     if(o.FECHA_SIS) FECHA_SIS = o.FECHA_SIS;
     if(o.PLANES) Object.keys(o.PLANES).forEach(k => PLANES[k] = o.PLANES[k]);
     aplicarLogos(); },
-  alSimulador,
+  alSimulador, asegurarHashes,
   sesion(){ return SESION; }
 };
 window.addEventListener('resize', function(){ if(SESION){ dibujar(); encajar(); } });

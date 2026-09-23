@@ -33,6 +33,7 @@ async function arrancar() {
     await S.iniciar();
     const leg = await S.BDexp.uno('estado_app', 'legado');
     if (leg && globalThis.LEGADO) { globalThis.LEGADO.restaurar(leg.datos); ultimoLegado = JSON.stringify(leg.datos); }
+    if (globalThis.LEGADO) await globalThis.LEGADO.asegurarHashes();
   } catch (e) {
     console.error(e);
     const m = $('loginMsg'); if (m) { m.className = 'login-msg error'; m.textContent = 'No se pudo abrir la base local: ' + e.message; }
@@ -43,7 +44,7 @@ async function arrancar() {
   [Tablero, Calculo, Registros, Parametros, Simulador, Auditoria].forEach(m => m.montar());
   Tablero.poblarFiltros(true);
   montarExportadores();
-  listo = true; chip();
+  listo = true; chip(); guardarLegado(true);
   setInterval(() => guardarLegado(false), 4000);
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') guardarLegado(false); });
   window.addEventListener('beforeunload', () => guardarLegado(false));

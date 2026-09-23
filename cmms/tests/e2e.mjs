@@ -177,13 +177,16 @@ check(14, 'Todas las mejoras E1–E6 significativas al 95 %', comp.slice(1).ever
 await P.screenshot({ path: path.join(SHOTS, '07_resultados.png'), fullPage: true });
 
 console.log('\nPersistencia · cierre y reapertura del navegador');
-await ir(P, 'marca'); await P.fill('#nuNombre', 'Prueba Persistencia'); await P.fill('#nuUser', 'persistencia@lexacaucho.pe'); await P.fill('#nuPass', 'x1'); await P.click('#nuAdd');
+await ir(P, 'marca'); await P.fill('#nuNombre', 'Prueba Persistencia'); await P.fill('#nuUser', 'persistencia@lexacaucho.pe'); await P.fill('#nuPass', 'clave1'); await P.click('#nuAdd');
 await P.waitForTimeout(4500);
 await P.reload(); await P.waitForFunction(() => window.CMMS && CMMS.servicio.E.resultado);
 await entrar(P);
 const oR = await oee();
 check('P', 'Tras recargar, los registros y el OEE persisten (IndexedDB)', oR.OEE === o0.OEE, (oR.OEE * 100).toFixed(4) + ' %');
 check('P', 'Tras recargar, persisten los resultados de simulación', await E(() => Object.keys(CMMS.servicio.E.resultadosSim).length) === 7, '');
+check('P', 'Claves guardadas cifradas (SHA-256), ninguna en texto plano', await E(async () => (await CMMS.servicio.BDexp.uno('estado_app', 'legado')).datos.USUARIOS.every(u => !u.pass && /^[0-9a-f]{64}$/.test(u.hash))), '');
+await P.click('#btnSalir'); await P.fill('#inUser', 'persistencia@lexacaucho.pe'); await P.fill('#inPass', 'clave1'); await P.click('#btnEntrar'); await P.waitForSelector('#app.on');
+check('P', 'El usuario creado inicia sesión con su clave tras recargar', await E(() => LEGADO.sesion().user === 'persistencia@lexacaucho.pe'), '');
 check('P', 'Tras recargar, persiste el estado de los módulos heredados (usuario creado)', await E(() => LEGADO.instantanea().USUARIOS.some(u => u.user === 'persistencia@lexacaucho.pe')), '');
 const movil = await navegador.newContext({ viewport: { width: 820, height: 1180 } }); const pm = await movil.newPage();
 await pm.goto('file://' + path.resolve(import.meta.dirname, '../dist/cmms_lexacaucho_v6.html')); await pm.waitForFunction(() => window.CMMS && CMMS.servicio.E.resultado);
