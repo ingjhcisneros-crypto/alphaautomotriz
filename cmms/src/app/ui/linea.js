@@ -82,7 +82,7 @@ export function pintar() {
 function detallePerdida(r, k) {
   const c = CATEGORIAS.find(x => x.k === k), eqs = r.equipos;
   const filas = eqs.map(e => ({ n: e.nombre, t: e.topologia, h: r.maquina[e.id].total.perdidas[k] })).filter(f => f.h > 0.0005);
-  const lineaNota = { reuniones: 'Una reunión detiene toda la planta: en la línea cuenta una sola vez, no por cada máquina.', auxiliares: 'Las fallas de auxiliares detienen la línea: cuentan una vez con su duración registrada.',
+  const lineaNota = { reuniones: 'Una parada de emergencia de toda la línea cuenta una sola vez en la línea, no por cada máquina.', auxiliares: 'Las fallas de auxiliares detienen la línea: cuentan una vez con su duración registrada.',
     vacio: 'En la línea el vacío es el camino crítico del arranque (retraso + caldero + máximo de proceso), no la suma de las máquinas.' }[k] || 'Serie: 100 % a la línea · paralelo y soporte según los factores de Parámetros.';
   dialogo(c.nombre, '<div class="rejilla c2"><div><h3>Por máquina (horas-máquina)</h3><div class="tabla-caja"><table><thead><tr><th>Máquina</th><th>Topología</th><th class="num">Horas</th></tr></thead><tbody>' +
     (filas.length ? filas.map(f => '<tr><td class="nombre">' + esc(f.n) + '</td><td class="chico">' + f.t + '</td><td class="num">' + h1(f.h) + '</td></tr>').join('') : '<tr><td colspan="3" class="chico tenue">Sin horas</td></tr>') +

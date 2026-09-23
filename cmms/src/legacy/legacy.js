@@ -29,10 +29,20 @@ async function hashClave(user, pass){
 async function asegurarHashes(){
   for(const u of USUARIOS){ if(u.pass != null){ u.hash = await hashClave(u.user, u.pass); delete u.pass; } } }
 async function claveValida(u, p){ return !!u && !!u.hash && u.hash === await hashClave(u.user, p); }
+/* Diálogos: el visor de artefactos de claude.ai no muestra alert/confirm/prompt, así que se usan los diálogos
+   propios de la aplicación (window.CMMS.ui). Sin ellos (antes de que cargue la app) se cae a los nativos. */
+const uiCMMS = () => window.CMMS && window.CMMS.ui;
+function avisoL(m, tipo){ const u = uiCMMS(); if(u) u.aviso(m, tipo || 'warn', 5500); else window.alert(m); }
+async function confirmarL(titulo, m, si){ const u = uiCMMS(); return u ? !!(await u.confirmar(titulo, '<p>'+esc(m)+'</p>', si || 'Continuar', true)) : window.confirm(m); }
+async function pedirL(titulo, m, tipo){
+  const u = uiCMMS(); if(!u) return window.prompt(m);
+  const bot = [{t:'Cancelar', v:null}, {t:'Aceptar', v: c => c.querySelector('#dlgEntrada').value}];
+  bot.onMontar = c => { const i = c.querySelector('#dlgEntrada'); i.focus(); i.addEventListener('keydown', e => { if(e.key === 'Enter') c.querySelector('[data-i="1"]').click(); }); };
+  return u.dialogo(titulo, '<p>'+esc(m)+'</p><input id="dlgEntrada" type="'+(tipo || 'text')+'" autocomplete="off" style="width:100%;margin-top:8px">', bot); }
 async function pedirClave(msg){
-  const c = prompt(msg+'\n\nIngresa la clave del usuario principal.');
+  const c = await pedirL('Confirmar con la clave principal', msg+' Ingresa la clave del usuario principal.', 'password');
   if(c === null) return false;
-  if(!(await claveValida(USUARIOS[0], c))){ alert('Clave incorrecta. No se realizó ningún cambio.'); return false; }
+  if(!(await claveValida(USUARIOS[0], c))){ avisoL('Clave incorrecta. No se realizó ningún cambio.'); return false; }
   return true;
 }
 function abrirCapa(id){ $(id).classList.add('abierta'); document.body.classList.add('bloqueado'); }
@@ -603,7 +613,7 @@ $('btnDesdeMtbf').onclick = function(){
   $('qD').value = (a/(a+b)*100).toFixed(1);
   $('qAviso').innerHTML = '<span class="marcador m-ok">Disponibilidad calculada</span>'; oeeVista(); };
 $('btnGuardar').onclick = function(){
-  if(!puedeEditar()){ alert('Tu perfil no permite modificar parámetros de equipo.'); return; }
+  if(!puedeEditar()){ avisoL('Tu perfil no permite modificar parámetros de equipo.'); return; }
   const e = eq(editando);
   e.D = +$('qD').value; e.R = +$('qR').value; e.C = +$('qC').value;
   e.mtbf = +$('qMtbf').value; e.mttr = +$('qMttr').value;
@@ -909,10 +919,10 @@ function pintarPlan(){
   $('plAuto').textContent = cnt['Autónomo']; $('plCal').textContent = cnt.Calidad;
   $('plHoras').textContent = n0(min/60)+' h'; $('plDia').textContent = n1(diaAut/60)+' h';
   tb.querySelectorAll('[data-ed]').forEach(b => b.onclick = ()=> abrirTarea(b.dataset.ed));
-  tb.querySelectorAll('[data-del]').forEach(b => b.onclick = function(){
-    if(!puedeEditar()){ alert('Tu perfil no permite modificar el plan.'); return; }
+  tb.querySelectorAll('[data-del]').forEach(b => b.onclick = async function(){
+    if(!puedeEditar()){ avisoL('Tu perfil no permite modificar el plan.'); return; }
     const p = b.dataset.del.split('|');
-    if(!confirm('Se eliminará la tarea del plan y del calendario. ¿Continuar?')) return;
+    if(!(await confirmarL('Eliminar tarea', 'Se eliminará la tarea del plan y del calendario. ¿Continuar?', 'Eliminar'))) return;
     PLANES[p[0]].splice(+p[1],1); generarOTs(); });
   if($('vTit').dataset.v === 'plan')
     $('vSub').textContent = (planEqF === 'todos' ? 'Los cinco equipos' : NOM_FAM[planEqF])+
@@ -923,7 +933,7 @@ document.querySelectorAll('#planTipo .pest').forEach(function(t){
 $('planEqF').addEventListener('change', function(){ planEqF = this.value; pintarPlan(); });
 let tareaEdit = null;
 function abrirTarea(ref){
-  if(!puedeEditar()){ alert('Tu perfil no permite modificar el plan.'); return; }
+  if(!puedeEditar()){ avisoL('Tu perfil no permite modificar el plan.'); return; }
   $('tFrec').innerHTML = ORDEN_FREC.map(f => '<option>'+f+'</option>').join('');
   $('tEq').innerHTML = FAMILIAS.map(f => '<option value="'+f+'">'+NOM_FAM[f]+'</option>').join('');
   if(ref){
@@ -948,7 +958,7 @@ $('btnNuevaTarea').onclick = ()=> abrirTarea(null);
 $('tCerrar').onclick = $('tCancelar').onclick = ()=> cerrarCapa('telonTarea');
 $('tGuardar').onclick = function(){
   const act = $('tAct').value.trim(), crit = $('tCrit').value.trim();
-  if(!act || !crit){ alert('La actividad y el criterio son obligatorios.'); return; }
+  if(!act || !crit){ avisoL('La actividad y el criterio son obligatorios.'); return; }
   const t = {tipo:$('tTipo').value, paso:$('tPaso').value, act:act, crit:crit, frec:$('tFrec').value,
     resp:$('tResp').value, min:+$('tMin').value||10, loto:$('tLoto').value === 'si'};
   const fam = $('tEq').value;
@@ -1107,10 +1117,10 @@ $('cConfirmar').onclick = function(){
       crit:'Observación del ejecutante al cierre', nota:cerrando.obs, ot:cerrando.id, tipo:cerrando.tipo,
       por:cerrando.cerradaPor, revisado:false, revPor:null});
   cerrarCapa('telonOT'); pintarAgenda(); pintarHistorial(); pintarAnom(); pintarOEE(); pintarMttoReg(); pintarAutoej(); };
-$('cNoCumple').onclick = function(){
+$('cNoCumple').onclick = async function(){
   if(!cerrando) return;
-  const m = prompt('Motivo por el que la tarea no se ejecutó:');
-  if(!m || m.trim().length < 5){ alert('Indica un motivo de al menos 5 caracteres.'); return; }
+  const m = await pedirL('Tarea no ejecutada', 'Motivo por el que la tarea no se ejecutó (mínimo 5 caracteres):');
+  if(!m || m.trim().length < 5){ avisoL('Indica un motivo de al menos 5 caracteres.'); return; }
   cerrando.estado = 'No cumplida'; cerrando.motivoNo = m.trim();
   cerrando.cerradaPor = SESION ? SESION.nombre : '';
   ANOM.push({fecha:HOY(), eqId:cerrando.eqId, clase:'Observación', punto:'Tarea no ejecutada: '+cerrando.act,
@@ -1119,6 +1129,11 @@ $('cNoCumple').onclick = function(){
   cerrarCapa('telonOT'); pintarAgenda(); pintarHistorial(); pintarAnom(); };
 $('cCerrar').onclick = ()=> cerrarCapa('telonOT');
 $('dCerrar').onclick = ()=> cerrarCapa('telonDoc');
+/* En el visor de claude.ai no se puede imprimir: la orden se convierte a PDF y se ofrece como descarga. */
+$('dPdf').onclick = function(){
+  const P = window.CMMS && CMMS.pdf;
+  if(P && P.enVisor() && window.__PDFVISOR__) P.elementoAPdf($('docOT'), ($('docOT').querySelector('.cab') ? 'Orden_de_trabajo' : 'Documento')+'_'+HOY());
+  else window.print(); };
 
 function encabezado(titulo, acento, sub, der){
   return '<div class="cab">'+
@@ -1239,7 +1254,7 @@ function pdfPlan(){
     nTot += ts.length; minTot += minF; otsTot += ots.length; hOT += minO;
     resumen.push([NOM_FAM[fam], unid, ts.length, minF, ots.length, ej, vence, minH(minO), ej+vence ? pc(ej/(ej+vence)) : '—']);
     secciones.push({ titulo: NOM_FAM[fam]+(unid > 1 ? ' ('+unid+' unidades)' : ''), html }); });
-  if(!secciones.length){ alert('El filtro actual no tiene tareas.'); return; }
+  if(!secciones.length){ avisoL('El filtro actual no tiene tareas.'); return; }
   secciones.unshift({ titulo: 'Resumen por equipo', html: P.tablaPDF([{t:'Equipo'},{t:'Unid.',n:true},{t:'Tareas',n:true},{t:'Min por ciclo',n:true},{t:'Órdenes del periodo',n:true},{t:'Ejecutadas',n:true},{t:'Vencidas',n:true},{t:'Horas-hombre',n:true},{t:'Cumplimiento',n:true}], resumen) +
     '<p class="nota">Las órdenes planificadas y de calidad ejecutadas en jornada descuentan del tiempo de carga del equipo en el cálculo del OEE.</p>' });
   P.imprimir({ titulo: 'Plan maestro', acento: planFiltro === 'todos' ? 'de mantenimiento' : planFiltro.toLowerCase(),
@@ -1270,7 +1285,7 @@ function pdfHistorial(){
 function pdfAnom(){
   const P = pdfCMMS(); if(!P) return;
   const lista = ANOM.filter(a => anFiltro === 'todos' || (anFiltro === 'pend' ? !a.revisado : a.clase === anFiltro)).slice().reverse();
-  if(!lista.length){ alert('El filtro actual no tiene registros.'); return; }
+  if(!lista.length){ avisoL('El filtro actual no tiene registros.'); return; }
   const por = {}; lista.forEach(a => { const k = nombreEq(a.eqId); por[k] = por[k] || {nc:0,ob:0,p:0}; if(a.clase === 'No conformidad') por[k].nc++; else por[k].ob++; if(!a.revisado) por[k].p++; });
   P.imprimir({ titulo: 'Registro de', acento: 'anomalías', archivo: 'Anomalias',
     filtros: ['Filtro: '+(anFiltro === 'todos' ? 'todos' : anFiltro === 'pend' ? 'sin revisar' : anFiltro)],
@@ -1323,24 +1338,24 @@ function pintarUsuarios(){
       '<td><span class="marcador '+bg+'">'+u.rol+'</span></td><td class="chico tenue">'+ALCANCE[u.rol]+'</td>'+
       '<td>'+(i === 0?'<span class="chico tenue">principal</span>':'<button class="btn btn-danger btn-sm" data-du="'+i+'"><i class="fas fa-trash"></i></button>')+'</td></tr>'); });
   tb.querySelectorAll('[data-du]').forEach(b => b.onclick = async function(){
-    if(!SESION || SESION.rol !== 'Administrador'){ alert('Solo un administrador puede eliminar usuarios.'); return; }
+    if(!SESION || SESION.rol !== 'Administrador'){ avisoL('Solo un administrador puede eliminar usuarios.'); return; }
     if(!(await pedirClave('Eliminar al usuario '+USUARIOS[+b.dataset.du].user+'.'))) return;
     USUARIOS.splice(+b.dataset.du,1); pintarUsuarios(); pintarOEE(); });
   tb.querySelectorAll('[data-rc]').forEach(b => b.onclick = async function(){
     const x = USUARIOS[+b.dataset.rc];
-    if(!SESION || (SESION !== x && SESION.rol !== 'Administrador')){ alert('Solo el propio usuario o un administrador puede cambiar esta clave.'); return; }
+    if(!SESION || (SESION !== x && SESION.rol !== 'Administrador')){ avisoL('Solo el propio usuario o un administrador puede cambiar esta clave.'); return; }
     if(!(await pedirClave('Restablecer la clave de '+x.user+'.'))) return;
-    const n = prompt('Nueva clave para '+x.user+' (mínimo 6 caracteres):');
-    if(n == null) return; if(n.length < 6){ alert('La clave debe tener al menos 6 caracteres.'); return; }
-    x.hash = await hashClave(x.user, n); delete x.pass; pintarOEE(); alert('Clave actualizada.'); }); }
+    const n = await pedirL('Nueva clave', 'Nueva clave para '+x.user+' (mínimo 6 caracteres):', 'password');
+    if(n == null) return; if(n.length < 6){ avisoL('La clave debe tener al menos 6 caracteres.'); return; }
+    x.hash = await hashClave(x.user, n); delete x.pass; pintarOEE(); avisoL('Clave actualizada.', 'ok'); }); }
 $('verClaves').onclick = function(){
-  alert('Por seguridad las claves se guardan cifradas (SHA-256) y no pueden mostrarse. Use el botón de llave de cada usuario para restablecerla.'); };
+  avisoL('Por seguridad las claves se guardan cifradas (SHA-256) y no pueden mostrarse. Use el botón de llave de cada usuario para restablecerla.'); };
 $('nuAdd').onclick = async function(){
   const n = $('nuNombre').value.trim(), u = $('nuUser').value.trim(), p = $('nuPass').value.trim();
-  if(!n||!u||!p){ alert('Completa nombre, usuario y clave.'); return; }
-  if(!SESION || SESION.rol !== 'Administrador'){ alert('Solo un administrador puede crear usuarios.'); return; }
-  if(p.length < 4){ alert('La clave debe tener al menos 4 caracteres.'); return; }
-  if(USUARIOS.some(x => x.user.toLowerCase() === u.toLowerCase())){ alert('Ese usuario ya existe.'); return; }
+  if(!n||!u||!p){ avisoL('Completa nombre, usuario y clave.'); return; }
+  if(!SESION || SESION.rol !== 'Administrador'){ avisoL('Solo un administrador puede crear usuarios.'); return; }
+  if(p.length < 4){ avisoL('La clave debe tener al menos 4 caracteres.'); return; }
+  if(USUARIOS.some(x => x.user.toLowerCase() === u.toLowerCase())){ avisoL('Ese usuario ya existe.'); return; }
   USUARIOS.push({nombre:n,user:u,hash:await hashClave(u,p),rol:$('nuRol').value});
   ['nuNombre','nuUser','nuPass'].forEach(i => $(i).value = ''); pintarUsuarios(); pintarOEE(); };
 
@@ -1399,6 +1414,8 @@ window.LEGADO = {
     if(o.PLANES) Object.keys(o.PLANES).forEach(k => PLANES[k] = o.PLANES[k]);
     aplicarLogos(); },
   alSimulador, asegurarHashes,
+  /* Tras recibir datos de otro usuario (base compartida del artefacto) se repintan los módulos heredados. */
+  refrescarTodo(){ if(!arrancado) return; [llenarSelects, pintarPlan, pintarAgenda, pintarHistorial, pintarAnom, pintarUsuarios, pintarSistema].forEach(f => { try { f(); } catch(e){ console.error(e); } }); },
   /* Recibe de Parámetros la jornada, los feriados, los periodos omitidos, las capacidades del catálogo, los lotes
      de la simulación y el inicio del programa de mantenimiento (independiente del periodo de datos recolectados). */
   sincronizar(c){

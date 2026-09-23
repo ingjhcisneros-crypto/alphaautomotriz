@@ -45,17 +45,24 @@ function tx(tablas, modo, fn) {
 }
 const pedir = r => new Promise((ok, mal) => { r.onsuccess = () => ok(r.result); r.onerror = () => mal(r.error); });
 
+/* Aviso de escritura por tabla: lo usa la sincronización con la base compartida del artefacto. */
+let observador = null;
+export const observar = fn => { observador = fn; };
+const avisar = tabla => { if (observador) try { observador(tabla); } catch (e) { console.error(e); } };
+
 export const todos = tabla => pedir(bd.transaction([tabla]).objectStore(tabla).getAll());
 export const uno = (tabla, clave) => pedir(bd.transaction([tabla]).objectStore(tabla).get(clave));
 export const contar = tabla => pedir(bd.transaction([tabla]).objectStore(tabla).count());
-export function poner(tabla, obj) { let clave; return tx([tabla], 'readwrite', t => { const r = t.objectStore(tabla).put(obj); r.onsuccess = () => { clave = r.result; }; }).then(() => clave); }
+export function poner(tabla, obj) { let clave; return tx([tabla], 'readwrite', t => { const r = t.objectStore(tabla).put(obj); r.onsuccess = () => { clave = r.result; }; }).then(() => { avisar(tabla); return clave; }); }
 export function ponerVarios(tabla, lista) {
   const claves = [];
-  return tx([tabla], 'readwrite', t => { const s = t.objectStore(tabla); lista.forEach((o, i) => { const r = s.put(o); r.onsuccess = () => { claves[i] = r.result; }; }); }).then(() => claves);
+  return tx([tabla], 'readwrite', t => { const s = t.objectStore(tabla); lista.forEach((o, i) => { const r = s.put(o); r.onsuccess = () => { claves[i] = r.result; }; }); }).then(() => { avisar(tabla); return claves; });
 }
-export const borrar = (tabla, clave) => tx([tabla], 'readwrite', t => { t.objectStore(tabla).delete(clave); });
-export const borrarVarios = (tabla, claves) => tx([tabla], 'readwrite', t => { const s = t.objectStore(tabla); claves.forEach(k => s.delete(k)); });
-export const vaciar = tabla => tx([tabla], 'readwrite', t => { t.objectStore(tabla).clear(); });
+export const borrar = (tabla, clave) => tx([tabla], 'readwrite', t => { t.objectStore(tabla).delete(clave); }).then(() => avisar(tabla));
+export const borrarVarios = (tabla, claves) => tx([tabla], 'readwrite', t => { const s = t.objectStore(tabla); claves.forEach(k => s.delete(k)); }).then(() => avisar(tabla));
+export const vaciar = tabla => tx([tabla], 'readwrite', t => { t.objectStore(tabla).clear(); }).then(() => avisar(tabla));
+/* Reemplaza el contenido completo de una tabla sin avisar (lo usa la sincronización al bajar datos compartidos). */
+export const reemplazarTabla = (tabla, filas) => tx([tabla], 'readwrite', t => { const s = t.objectStore(tabla); s.clear(); filas.forEach(o => s.put(o)); });
 
 /* Reemplazo atómico: borra los registros del periodo e inserta los nuevos en una sola transacción. */
 export function reemplazarPeriodo(tabla, periodoId, nuevos) {
@@ -63,7 +70,7 @@ export function reemplazarPeriodo(tabla, periodoId, nuevos) {
     const s = t.objectStore(tabla);
     const cur = s.index('periodo_id').openCursor(IDBKeyRange.only(periodoId));
     cur.onsuccess = () => { const c = cur.result; if (c) { c.delete(); c.continue(); } else nuevos.forEach(o => s.put(o)); };
-  });
+  }).then(() => avisar(tabla));
 }
 
 export function nombresTablas() { return Array.from(bd.objectStoreNames); }

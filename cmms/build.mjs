@@ -61,3 +61,18 @@ ${seguro(app)}</script>
 fs.mkdirSync(R('dist'), { recursive: true });
 fs.writeFileSync(R('dist/cmms_lexacaucho_v6.html'), html);
 console.log('dist/cmms_lexacaucho_v6.html', (html.length / 1024 / 1024).toFixed(2), 'MB');
+
+/* Variante para publicar como artefacto de claude.ai: el visor envuelve la página en su propio esqueleto
+   (sin <html>/<head>/<body> propios), el título va al inicio y se añade el generador de PDF (html2canvas + jsPDF),
+   porque dentro del visor no se puede imprimir. La base compartida y el asistente se activan solos en el visor. */
+const pdfvisor = await bundle('src/app/pdfvisor.js');
+const artefacto = html
+  .replace('<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n', '<title>CMMS Lexacaucho</title>\n')
+  .replace('<title>CMMS 4.0 · Línea de láminas antiabrasivas</title>\n', '')
+  .replace('</style>\n</head>\n<body>\n', '</style>\n')
+  .replace('<script>/* Módulos nuevos', () => '<script>/* html2canvas (MIT) + jsPDF (MIT): PDF dentro del visor */\n' + seguro(pdfvisor) + '</script>\n<script>/* Módulos nuevos') /* función: el código minificado trae «$&» */
+  .replace('</body>\n</html>\n', '');
+if (/<\/?(html|head|body)\b/i.test(artefacto.replace(/<script>[\s\S]*?<\/script>/g, ''))) throw new Error('La variante artefacto conserva etiquetas html/head/body');
+fs.mkdirSync(R('dist/artefacto'), { recursive: true });
+fs.writeFileSync(R('dist/artefacto/cmms_lexacaucho.html'), artefacto);
+console.log('dist/artefacto/cmms_lexacaucho.html', (artefacto.length / 1024 / 1024).toFixed(2), 'MB');

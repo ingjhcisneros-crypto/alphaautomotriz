@@ -1,5 +1,5 @@
 {
- "fecha": "2026-09-23T19:07:14.844Z",
+ "fecha": "2026-09-23T19:50:44.287Z",
  "fallas": 0,
  "informe": [
   {
@@ -12,7 +12,7 @@
    "auditoria": 5,
    "verificacion": "Catálogos sembrados = hojas «Listas» de los adjuntos",
    "ok": true,
-   "detalle": "19 listas"
+   "detalle": "20 listas"
   },
   {
    "auditoria": 5,
@@ -52,9 +52,9 @@
   },
   {
    "auditoria": 6,
-   "verificacion": "Reuniones de emergencia: plantilla descargada con encabezados exactos y dataValidation",
+   "verificacion": "Paradas de emergencia: plantilla descargada con encabezados exactos y dataValidation",
    "ok": true,
-   "detalle": "Plantilla_Registro_de_reuniones_de_emergencia.xlsx"
+   "detalle": "Plantilla_Registro_de_paradas_de_emergencia.xlsx"
   },
   {
    "auditoria": 6,
@@ -120,7 +120,7 @@
    "auditoria": 7,
    "verificacion": "Informe de validación descargable en Excel",
    "ok": true,
-   "detalle": "12 filas en Informe_validacion_mantenimiento_correctivo_2026-09-23-19-05.xlsx"
+   "detalle": "12 filas en Informe_validacion_mantenimiento_correctivo_2026-09-23-19-49.xlsx"
   },
   {
    "auditoria": 7,
@@ -142,7 +142,7 @@
   },
   {
    "auditoria": 7,
-   "verificacion": "Reuniones de emergencia cargado por la interfaz",
+   "verificacion": "Paradas de emergencia cargado por la interfaz",
    "ok": true,
    "detalle": "72Insertados0Omitidos por duplicado0Rechazados por error o a"
   },
@@ -198,7 +198,7 @@
    "auditoria": 8,
    "verificacion": "Fecha del último recálculo visible en la cabecera",
    "ok": true,
-   "detalle": "Recalculado 07:05:56 p. m."
+   "detalle": "Recalculado 07:49:25 p. m."
   },
   {
    "auditoria": 9,
@@ -264,7 +264,7 @@
    "auditoria": 9,
    "verificacion": "Análisis de paradas: los 6 tipos por máquina",
    "ok": true,
-   "detalle": "Máquina | Correctivo | Cambio de formato | Equipos auxiliares | Paradas cortas | Operación en vacío | Reuniones de emergencia | Total (h)"
+   "detalle": "Máquina | Correctivo | Cambio de formato | Equipos auxiliares | Paradas cortas | Operación en vacío | Paradas de emergencia | Total (h)"
   },
   {
    "auditoria": 9,
@@ -282,97 +282,97 @@
    "auditoria": 9,
    "verificacion": "Exportación lb1 a XLSX",
    "ok": true,
-   "detalle": "Indicadores_de_la_linea_2026-09-23-19-06.xlsx · 7881 bytes"
+   "detalle": "Indicadores_de_la_linea_2026-09-23-19-49.xlsx · 7881 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación lb1 a PNG",
    "ok": true,
-   "detalle": "Indicadores_de_la_linea_2026-09-23-19-06.png · 33240 bytes"
+   "detalle": "Indicadores_de_la_linea_2026-09-23-19-49.png · 33240 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación lb3 a XLSX",
    "ok": true,
-   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-19-06.xlsx · 9786 bytes"
+   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-19-49.xlsx · 9786 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación lb3 a PNG",
    "ok": true,
-   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-19-06.png · 51465 bytes"
+   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-19-49.png · 51465 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación lb4 a XLSX",
    "ok": true,
-   "detalle": "Perdidas_de_la_linea_2026-09-23-19-06.xlsx · 9115 bytes"
+   "detalle": "Perdidas_de_la_linea_2026-09-23-19-49.xlsx · 9113 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación lb4 a PNG",
    "ok": true,
-   "detalle": "Perdidas_de_la_linea_2026-09-23-19-06.png · 54189 bytes"
+   "detalle": "Perdidas_de_la_linea_2026-09-23-19-49.png · 53766 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación mb1 a XLSX",
    "ok": true,
-   "detalle": "Resumen_por_maquina_2026-09-23-19-06.xlsx · 14278 bytes"
+   "detalle": "Resumen_por_maquina_2026-09-23-19-49.xlsx · 14278 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación mb1 a PNG",
    "ok": true,
-   "detalle": "Resumen_por_maquina_2026-09-23-19-06.png · 99094 bytes"
+   "detalle": "Resumen_por_maquina_2026-09-23-19-49.png · 99094 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación mb2 a XLSX",
    "ok": true,
-   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-19-06.xlsx · 13546 bytes"
+   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-19-49.xlsx · 13546 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación mb2 a PNG",
    "ok": true,
-   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-19-06.png · 97951 bytes"
+   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-19-49.png · 97951 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación mb3 a XLSX",
    "ok": true,
-   "detalle": "Perdidas_por_maquina_horas-maquina_2026-09-23-19-06.xlsx · 10534 bytes"
+   "detalle": "Perdidas_por_maquina_horas-maquina_2026-09-23-19-49.xlsx · 10532 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación mb3 a PNG",
    "ok": true,
-   "detalle": "Perdidas_por_maquina_horas-maquina_2026-09-23-19-06.png · 48916 bytes"
+   "detalle": "Perdidas_por_maquina_horas-maquina_2026-09-23-19-49.png · 48787 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación pb1 a XLSX",
    "ok": true,
-   "detalle": "Paradas_por_maquina_y_tipo_horas-maquina_2026-09-23-19-06.xlsx · 12546 bytes"
+   "detalle": "Paradas_por_maquina_y_tipo_horas-maquina_2026-09-23-19-49.xlsx · 12542 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación pb1 a PNG",
    "ok": true,
-   "detalle": "Paradas_por_maquina_y_tipo_horas-maquina_2026-09-23-19-06.png · 98902 bytes"
+   "detalle": "Paradas_por_maquina_y_tipo_horas-maquina_2026-09-23-19-49.png · 98800 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación pb2 a XLSX",
    "ok": true,
-   "detalle": "Pareto_de_causas_2026-09-23-19-06.xlsx · 8905 bytes"
+   "detalle": "Pareto_de_causas_2026-09-23-19-49.xlsx · 8916 bytes"
   },
   {
    "auditoria": 9,
    "verificacion": "Exportación pb2 a PNG",
    "ok": true,
-   "detalle": "Pareto_de_causas_2026-09-23-19-06.png · 82652 bytes"
+   "detalle": "Pareto_de_causas_2026-09-23-19-49.png · 82615 bytes"
   },
   {
    "auditoria": 9,
@@ -396,7 +396,7 @@
    "auditoria": "9b",
    "verificacion": "PDF del filtro «Planificado · Caldero»: solo ese pilar y ese equipo, agrupado y con firmas",
    "ok": true,
-   "detalle": "CMMS4.0Plan maestro planificadoLínea de láminas antiabrasivas · programa desde 2026-10-01 · 12 mesesEmitido 23/9/2026, 7:06:15 p. m.por Guti"
+   "detalle": "CMMS4.0Plan maestro planificadoLínea de láminas antiabrasivas · programa desde 2026-10-01 · 12 mesesEmitido 23/9/2026, 7:49:44 p. m.por Guti"
   },
   {
    "auditoria": "9b",
@@ -480,7 +480,7 @@
    "auditoria": 10,
    "verificacion": "Recálculo idempotente (dos ejecuciones idénticas)",
    "ok": true,
-   "detalle": "Huellas 546329 / 546329 caracteres"
+   "detalle": "Huellas 546257 / 546257 caracteres"
   },
   {
    "auditoria": 10,
@@ -516,7 +516,7 @@
    "auditoria": 12,
    "verificacion": "Worker de simulación: línea base ejecutada sin bloquear la interfaz",
    "ok": true,
-   "detalle": "4.7 s · 30 réplicas"
+   "detalle": "4.6 s · 30 réplicas"
   },
   {
    "auditoria": 12,

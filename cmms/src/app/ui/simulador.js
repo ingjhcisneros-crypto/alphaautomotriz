@@ -2,6 +2,7 @@
 import { $, esc, h1, n0, n2, pc, pp, soles, aviso, dialogo, confirmar, registrarExportador, cssVar } from './comun.js';
 import { E, escuchar, ajustarModelo, modeloDesactualizado, guardarResultado, escenariosHabilitados, comparacion, guardarEscenario, borrarEscenario } from '../servicio.js';
 import { ejecutar } from '../ejecutor.js';
+import { emitir } from './pdf.js';
 import { DISTRIBUCIONES } from '../../core/estadistica.js';
 
 let tab = 'config', corriendo = false, gAjuste = null, gEsc = null;
@@ -221,9 +222,7 @@ function pintarRecursos() {
 /* PDF: documento imprimible con la comparación, la validación y los recursos (el navegador lo guarda en PDF). */
 function pdf() {
   const f = filasComparacion(); if (!f) return aviso('Sin resultados para exportar', 'warn');
-  const marco = document.createElement('iframe'); marco.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
-  document.body.appendChild(marco);
-  const w = { document: marco.contentWindow.document };
+  const w = { document: { write: h => { w.html = h; } } };
   const v = E.validacion;
   const tabla = (enc, filas) => '<table><thead><tr>' + enc.map(h => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' + filas.map(r => '<tr>' + r.map(c => '<td>' + esc(c) + '</td>').join('') + '</tr>').join('') + '</tbody></table>';
   w.document.write('<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Resultados de simulación</title><style>body{font-family:Arial,sans-serif;font-size:10pt;color:#16202b;margin:14mm}h1{font-size:15pt;color:#1f5c10}h2{font-size:11pt;margin-top:8mm;color:#1f5c10}table{border-collapse:collapse;width:100%;font-size:8.5pt}th,td{border:1px solid #ccd;padding:3px 5px;text-align:left}th{background:#eef7ea}@page{size:A4 landscape;margin:10mm}</style></head><body>' +
@@ -232,6 +231,5 @@ function pdf() {
     '<h2>Comparación contra la línea base</h2>' + tabla(f.enc, f.filas) +
     (E.modelo ? '<h2>Advertencias de validez estadística</h2><ul>' + E.modelo.advertencias.map(a => '<li>' + esc(a) + '</li>').join('') + '</ul>' : '') +
     '</body></html>');
-  w.document.close();
-  setTimeout(() => { marco.contentWindow.focus(); marco.contentWindow.print(); setTimeout(() => marco.remove(), 60000); }, 300);
+  emitir(w.html, 'Resultados_simulacion', true);
 }

@@ -39,8 +39,10 @@ async function sembrar() {
   await bitacora('Instalación', 'Catálogos y parámetros del periodo sembrados; sin registros operativos');
 }
 
-export async function iniciar() {
+/* antesDeSembrar: permite traer la base compartida (artefacto) antes de decidir si hace falta sembrar. */
+export async function iniciar(antesDeSembrar) {
   await BD.abrir();
+  if (antesDeSembrar) await antesDeSembrar();
   if (!(await BD.uno('config', 'general'))) await sembrar();
   await cargarTodo();
   recalcular('inicio');
@@ -60,6 +62,9 @@ async function cargarTodo() {
   E.versionDatos = E.estado.versionDatos || 0;
   E.equipos = (await BD.todos('equipos')).sort((a, b) => a.orden - b.orden);
   E.listas = {}; (await BD.todos('listas')).forEach(l => E.listas[l.nombre] = l.valores);
+  /* Catálogos nuevos de versiones posteriores (p. ej., categoría de parada de emergencia): se agregan una vez. */
+  const faltan = Object.keys(LISTAS_SEMILLA).filter(k => !E.listas[k]);
+  if (faltan.length) { faltan.forEach(k => E.listas[k] = LISTAS_SEMILLA[k].slice()); await BD.ponerVarios('listas', faltan.map(k => ({ nombre: k, valores: E.listas[k] }))); }
   E.codigos = await BD.todos('codigos_causa');
   E.productos = await BD.todos('productos');
   E.escenarios = (await BD.todos('escenarios')).sort((a, b) => a.id < b.id ? -1 : 1);
@@ -278,4 +283,6 @@ export async function restaurar(obj) {
   await cargarTodo(); await bitacora('Restauración', 'Respaldo del ' + obj.fecha); recalcular('restauración'); emitir('config'); emitir('datos', null);
 }
 export const BDexp = BD;
+/* Otro usuario cambió la base compartida: se releen todas las tablas y se recalcula. */
+export async function recargar() { await cargarTodo(); huellaMtto = ''; recalcular('datos compartidos'); emitir('config'); emitir('datos', null); }
 export { huella };

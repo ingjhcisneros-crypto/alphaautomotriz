@@ -7,7 +7,7 @@ import { normCmp, suma } from './util.js';
 export const CATEGORIAS = [
   { k: 'correctivo', nombre: 'Mantenimiento correctivo', comp: 'D' },
   { k: 'setup', nombre: 'Setup interno', comp: 'D' },
-  { k: 'reuniones', nombre: 'Reuniones de emergencia', comp: 'D' },
+  { k: 'reuniones', nombre: 'Paradas de emergencia', comp: 'D' },
   { k: 'auxiliares', nombre: 'Fallas de equipos auxiliares', comp: 'D' },
   { k: 'microparadas', nombre: 'Microparadas', comp: 'R' },
   { k: 'vacio', nombre: 'Operación en vacío', comp: 'R' },

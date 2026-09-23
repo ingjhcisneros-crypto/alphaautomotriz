@@ -1,7 +1,9 @@
 /* Punto de entrada: inicia la base, restaura el estado heredado y conecta las vistas nuevas con la navegación
    original (que se conserva). Expone window.CMMS para el script heredado. */
 import * as S from './servicio.js';
-import { $, aviso, montarExportadores } from './ui/comun.js';
+import { $, aviso, montarExportadores, dialogo, confirmar, enVisor } from './ui/comun.js';
+import * as Nube from './nube.js';
+import * as Asistente from './ui/asistente.js';
 import * as Linea from './ui/linea.js';
 import * as Maquina from './ui/maquina.js';
 import * as Paradas from './ui/paradas.js';
@@ -9,7 +11,7 @@ import * as Registros from './ui/registros.js';
 import * as Parametros from './ui/parametros.js';
 import * as Simulador from './ui/simulador.js';
 import * as Auditoria from './ui/auditoria.js';
-import { imprimir, tablaPDF } from './ui/pdf.js';
+import { imprimir, tablaPDF, elementoAPdf } from './ui/pdf.js';
 
 const PINTORES = { linea: Linea.pintar, maquina: Maquina.pintar, paradas: Paradas.pintar, registros: Registros.pintar, param: Parametros.pintar, simdes: Simulador.pintar, audit: Auditoria.pintar };
 let listo = false, ultimoLegado = '';
@@ -37,7 +39,9 @@ async function sincronizarLegado() {
 async function arrancar() {
   const btn = $('btnEntrar'); if (btn) { btn.disabled = true; btn.textContent = 'Abriendo base de datos…'; }
   try {
-    await S.iniciar();
+    /* Artefacto publicado: se conecta a la base compartida y trae lo último antes de leer la base local. */
+    const nube = await Nube.conectar();
+    await S.iniciar(nube ? () => Nube.alAbrir() : null);
     const leg = await S.BDexp.uno('estado_app', 'legado');
     if (leg && globalThis.LEGADO) { globalThis.LEGADO.restaurar(leg.datos); ultimoLegado = JSON.stringify(leg.datos); }
     if (globalThis.LEGADO) { await globalThis.LEGADO.asegurarHashes(); await sincronizarLegado(); }
@@ -60,6 +64,23 @@ async function arrancar() {
   setInterval(() => guardarLegado(false), 4000);
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') guardarLegado(false); });
   window.addEventListener('beforeunload', () => guardarLegado(false));
+  /* Base compartida: estado en la cabecera y cambios de otros usuarios aplicados en vivo. */
+  const cn = $('chipNube');
+  const pintarNube = st => { if (!cn) return; cn.hidden = false; cn.textContent = st.modo === 'ok' ? 'Guardado en la nube' : st.texto;
+    cn.className = 'marcador ' + ({ ok: 'm-ok', guardando: 'm-info', pendiente: 'm-info', bajando: 'm-info', conectando: 'm-info', lectura: 'm-warn', error: 'm-bad' }[st.modo] || 'm-info');
+    cn.title = st.texto + (st.fecha ? ' · último guardado ' + new Date(st.fecha).toLocaleString('es-PE') + (st.autor ? ' por ' + st.autor : '') : ''); };
+  Nube.alCambiarEstado(pintarNube); if (Nube.estado.modo !== 'local') pintarNube(Nube.estado);
+  Nube.activar(async (cambiadas, man) => {
+    if (cambiadas.indexOf('estado_app') >= 0 && globalThis.LEGADO) {
+      const leg = await S.BDexp.uno('estado_app', 'legado');
+      if (leg) { globalThis.LEGADO.restaurar(leg.datos); ultimoLegado = JSON.stringify(leg.datos); globalThis.LEGADO.refrescarTodo && globalThis.LEGADO.refrescarTodo(); }
+    }
+    await S.recargar();
+    globalThis.CMMS.alIniciarSesion();
+    aviso('Datos actualizados por ' + (man.autor_nombre || 'otro usuario'), 'ok');
+  }, () => { const s = globalThis.LEGADO && globalThis.LEGADO.sesion(); return s ? s.nombre : ''; });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') Nube.guardarYa(); });
+  Asistente.montar();
 }
 
 globalThis.CMMS = {
@@ -68,7 +89,8 @@ globalThis.CMMS = {
   alCambiarLegado() { guardarLegado(false); if (listo) S.alCambiarPrograma(); },
   resultado: () => S.E.total,
   servicio: S,
-  pdf: { imprimir, tablaPDF }
+  pdf: { imprimir, tablaPDF, elementoAPdf, enVisor },
+  ui: { aviso, dialogo, confirmar }
 };
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrancar); else arrancar();

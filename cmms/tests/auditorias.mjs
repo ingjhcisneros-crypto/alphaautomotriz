@@ -34,8 +34,8 @@ const CAMPOS_SEC7 = {
   cambio_formato: ['n_cambio', 'fecha_hora_parada', 'fecha_hora_reinicio', 'tiempo_setup_h', 'turno', 'equipo_id', 'formato_saliente', 'formato_entrante', 'n_operarios_asignados', 'actividad', 'duracion_actividad_h', 'clasificacion_actual', 'clasificacion_propuesta', 'tecnica_conversion', 'n_operarios', 'ejecutable_paralelo'],
   no_conformidades: ['fecha_hora_deteccion', 'turno', 'equipo_id', 'codigo_causa', 'descripcion_causa', 'tipo_no_conformidad', 'cantidad_afectada', 'unidad', 'laminas_equivalentes', 'demora_h', 'origen_causa'],
   equipos_auxiliares: ['fecha_hora_falla', 'fecha_hora_reinicio', 'tiempo_parada_h', 'turno', 'equipo_auxiliar', 'etapa_afectada', 'sistema_afectado', 'componente_fallado', 'modo_falla', 'causa_raiz', 'solucion_aplicada', 'tecnico_responsable'],
-  operacion_en_vacio: ['equipo_id', 'minutos_arranque', 'minutos_post_setup', 'sustento_arranque', 'sustento_post_setup'],
-  reuniones_emergencia: ['fecha', 'turno', 'duracion_h', 'motivo', 'equipos_afectados']
+  operacion_en_vacio: ['n', 'equipo_id', 'minutos_arranque', 'minutos_post_setup', 'sustento_arranque', 'sustento_post_setup'],
+  reuniones_emergencia: ['n', 'fecha', 'turno', 'duracion_h', 'motivo', 'categoria', 'equipos_afectados']
 };
 Object.entries(CAMPOS_SEC7).forEach(([k, campos]) => { const def = REGISTROS[k].columnas.map(c => c.k); const f = campos.filter(c => def.indexOf(c) < 0); check(2, 'Tabla ' + REGISTROS[k].tabla + ' con todos los campos de la sección 7', !f.length, f.length ? 'faltan ' + f.join(', ') : def.length + ' columnas'); });
 const S82 = { maquina: 'Molino · Extruder · Prensa 1 · Prensa 2 · Prensa 3 · Prensa 4 · Prensa 5 · Autoclave · Caldero 1 · Caldero 2', turno: '1 · 2', sistema_afectado: 'Mecánico · Eléctrico · Hidráulico · Neumático · Térmico · Control e instrumentación',
@@ -72,7 +72,7 @@ const ej = {
   equipos_auxiliares: [[1, fmt(diasLab[5], '10:00'), sumarH(diasLab[5], '10:00', 12.7), 12.7, '1', 'Tecle de carga del autoclave', 'Curado', 'Mecánico', 'Cadena', 'Rotura', 'Fatiga de material', 'Cambio', 'Técnico'],
     [2, fmt(diasLab[40], '10:00'), sumarH(diasLab[40], '10:00', 12.7), 12.7, '1', 'Tecle de carga del autoclave', 'Curado', 'Mecánico', 'Cadena', 'Rotura', 'Fatiga de material', 'Cambio', 'Técnico']],
   paradas_cortas: Array.from({ length: 12 }, (_, i) => [i + 1, fmt(diasLab[i * 9 + 2], '11:00'), sumarH(diasLab[i * 9 + 2], '11:00', 0.4), 0.4, '1', 'Autoclave', 'Acumulación de condensado', 'Condensado', 'Limpieza', 'Purga', 'Quispe Mamani, Luis Alberto']),
-  operacion_en_vacio: [['Autoclave', 28, 12, 'Presurización', 'Reestabilización']],
+  operacion_en_vacio: [['1', 'Autoclave', 28, 12, 'Presurización', 'Reestabilización']],
   no_conformidades: Array.from({ length: 30 }, (_, i) => [i + 1, fmt(diasLab[i * 6 + 1], '15:00'), '1', 'Autoclave', 'DC-A1', '', 'Defecto de calidad', 3, 'lám', 3, 273.9 / 30, 'Variación térmica del vapor'])
 };
 const reg44 = {};
@@ -96,7 +96,7 @@ for (const k of Object.keys(ARCHIVOS)) {
   const inf = subir(k, buf, ctx); regRef[k] = inf.validos;
   check(4, REGISTROS[k].nombre + ': ' + ref[k].length + ' filas por plantilla del sistema', inf.validos.length === ref[k].length && !inf.errores.length, inf.validos.length + ' válidos · ' + inf.errores.length + ' errores');
 }
-for (const [k, filas] of [['operacion_en_vacio', VACIO_REF.map(r => [...r, '', ''])], ['reuniones_emergencia', reunionesRef(ctx.periodo)]]) {
+for (const [k, filas] of [['operacion_en_vacio', VACIO_REF.map((r, i) => [String(i + 1), ...r, '', ''])], ['reuniones_emergencia', reunionesRef(ctx.periodo)]]) {
   const buf = plantillaLlena(k, filas, ctx); fs.writeFileSync(path.join(TMP, 'A4_' + k + '.xlsx'), buf); regRef[k] = subir(k, buf, ctx).validos;
 }
 const RL = calcularOEE(Object.assign({}, ctx, { registros: regRef }));

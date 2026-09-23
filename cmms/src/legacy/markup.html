@@ -43,7 +43,7 @@
       <div class="grupo"><h3>Indicadores</h3>
         <a data-vista="linea" data-tit="OEE de|línea" data-sub="Horas de línea: lo que efectivamente detuvo la producción" class="activo"><i class="fas fa-chart-line"></i> OEE de línea</a>
         <a data-vista="maquina" data-tit="OEE por|máquina" data-sub="Horas-máquina: cada equipo frente a su propio tiempo de carga"><i class="fas fa-gauge-high"></i> OEE por máquina</a>
-        <a data-vista="paradas" data-tit="Análisis de|paradas" data-sub="Correctivo, formatos, auxiliares, paradas cortas, vacío y reuniones por máquina"><i class="fas fa-triangle-exclamation"></i> Análisis de paradas</a>
+        <a data-vista="paradas" data-tit="Análisis de|paradas" data-sub="Correctivo, formatos, auxiliares, paradas cortas, vacío y paradas de emergencia por máquina"><i class="fas fa-triangle-exclamation"></i> Análisis de paradas</a>
         <a data-vista="registros" data-tit="Registros y|carga" data-sub="Siete registros operativos: plantillas, carga por Excel y edición"><i class="fas fa-file-excel"></i> Registros y carga</a>
       </div>
       <div class="grupo"><h3>Simulación</h3>
@@ -71,6 +71,7 @@
       <div><div class="titulo" id="vTit">OEE de <span>línea</span></div><div class="sub" id="vSub">Horas de línea: lo que efectivamente detuvo la producción</div></div>
       <div class="sesion">
         <span class="marcador m-ok" id="chipRecalculo" title="Último recálculo del OEE">Sin recálculo</span>
+        <span class="marcador m-info" id="chipNube" hidden></span>
         <span class="marcador m-info" id="chipFecha">—</span>
         <button class="btn btn-ghost btn-sm" id="btnTema"><i class="fas fa-moon"></i></button>
         <div class="quien"><b id="uNombre">—</b><span id="uRol">—</span></div>
@@ -442,7 +443,7 @@
 <div class="capa medio" id="telonDoc"><div class="dialogo papel">
   <div class="fila no-print" style="justify-content:space-between;margin-bottom:var(--s4)">
     <h2>Documento de orden de trabajo</h2>
-    <div class="fila"><button class="btn btn-primary btn-sm" onclick="window.print()"><i class="fas fa-file-pdf"></i> Guardar en PDF</button>
+    <div class="fila"><button class="btn btn-primary btn-sm" id="dPdf"><i class="fas fa-file-pdf"></i> Guardar en PDF</button>
       <button class="btn btn-ghost btn-sm" id="dCerrar"><i class="fas fa-xmark"></i></button></div></div>
   <div class="hoja" id="docOT"></div>
 </div></div>

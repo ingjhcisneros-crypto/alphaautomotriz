@@ -81,7 +81,7 @@ export function validarFilas(defId, encabezados, filas, ctx, opciones) {
         r[c.k] = n;
       } else if (c.tipo === 'lista') {
         const ok = enLista(v, ctx.listas[c.lista]);
-        if (!ok) E(c.h, 'Valor fuera de la lista: «' + v + '»');
+        if (!ok) (c.abierta ? A : E)(c.h, 'Valor fuera de la lista: «' + v + '»' + (c.abierta ? ' (se acepta; agréguelo al catálogo en Parámetros si es habitual)' : ''));
         r[c.k] = ok || norm(v);
       } else if (c.tipo === 'equipo') {
         const ok = enLista(v, ctx.listas[c.lista]);

@@ -1,5 +1,5 @@
 /* Análisis de paradas por máquina y tipo: correctivo, cambio de formato, auxiliares, paradas cortas, operación
-   en vacío y reuniones de emergencia. Las horas salen del mismo motor del OEE (fuente única); los registros solo
+   en vacío y paradas de emergencia. Las horas salen del mismo motor del OEE (fuente única); los registros solo
    aportan el detalle de eventos y causas. */
 import { $, esc, h1, n0, pc, cssVar, dialogo, registrarExportador, descargar, XLSX_MIME, libroTabla, fechaArchivo } from './comun.js';
 import { E, escuchar, resultadoPara, registrosDelPeriodo } from '../servicio.js';
@@ -22,7 +22,7 @@ export const TIPOS = [
   { k: 'auxiliares', n: 'Equipos auxiliares', hm: 'auxiliares', reg: 'equipos_auxiliares', de: parteAux, causa: r => r.equipo_auxiliar + ' · ' + r.causa_raiz, det: r => r.etapa_afectada + ' · ' + r.componente_fallado },
   { k: 'cortas', n: 'Paradas cortas', hm: 'microparadas', reg: 'paradas_cortas', de: (r, id) => r.equipo_id === id ? r.horas : 0, causa: r => r.tipo_evento, det: r => r.actividad_cil + ' · ' + r.condicion_detectada },
   { k: 'vacio', n: 'Operación en vacío', hm: 'vacio', reg: null },
-  { k: 'reuniones', n: 'Reuniones de emergencia', hm: 'reuniones', reg: 'reuniones_emergencia', de: (r, id) => { const a = normCmp(r.equipos_afectados); const e = E.equipos.find(x => x.id === id); return (a === normCmp('Toda la línea') || !a || (e && normCmp(e.nombre) === a)) ? r.horas : 0; }, causa: r => r.motivo, det: r => r.equipos_afectados }
+  { k: 'reuniones', n: 'Paradas de emergencia', hm: 'reuniones', reg: 'reuniones_emergencia', de: (r, id) => { const a = normCmp(r.equipos_afectados); const e = E.equipos.find(x => x.id === id); return (a === normCmp('Toda la línea') || !a || (e && normCmp(e.nombre) === a)) ? r.horas : 0; }, causa: r => r.categoria ? r.categoria + ' · ' + r.motivo : r.motivo, det: r => r.equipos_afectados }
 ];
 const visible = () => $('v-paradas').classList.contains('on');
 const filtros = () => Object.assign(leerMeses('pDesde', 'pHasta'), $('pTurno').value ? { turno: $('pTurno').value } : {});

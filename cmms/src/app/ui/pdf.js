@@ -1,6 +1,6 @@
 /* Documentos PDF con el estilo del sistema. Se arma un documento A4 en un marco interno y se abre el diálogo de
    impresión del navegador («Guardar como PDF»). No depende de ventanas emergentes ni de librerías externas. */
-import { esc } from './comun.js';
+import { esc, enVisor, descargar, aviso } from './comun.js';
 
 /* Reutiliza las fuentes Poppins y Orbitron ya incrustadas en la página (reglas @font-face). */
 function fuentes() {
@@ -51,13 +51,58 @@ export function imprimir(doc) {
     (doc.secciones || []).map(x => (x.titulo ? '<h2>' + esc(x.titulo) + '</h2>' : '') + x.html).join('') +
     (doc.firmas ? '<div class="firmas">' + ['Elaborado por', 'Revisado por', 'Aprobado por'].map(r => '<div class="firma"><div class="l"></div><div class="r">' + r + '</div></div>').join('') + '</div>' : '') +
     '</body></html>';
+  return emitir(html, doc.archivo || doc.titulo, false);
+}
+
+/* Imprime (navegador) o, dentro del visor de claude.ai donde imprimir está bloqueado, genera el PDF y lo ofrece
+   como descarga. html: documento completo. */
+export function emitir(html, archivo, horizontal) {
+  const visor = enVisor() && globalThis.__PDFVISOR__;
+  const ancho = horizontal ? 1123 : 794;
   const marco = document.createElement('iframe');
-  marco.setAttribute('aria-hidden', 'true'); marco.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+  marco.setAttribute('aria-hidden', 'true');
+  marco.style.cssText = visor ? 'position:fixed;left:-20000px;top:0;width:' + ancho + 'px;height:1200px;border:0;background:#fff' : 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
   document.body.appendChild(marco);
   const d = marco.contentWindow.document; d.open(); d.write(html); d.close();
-  const lanzar = () => { marco.contentWindow.focus(); marco.contentWindow.print(); setTimeout(() => marco.remove(), 60000); };
-  (d.fonts && d.fonts.ready ? d.fonts.ready : Promise.resolve()).then(() => setTimeout(lanzar, 150));
+  const listo = (d.fonts && d.fonts.ready ? d.fonts.ready : Promise.resolve()).then(() => new Promise(ok => setTimeout(ok, 150)));
+  if (!visor) { listo.then(() => { marco.contentWindow.focus(); marco.contentWindow.print(); setTimeout(() => marco.remove(), 60000); }); return marco; }
+  aviso('Generando PDF…', 'ok', 2500);
+  listo.then(() => aPdf(d, horizontal)).then(blob => descargar(blob, String(archivo).normalize('NFD').replace(/[^\w.-]+/g, '_') + '.pdf', 'application/pdf'))
+    .catch(e => { console.error(e); aviso('No se pudo generar el PDF: ' + (e.message || e), 'bad'); })
+    .finally(() => setTimeout(() => marco.remove(), 1000));
   return marco;
+}
+
+/* Documento del marco → PDF A4 paginado sin cortar filas ni títulos. */
+async function aPdf(d, horizontal) {
+  const { html2canvas, jsPDF } = globalThis.__PDFVISOR__;
+  const body = d.body, escala = 2, ancho = horizontal ? 1123 : 794;
+  body.style.margin = '0'; body.style.padding = '28px 30px'; body.style.background = '#fff'; body.style.width = ancho + 'px'; body.style.boxSizing = 'border-box';
+  const alto = body.scrollHeight;
+  const bordes = Array.from(body.querySelectorAll('tr, h1, h2, h3, p, li, .kpis, .filtros, .cab, .firmas, .hoja > *')).map(e => { const r = e.getBoundingClientRect(); return r.bottom; }).filter(b => b > 0).sort((a, b) => a - b);
+  const lienzo = await html2canvas(body, { scale: escala, backgroundColor: '#ffffff', width: ancho, height: alto, windowWidth: ancho, windowHeight: alto, useCORS: true, logging: false });
+  const pdf = new jsPDF({ orientation: horizontal ? 'l' : 'p', unit: 'mm', format: 'a4', compress: true });
+  const pw = horizontal ? 297 : 210, ph = horizontal ? 210 : 297, m = 8, iw = pw - 2 * m, pxmm = lienzo.width / iw, util = Math.floor((ph - 2 * m - 6) * pxmm);
+  const cortes = []; let y = 0;
+  while (y < lienzo.height) {
+    let fin = Math.min(lienzo.height, y + util);
+    if (fin < lienzo.height) { const cand = bordes.map(b => Math.round(b * escala)).filter(b => b > y + util * 0.35 && b <= y + util); if (cand.length) fin = cand[cand.length - 1]; }
+    cortes.push([y, fin]); y = fin;
+  }
+  cortes.forEach(([a, b], i) => {
+    const c = document.createElement('canvas'); c.width = lienzo.width; c.height = b - a;
+    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(lienzo, 0, a, lienzo.width, b - a, 0, 0, lienzo.width, b - a);
+    if (i) pdf.addPage();
+    pdf.addImage(c.toDataURL('image/jpeg', 0.9), 'JPEG', m, m, iw, (b - a) / pxmm);
+    pdf.setFontSize(7.5); pdf.setTextColor(127, 140, 152); pdf.text('Página ' + (i + 1) + ' de ' + cortes.length, pw - m, ph - 4, { align: 'right' });
+  });
+  return pdf.output('blob');
+}
+
+/* Un elemento de la página (p. ej., la orden de trabajo) como PDF, con los estilos de la aplicación. */
+export function elementoAPdf(el, archivo) {
+  const css = Array.from(document.styleSheets).map(h => { try { return Array.from(h.cssRules).map(r => r.cssText).join('\n'); } catch (e) { return ''; } }).join('\n');
+  return emitir('<!DOCTYPE html><html lang="es" data-theme="light"><head><meta charset="utf-8"><style>' + css + '</style><style>body{background:#fff!important;color:#16202b}.hoja{box-shadow:none!important;margin:0!important}</style></head><body><div class="hoja">' + el.innerHTML + '</div></body></html>', archivo, false);
 }
 
 /* Tabla HTML para el PDF. cols: [{t:'Título', n:true(num)}]; filas: arrays; clases opcionales por fila. */

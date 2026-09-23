@@ -97,7 +97,7 @@ export function construirModelo(ctx, simParams) {
   /* 4. Reuniones y auxiliares. */
   const reu = R('reuniones_emergencia');
   const reuniones = reu.length ? { tasa: reu.length / carga, dur: ajusteSegunValidez(reu.map(r => r.horas), 'duracion', umbral).dist, n: reu.length } : null;
-  if (reu.length) reg('Reuniones de emergencia', 'Duración (h)', ajusteSegunValidez(reu.map(r => r.horas), 'duracion', umbral));
+  if (reu.length) reg('Paradas de emergencia', 'Duración (h)', ajusteSegunValidez(reu.map(r => r.horas), 'duracion', umbral));
   const aux = R('equipos_auxiliares');
   const auxiliares = Object.entries(agrupar(aux, r => r.equipo_auxiliar)).map(([nombre, ev]) => {
     const a = ajusteSegunValidez(ev.map(r => r.horas), 'duracion', umbral, 'lognormal');

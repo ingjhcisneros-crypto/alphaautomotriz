@@ -128,6 +128,7 @@ export const REGISTROS = {
     id: 'operacion_en_vacio', tabla: 'operacion_en_vacio', nombre: 'Operación en vacío', archivo: '05_Analisis_de_operacion_en_vacio',
     componente: 'Rendimiento', inicio: null, fin: null, dur: null, equipo: 'equipo_id', sinFecha: true,
     columnas: [
+      F('N°', 'n', 'texto', { opcional: true }),
       F('Máquina', 'equipo_id', 'equipo', { lista: 'maquina', req: true }),
       F('Arranque de jornada (min)', 'minutos_arranque', 'num', { req: true, noNegativo: true, fmt: '0' }),
       F('Después de setup (min)', 'minutos_post_setup', 'num', { req: true, noNegativo: true, fmt: '0' }),
@@ -135,25 +136,29 @@ export const REGISTROS = {
       F('Sustento del tiempo posterior al setup', 'sustento_post_setup', 'texto')
     ],
     ejemplos: [
-      ['Molino', 12, 6, 'EJEMPLO · Rodaje de rodillos y calentamiento por fricción', 'Ajuste de abertura entre rodillos'],
-      ['Extruder', 25, 15, 'EJEMPLO · Calentamiento del barril hasta 85 °C', 'Reestabilización del perfil térmico'],
-      ['Caldero 1', 45, 10, 'EJEMPLO · Purga, barrido y subida de presión a 10 bar', 'Ajuste de presión']
+      ['1', 'Molino', 12, 6, 'EJEMPLO · Rodaje de rodillos y calentamiento por fricción', 'Ajuste de abertura entre rodillos'],
+      ['2', 'Extruder', 25, 15, 'EJEMPLO · Calentamiento del barril hasta 85 °C', 'Reestabilización del perfil térmico'],
+      ['3', 'Caldero 1', 45, 10, 'EJEMPLO · Purga, barrido y subida de presión a 10 bar', 'Ajuste de presión']
     ]
   },
   reuniones_emergencia: {
-    id: 'reuniones_emergencia', tabla: 'reuniones_emergencia', nombre: 'Reuniones de emergencia', archivo: 'Registro_de_reuniones_de_emergencia',
+    /* Paradas de emergencia (antes «reuniones de emergencia»; la tabla conserva su nombre interno para no
+       migrar datos). La categoría es una lista abierta: un valor nuevo se acepta con advertencia. */
+    id: 'reuniones_emergencia', tabla: 'reuniones_emergencia', nombre: 'Paradas de emergencia', archivo: 'Registro_de_paradas_de_emergencia',
     componente: 'Disponibilidad', inicio: 'fecha', fin: null, dur: 'duracion_h', equipo: 'equipos_afectados',
     columnas: [
+      F('N°', 'n', 'texto', { opcional: true }),
       F('Fecha y hora', 'fecha', 'fecha', { req: true }),
       F('Turno', 'turno', 'lista', { lista: 'turno', req: true }),
       F('Duración (h)', 'duracion_h', 'num', { req: true, positivo: true, fmt: '0.00' }),
       F('Motivo', 'motivo', 'texto', { req: true }),
+      F('Categoría', 'categoria', 'lista', { lista: 'categoria_parada_emergencia', abierta: true }),
       F('Equipos afectados', 'equipos_afectados', 'lista', { lista: 'alcance_reunion', req: true })
     ],
     ejemplos: [
-      ['09/06/2025 10:00', '1', 2, 'EJEMPLO · Reunión por reclamo de cliente', 'Toda la línea'],
-      ['16/06/2025 19:00', '2', 2, 'EJEMPLO · Análisis de accidente', 'Toda la línea'],
-      ['23/06/2025 11:00', '1', 2, 'EJEMPLO · Coordinación de despacho urgente', 'Toda la línea']
+      ['1', '09/06/2025 10:00', '1', 2, 'EJEMPLO · Reclamo de cliente por lote observado', 'Calidad', 'Toda la línea'],
+      ['2', '16/06/2025 19:00', '2', 2, 'EJEMPLO · Accidente en zona de prensas', 'Seguridad', 'Toda la línea'],
+      ['3', '23/06/2025 11:00', '1', 2, 'EJEMPLO · Corte de energía de la red', 'Energía y servicios', 'Toda la línea']
     ]
   }
 };

@@ -25,7 +25,7 @@ const CAMPOS_SIM = [
 ];
 const NOM_LISTAS = { turno: 'Turno', maquina: 'Máquina', maquina_producto: 'Máquina (calidad)', sistema_afectado: 'Sistema afectado', modo_falla: 'Modo de falla', causa_raiz: 'Causa raíz', tipo_evento: 'Tipo de evento',
   actividad_cil: 'Actividad CIL', operador_responsable: 'Operador responsable', formato: 'Formato', clasificacion: 'Clasificación de setup', tecnica_conversion: 'Técnica de conversión', si_no: 'Sí / No',
-  tipo_nc: 'Tipo de no conformidad', unidad_nc: 'Unidad', origen_causa: 'Origen de la causa', equipo_auxiliar: 'Equipo auxiliar', etapa_afectada: 'Etapa afectada', alcance_reunion: 'Alcance de reunión' };
+  tipo_nc: 'Tipo de no conformidad', unidad_nc: 'Unidad', origen_causa: 'Origen de la causa', equipo_auxiliar: 'Equipo auxiliar', etapa_afectada: 'Etapa afectada', alcance_reunion: 'Equipos afectados (paradas de emergencia)', categoria_parada_emergencia: 'Categoría de parada de emergencia' };
 
 let borrador = null;
 const puede = () => { const s = globalThis.LEGADO && globalThis.LEGADO.sesion(); return !s || s.rol === 'Administrador' || s.rol === 'Ingeniero de mantenimiento'; };

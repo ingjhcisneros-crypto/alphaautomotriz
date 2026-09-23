@@ -35,6 +35,7 @@ export const LISTAS_SEMILLA = {
   origen_causa: ['Variación térmica del vapor', 'Propia del equipo'],
   equipo_auxiliar: ['Compresor de aire', 'Torre de enfriamiento', 'Tecle de carga del autoclave', 'Tablero eléctrico general'],
   etapa_afectada: ['Laminado', 'Prensado y curado', 'Curado', 'Toda la línea'],
+  categoria_parada_emergencia: ['Seguridad', 'Calidad', 'Producción', 'Mantenimiento', 'Energía y servicios', 'Logística y abastecimiento', 'Cliente', 'Recursos humanos', 'Otros'],
   alcance_reunion: ['Toda la línea', 'Molino', 'Extruder', 'Prensa 1', 'Prensa 2', 'Prensa 3', 'Prensa 4', 'Prensa 5', 'Autoclave', 'Caldero 1', 'Caldero 2']
 };
 

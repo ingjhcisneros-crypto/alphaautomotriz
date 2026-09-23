@@ -1,5 +1,5 @@
 {
- "fecha": "2026-09-23T19:08:21.949Z",
+ "fecha": "2026-09-23T19:45:15.730Z",
  "fallas": 0,
  "informe": [
   {
@@ -36,13 +36,13 @@
    "auditoria": 2,
    "verificacion": "Tabla operacion_en_vacio con todos los campos de la sección 7",
    "ok": true,
-   "detalle": "5 columnas"
+   "detalle": "6 columnas"
   },
   {
    "auditoria": 2,
    "verificacion": "Tabla reuniones_emergencia con todos los campos de la sección 7",
    "ok": true,
-   "detalle": "5 columnas"
+   "detalle": "7 columnas"
   },
   {
    "auditoria": 2,
@@ -274,7 +274,7 @@
   },
   {
    "auditoria": 3,
-   "verificacion": "Plantilla del sistema de Reuniones de emergencia llenada y subida",
+   "verificacion": "Plantilla del sistema de Paradas de emergencia llenada y subida",
    "ok": true,
    "detalle": "72 válidos, 0 errores"
   },
@@ -586,31 +586,31 @@
   },
   {
    "auditoria": 6,
-   "verificacion": "Reuniones de emergencia · hojas Registro, Listas e Instrucciones",
+   "verificacion": "Paradas de emergencia · hojas Registro, Listas e Instrucciones",
    "ok": true,
    "detalle": "Registro, Listas, Instrucciones"
   },
   {
    "auditoria": 6,
-   "verificacion": "Reuniones de emergencia · encabezados de la fila 1 = definición",
+   "verificacion": "Paradas de emergencia · encabezados de la fila 1 = definición",
    "ok": true,
-   "detalle": "5 columnas"
+   "detalle": "7 columnas"
   },
   {
    "auditoria": 6,
-   "verificacion": "Reuniones de emergencia · validación desplegable en 2 columnas categóricas",
+   "verificacion": "Paradas de emergencia · validación desplegable en 3 columnas categóricas",
    "ok": true,
-   "detalle": "B2:B3000→Listas!$A$2:$A$3 ; E2:E3000→Listas!$B$2:$B$12"
+   "detalle": "C2:C3000→Listas!$A$2:$A$3 ; F2:F3000→Listas!$B$2:$B$10 ; G2:G3000→Listas!$C$2:$C$12"
   },
   {
    "auditoria": 6,
-   "verificacion": "Reuniones de emergencia · formato dd/mm/aaaa hh:mm en columnas de fecha",
+   "verificacion": "Paradas de emergencia · formato dd/mm/aaaa hh:mm en columnas de fecha",
    "ok": true,
    "detalle": "dd/mm/yyyy\\ hh:mm"
   },
   {
    "auditoria": 6,
-   "verificacion": "Reuniones de emergencia · tres filas de ejemplo en gris marcadas «EJEMPLO»",
+   "verificacion": "Paradas de emergencia · tres filas de ejemplo en gris marcadas «EJEMPLO»",
    "ok": true,
    "detalle": "3 filas grises en la columna A"
   },
@@ -696,13 +696,13 @@
    "auditoria": 6,
    "verificacion": "Operación en vacío · encabezados de la fila 1 = definición",
    "ok": true,
-   "detalle": "5 columnas"
+   "detalle": "6 columnas"
   },
   {
    "auditoria": 6,
    "verificacion": "Operación en vacío · validación desplegable en 1 columnas categóricas",
    "ok": true,
-   "detalle": "A2:A3000→Listas!$A$2:$A$11"
+   "detalle": "B2:B3000→Listas!$A$2:$A$11"
   },
   {
    "auditoria": 6,
@@ -766,7 +766,7 @@
   },
   {
    "auditoria": 6,
-   "verificacion": "Reuniones de emergencia · plantilla sin llenar: ejemplos omitidos, 0 errores",
+   "verificacion": "Paradas de emergencia · plantilla sin llenar: ejemplos omitidos, 0 errores",
    "ok": true,
    "detalle": "3 ejemplos omitidos"
   },
@@ -1192,7 +1192,7 @@
  ],
  "validacion": {
   "ok": true,
-  "fecha": "2026-09-23T19:07:55.520Z",
+  "fecha": "2026-09-23T19:44:49.986Z",
   "filas": [
    {
     "indicador": "OEE de línea",
@@ -7156,7 +7156,7 @@
    "media": 0.7161538461538461
   },
   {
-   "equipo": "Reuniones de emergencia",
+   "equipo": "Paradas de emergencia",
    "variable": "Duración (h)",
    "n": 72,
    "validez": "Suficiente",

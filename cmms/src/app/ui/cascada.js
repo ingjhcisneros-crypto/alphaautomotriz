@@ -30,7 +30,7 @@ export function filasCadena(cal, x) {
     ['A · Tiempo total de producción', cal.totalProduccion, 'tot'],
     ['− Almuerzos', -cal.almuerzo, ''], ['− Capacitaciones', -cal.capacitacion, ''], ['− Mantenimiento planificado fuera del programa', -cal.mtto, ''], ['− Mantenimiento del programa ejecutado (planificado y calidad)', -mt, ''],
     ['B · Tiempo de carga', x.carga, 'tot'],
-    ['− Mantenimiento correctivo', -p.correctivo, ''], ['− Setup interno', -p.setup, ''], ['− Reuniones de emergencia', -p.reuniones, ''], ['− Fallas de equipos auxiliares', -p.auxiliares, ''],
+    ['− Mantenimiento correctivo', -p.correctivo, ''], ['− Setup interno', -p.setup, ''], ['− Paradas de emergencia', -p.reuniones, ''], ['− Fallas de equipos auxiliares', -p.auxiliares, ''],
     ['C · Tiempo bruto · Disponibilidad ' + pc(x.D), x.bruto, 'tot'],
     ['− Microparadas', -p.microparadas, ''], ['− Operación en vacío', -p.vacio, ''],
     ['D · Tiempo neto · Rendimiento ' + pc(x.R), x.neto, 'tot'],

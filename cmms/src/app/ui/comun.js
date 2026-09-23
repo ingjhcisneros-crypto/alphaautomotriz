@@ -45,8 +45,20 @@ export function dialogo(titulo, html, botones = [{ t: 'Cerrar', v: null }], anch
 }
 export const confirmar = (titulo, html, textoSi = 'Confirmar', peligro) => dialogo(titulo, html, [{ t: 'Cancelar', v: false }, { t: textoSi, v: true, clase: peligro ? 'btn-danger' : 'btn-primary' }]);
 
+/* En el artefacto publicado los enlaces de descarga están bloqueados: se usa la capacidad «downloads» (el visor
+   pide confirmación). Fuera del visor, descarga directa. */
+let descargas = null;
+export const enVisor = () => !!(globalThis.claude && typeof globalThis.claude.use === 'function');
 export function descargar(datos, nombre, tipo) {
   const blob = datos instanceof Blob ? datos : new Blob([datos], { type: tipo || 'application/octet-stream' });
+  if (enVisor()) {
+    descargas = descargas || globalThis.claude.use('downloads').catch(() => null);
+    return descargas.then(d => {
+      if (!d) { aviso('Las descargas no están disponibles en esta vista', 'warn'); return; }
+      return d.save({ filename: nombre, data: blob }).then(() => aviso('Archivo guardado: ' + nombre),
+        e => { if (e && e.code !== 'declined') aviso('No se pudo guardar el archivo (' + (e.code || 'error') + ')', 'warn'); });
+    });
+  }
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre;
   document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
 }

@@ -51,7 +51,7 @@ Las pruebas necesitan los diez Excel de especificación en `DIR_REF` (variable d
 
 **PDF por filtro.** Cada filtro emite su documento A4 con el estilo del sistema: el encabezado verde, los filtros aplicados, los KPI, las tablas agrupadas y las firmas. Por ejemplo, el plan maestro «Planificado · Caldero» se agrupa por equipo y frecuencia e incluye el resumen de órdenes, ejecutadas, vencidas y cumplimiento. Hay PDF en OEE de línea, OEE por máquina, Análisis de paradas, Programa, Historial de cumplimiento, Anomalías, las órdenes diarias y los resultados de simulación.
 
-**Análisis de paradas por máquina.** La matriz de máquinas por los 6 tipos (correctivo, cambio de formato, auxiliares, paradas cortas, operación en vacío y reuniones de emergencia) se puede ver en horas o en eventos y sale del mismo motor de cálculo. Un clic en una celda muestra los eventos, la duración media, el evento más largo, las causas principales, la evolución mensual y la exportación a Excel. Un clic en la máquina muestra su perfil por tipo.
+**Análisis de paradas por máquina.** La matriz de máquinas por los 6 tipos (correctivo, cambio de formato, auxiliares, paradas cortas, operación en vacío y paradas de emergencia) se puede ver en horas o en eventos y sale del mismo motor de cálculo. Un clic en una celda muestra los eventos, la duración media, el evento más largo, las causas principales, la evolución mensual y la exportación a Excel. Un clic en la máquina muestra su perfil por tipo.
 
 ## Calendario de operación (v6.2)
 
@@ -66,6 +66,26 @@ Las pruebas necesitan los diez Excel de especificación en `DIR_REF` (variable d
 - **Qué hace un día omitido:** no suma al tiempo calendario (aparece como «− Periodos omitidos» en la cascada), no lleva almuerzo, capacitación ni arranques, y sus registros se conservan pero no entran al cálculo. Tampoco se programan órdenes en esos días. Un mes omitido por completo desaparece de los selectores y de las tablas mensuales.
 - **Controles:** no se aceptan rangos superpuestos ni rangos que terminan antes de empezar. Un registro nuevo con fecha omitida se acepta con una advertencia. Quitar la omisión devuelve exactamente el valor anterior.
 - **Programa:** es independiente del periodo de datos. Por defecto arranca el 01-10-2026 y dura 12 meses, así que antes de esa fecha no hay órdenes y el diagnóstico sale solo de los registros. «Nuevo periodo» propone empezar después de lo omitido, es decir, 01-10-2026 a 30-09-2027.
+
+## Versión artefacto (claude.ai): datos compartidos y asistente de IA
+
+`npm run build` genera también **`dist/artefacto/cmms_lexacaucho.html`**, que se publica como artefacto de claude.ai. Es el mismo sistema, con tres cosas que solo se activan dentro del visor:
+
+- **Datos compartidos.** Lo que guarda un usuario (registros, parámetros, calendario, programa, órdenes, anomalías, usuarios y simulación) queda en la base del artefacto, y quien entra después, desde cualquier equipo, ve lo último. IndexedDB sigue siendo la base de trabajo; `src/app/nube.js` la replica en trozos de ≤ 80 000 caracteres (el límite es 256 KB por documento). Si otro usuario guarda mientras uno trabaja, el cambio llega en vivo con el aviso «Datos actualizados por …». La cabecera muestra el estado: «Guardado en la nube», «Guardando…» o «Solo lectura».
+- **Asistente de IA** (botón flotante abajo a la derecha, con la sesión iniciada). Recibe un resumen de todo lo calculado (unos 12 KB): OEE de línea y por máquina, mes a mes, paradas por tipo y máquina, causas principales, calendario, programa, anomalías y simulación. Además tiene tres herramientas para el detalle: registros filtrados, OEE con filtros y órdenes de trabajo. Cada consulta usa la cuenta de Claude de quien pregunta.
+- **Descargas y PDF.** El visor no permite imprimir ni usar enlaces de descarga, así que Excel, PNG y PDF se entregan con la capacidad de descargas (el visor pide confirmación). Los PDF se dibujan con html2canvas y jsPDF, paginados sin cortar filas. Los diálogos nativos (alert, confirm, prompt) se reemplazaron por los propios de la aplicación.
+
+**Limitaciones de la versión artefacto:**
+- Si dos usuarios cambian la misma tabla en el mismo instante, prevalece el último que guarda. Las demás tablas se combinan.
+- La base admite hasta 5 000 documentos; el sistema actual usa unos 130.
+- Solo pueden abrirlo miembros de la organización, porque la base compartida lo exige.
+- Las claves de usuario viajan cifradas (SHA-256) dentro de la base compartida.
+
+Prueba con un visor simulado: `node tests/artefacto.mjs` (dos usuarios, sincronización en vivo, asistente, descargas y PDF).
+
+**Formatos de carga actualizados:**
+- **Paradas de emergencia** (antes «reuniones de emergencia»): N°, Fecha y hora, Turno, Duración (h), Motivo, Categoría, Equipos afectados.
+- **Operación en vacío**: N°, Máquina, Arranque de jornada (min), Después de setup (min), Sustento del arranque de jornada, Sustento del tiempo posterior al setup.
 
 ## Estructura
 
@@ -110,7 +130,7 @@ tests/         auditorias.mjs, e2e.mjs, informe/ (JSON y capturas)
 1. **Factor de las prensas en disponibilidad.** El prompt menciona un 8 %, pero el ejemplo verificado (hoja «6. Máquina vs línea», 685.9 h y 149.9 h) computa **0 h** para las prensas. Se dejó 0 para reproducir el ejemplo y el 8 % queda documentado y editable en *Parámetros*. Si se aplica, el OEE de línea baja a ≈ 55.4 %.
 2. **Auxiliares del autoclave.** El consolidado dice 25.3 h y el prompt 25.4 h. Con el reparto de cada falla entre los equipos de la etapa afectada, los registros dan 25.58 h. Los cuatro porcentajes coinciden de todos modos; el ejemplo 4.4 exacto se verificó con datos de 25.4 h.
 3. **Rendimiento 82.86 %.** El valor sin redondear es 82.8558 %: el prompt redondea los tiempos intermedios y se obtiene 82.85. La diferencia es menor que 0.01 pp.
-4. **Reuniones de emergencia.** No hay archivo adjunto. Se creó la plantilla (sección 7.9) y la prueba usa 72 reuniones de 2 h, que suman las 144 h del consolidado.
+4. **Paradas de emergencia** (antes «reuniones de emergencia»). Columnas: N°, Fecha y hora, Turno, Duración (h), Motivo, Categoría y Equipos afectados. La categoría es una lista abierta y editable en Parámetros: un valor nuevo se acepta con advertencia. No hay archivo adjunto; la prueba usa 72 paradas de 2 h, que suman las 144 h del consolidado.
 5. **Calibración de la simulación**, con parámetros del catálogo y no con ajustes arbitrarios:
    - El ciclo del autoclave usa la capacidad **demostrada** (7.7 lám/h), que es una pérdida de velocidad no registrada.
    - Los equipos en serie usan **acople rígido**, según la regla «la línea se detiene por completo».

@@ -8,7 +8,7 @@ export const VACIO_REF = [['Molino',12,6],['Extruder',25,15],['Prensa 1',35,20],
 /* 144 h de reuniones de emergencia: 72 reuniones de 2 h distribuidas en días laborables del periodo. */
 export function reunionesRef(periodo) {
   const out = []; let f = new Date(Date.UTC(2025, 5, 2));
-  while (out.length < 72) { const s = f.toISOString().slice(0, 10); const dow = f.getUTCDay(); if (dow !== 0 && !periodo.feriados.some(x => x.fecha === s)) out.push([s.split('-').reverse().join('/') + ' 10:00', '1', 2, 'Reunión de coordinación de emergencia', 'Toda la línea']); f = new Date(f.getTime() + 4 * 86400000); }
+  while (out.length < 72) { const s = f.toISOString().slice(0, 10); const dow = f.getUTCDay(); if (dow !== 0 && !periodo.feriados.some(x => x.fecha === s)) out.push([String(out.length + 1), s.split('-').reverse().join('/') + ' 10:00', '1', 2, 'Parada de coordinación de emergencia', 'Producción', 'Toda la línea']); f = new Date(f.getTime() + 4 * 86400000); }
   return out;
 }
 export function cargarReferencia(ctx) {

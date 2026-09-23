@@ -144,7 +144,7 @@ check(9, 'Al desplegar: matriz máquina × 12 meses + periodo', colsM === 14, (c
 await P.screenshot({ path: path.join(SHOTS, '04_oee_maquina.png'), fullPage: true });
 await ir(P, 'paradas'); await P.waitForTimeout(300);
 const tipos = await P.$$eval('#pMatriz thead th', t => t.map(x => x.textContent.trim()));
-check(9, 'Análisis de paradas: los 6 tipos por máquina', ['Correctivo', 'Cambio de formato', 'Equipos auxiliares', 'Paradas cortas', 'Operación en vacío', 'Reuniones de emergencia'].every(x => tipos.some(t => t.indexOf(x) >= 0)), tipos.join(' | '));
+check(9, 'Análisis de paradas: los 6 tipos por máquina', ['Correctivo', 'Cambio de formato', 'Equipos auxiliares', 'Paradas cortas', 'Operación en vacío', 'Paradas de emergencia'].every(x => tipos.some(t => t.indexOf(x) >= 0)), tipos.join(' | '));
 const hMat = await E(() => { const t = document.querySelector('#pMatriz td.celda-par[data-maq="AUT"][data-t="correctivo"]'); return parseFloat(t.textContent.replace(',', '')); });
 check(9, 'Matriz = motor de cálculo (correctivo del autoclave, una sola fuente)', Math.abs(hMat - await E(() => CMMS.servicio.E.total.maquina.AUT.total.perdidas.correctivo)) < 0.06, hMat + ' h');
 await P.click('#pMatriz td.celda-par[data-maq="AUT"][data-t="correctivo"]');
@@ -164,7 +164,7 @@ for (const [vista, bloques] of [['linea', ['lb1', 'lb3', 'lb4']], ['maquina', ['
   }
 }
 const ultimoPdf = () => E(() => { const f = Array.from(document.querySelectorAll('iframe')).pop(); return f ? f.contentWindow.document.body.textContent.replace(/\s+/g, ' ') : ''; });
-for (const [vista, btn, re] of [['linea', '#lPdf', /OEE de línea/], ['maquina', '#mPdf', /Resumen por máquina/], ['paradas', '#pPdf', /Reuniones de emergencia/]]) {
+for (const [vista, btn, re] of [['linea', '#lPdf', /OEE de línea/], ['maquina', '#mPdf', /Resumen por máquina/], ['paradas', '#pPdf', /Paradas de emergencia/]]) {
   await ir(P, vista); await P.click(btn); await P.waitForTimeout(500);
   check(9, 'Informe PDF de la vista ' + vista + ' con el estilo del sistema', re.test(await ultimoPdf()), '');
 }

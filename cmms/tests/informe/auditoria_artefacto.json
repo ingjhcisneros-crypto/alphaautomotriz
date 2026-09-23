@@ -1,0 +1,86 @@
+{
+ "fecha": "2026-09-23T19:51:29.302Z",
+ "fallas": 0,
+ "informe": [
+  {
+   "verificacion": "Primer usuario: la base local se publica en la base compartida",
+   "ok": true,
+   "detalle": "20 documentos · Guardado en la nube"
+  },
+  {
+   "verificacion": "Segundo usuario (otro navegador, base local vacía) entra y ve lo que guardó el primero",
+   "ok": true,
+   "detalle": "309 registros de correctivo · OEE 84.90 %"
+  },
+  {
+   "verificacion": "Cambio del usuario A llega en vivo al usuario B (sin recargar)",
+   "ok": true,
+   "detalle": "Datos actualizados por Gutierrez y Cisneros"
+  },
+  {
+   "verificacion": "Paradas de emergencia: 7 columnas (N°, Fecha y hora, Turno, Duración, Motivo, Categoría, Equipos afectados)",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "verificacion": "Un usuario creado por B aparece para A (módulos heredados también compartidos)",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "verificacion": "Parámetros guardados por B (periodo omitido) se aplican y recalculan en A",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "verificacion": "Ningún documento supera 256 KB; total de documentos bajo el límite de 5 000",
+   "ok": true,
+   "detalle": "127 documentos · mayor 92 KB · 566 escrituras"
+  },
+  {
+   "verificacion": "Botón flotante del asistente visible con la sesión iniciada",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "verificacion": "El asistente recibe los datos del sistema y usa sus herramientas",
+   "ok": true,
+   "detalle": "Respuesta simulada a «¿Cuál es el OEE de la línea y qué lo está bajando más?».OEE de línea: 81.77 %Máquinas en contexto: 10Herramienta consultar_registros: 153 "
+  },
+  {
+   "verificacion": "El contexto enviado cabe en el límite (64 KB)",
+   "ok": true,
+   "detalle": "11.5 KB"
+  },
+  {
+   "verificacion": "Exportar a Excel usa la capacidad de descargas del visor",
+   "ok": true,
+   "detalle": "Indicadores_de_la_linea_2026-09-23-19-51.xlsx"
+  },
+  {
+   "verificacion": "Informe PDF generado dentro del visor (sin imprimir) y ofrecido como descarga",
+   "ok": true,
+   "detalle": "OEE_de_linea.pdf · 513 KB"
+  },
+  {
+   "verificacion": "PDF del plan «Planificado · Caldero» dentro del visor",
+   "ok": true,
+   "detalle": "Plan_Planificado_caldero.pdf"
+  },
+  {
+   "verificacion": "Confirmaciones con diálogo propio (el visor no muestra confirm/prompt nativos)",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "verificacion": "Sin errores de JavaScript ni diálogos nativos (usuario A)",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "verificacion": "Sin errores de JavaScript ni diálogos nativos (usuario B)",
+   "ok": true,
+   "detalle": ""
+  }
+ ]
+}
