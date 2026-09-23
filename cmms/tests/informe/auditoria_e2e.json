@@ -1,0 +1,498 @@
+{
+ "fecha": "2026-09-23T14:47:01.182Z",
+ "fallas": 0,
+ "informe": [
+  {
+   "auditoria": 5,
+   "verificacion": "Base sin registros operativos al instalar",
+   "ok": true,
+   "detalle": "{\"mantenimiento_correctivo\":0,\"paradas_cortas\":0,\"cambio_formato\":0,\"no_conformidades\":0,\"equipos_auxiliares\":0,\"operacion_en_vacio\":0,\"reuniones_emergencia\":0}"
+  },
+  {
+   "auditoria": 5,
+   "verificacion": "Catálogos sembrados = hojas «Listas» de los adjuntos",
+   "ok": true,
+   "detalle": "19 listas"
+  },
+  {
+   "auditoria": 5,
+   "verificacion": "Catálogo de equipos y parámetros del periodo sembrados",
+   "ok": true,
+   "detalle": "10 equipos · 16 feriados"
+  },
+  {
+   "auditoria": 5,
+   "verificacion": "El tablero indica «Sistema sin registros operativos»",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 5,
+   "verificacion": "Parámetros del periodo editables desde la interfaz (mtto. planificado 10 h → carga −10 h)",
+   "ok": true,
+   "detalle": "4543.36 → 4533.36 h"
+  },
+  {
+   "auditoria": 6,
+   "verificacion": "Mantenimiento correctivo: plantilla descargada con encabezados exactos y dataValidation",
+   "ok": true,
+   "detalle": "Plantilla_03_Registro_de_mantenimiento_correctivo.xlsx"
+  },
+  {
+   "auditoria": 6,
+   "verificacion": "Cambio de formato (SMED): plantilla descargada con encabezados exactos y dataValidation",
+   "ok": true,
+   "detalle": "Plantilla_06_Registro_de_cambio_de_formato_y_analisis_SMED.xlsx"
+  },
+  {
+   "auditoria": 6,
+   "verificacion": "Reuniones de emergencia: plantilla descargada con encabezados exactos y dataValidation",
+   "ok": true,
+   "detalle": "Plantilla_Registro_de_reuniones_de_emergencia.xlsx"
+  },
+  {
+   "auditoria": 6,
+   "verificacion": "Fallas en equipos auxiliares: plantilla descargada con encabezados exactos y dataValidation",
+   "ok": true,
+   "detalle": "Plantilla_08_Registro_de_fallas_en_equipos_auxiliares.xlsx"
+  },
+  {
+   "auditoria": 6,
+   "verificacion": "Paradas cortas y mantenimiento autónomo: plantilla descargada con encabezados exactos y dataValidation",
+   "ok": true,
+   "detalle": "Plantilla_07_Registro_de_paradas_cortas_y_mantenimiento_autonomo.xlsx"
+  },
+  {
+   "auditoria": 6,
+   "verificacion": "Operación en vacío: plantilla descargada con encabezados exactos y dataValidation",
+   "ok": true,
+   "detalle": "Plantilla_05_Analisis_de_operacion_en_vacio.xlsx"
+  },
+  {
+   "auditoria": 6,
+   "verificacion": "No conformidades de calidad: plantilla descargada con encabezados exactos y dataValidation",
+   "ok": true,
+   "detalle": "Plantilla_04_Registro_de_no_conformidades_de_calidad.xlsx"
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Incremental, primera carga: 309 insertados",
+   "ok": true,
+   "detalle": "309Insertados0Omitidos por duplicado0Rechazados por error o advertenciaEl OEE se recalculó automáticamente."
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Incremental, mismo archivo por segunda vez: 0 insertados, 309 duplicados",
+   "ok": true,
+   "detalle": "0Insertados309Omitidos por duplicado0Rechazados por error o advertenciaEl OEE se recalculó automáticamente."
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "La validación anticipa los duplicados antes de insertar",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "La base conserva exactamente 309 registros",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Archivo con errores deliberados: 8 filas rechazadas detectadas con fila, columna y motivo",
+   "ok": true,
+   "detalle": "filas 2, 3, 4, 5, 6, 7, 8, 9"
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Advertencias (domingo, feriado, hora) detectadas",
+   "ok": true,
+   "detalle": "filas 10, 11, 12"
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Informe de validación descargable en Excel",
+   "ok": true,
+   "detalle": "12 filas en Informe_validacion_mantenimiento_correctivo_2026-09-23-14-45.xlsx"
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Carga completa: advierte, pide confirmación, respalda 309 y reemplaza por 10",
+   "ok": true,
+   "detalle": "309 registros eliminados (respaldo descargado y guardado en Auditoría) · 10 insertados · 0 duplicados internos"
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "El respaldo descargado contiene el estado anterior (309 registros)",
+   "ok": true,
+   "detalle": "309 filas"
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Cambio de formato (SMED) cargado por la interfaz",
+   "ok": true,
+   "detalle": "1,430Insertados0Omitidos por duplicado0Rechazados por error "
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Reuniones de emergencia cargado por la interfaz",
+   "ok": true,
+   "detalle": "72Insertados0Omitidos por duplicado0Rechazados por error o a"
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Fallas en equipos auxiliares cargado por la interfaz",
+   "ok": true,
+   "detalle": "35Insertados0Omitidos por duplicado0Rechazados por error o a"
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Paradas cortas y mantenimiento autónomo cargado por la interfaz",
+   "ok": true,
+   "detalle": "448Insertados0Omitidos por duplicado0Rechazados por error o "
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "Operación en vacío cargado por la interfaz",
+   "ok": true,
+   "detalle": "10Insertados0Omitidos por duplicado0Rechazados por error o a"
+  },
+  {
+   "auditoria": 7,
+   "verificacion": "No conformidades de calidad cargado por la interfaz",
+   "ok": true,
+   "detalle": "1,594Insertados0Omitidos por duplicado0Rechazados por error "
+  },
+  {
+   "auditoria": 8,
+   "verificacion": "OEE de línea con los datos cargados por la interfaz = 55.68 %",
+   "ok": true,
+   "detalle": "55.6776 % · 20237 láminas"
+  },
+  {
+   "auditoria": 8,
+   "verificacion": "Insertar un registro manual cambia el OEE sin intervención",
+   "ok": true,
+   "detalle": "55.6776 → 55.5675 %"
+  },
+  {
+   "auditoria": 8,
+   "verificacion": "Borrarlo devuelve exactamente el valor anterior",
+   "ok": true,
+   "detalle": "55.677594 %"
+  },
+  {
+   "auditoria": 8,
+   "verificacion": "Recalcular dos veces produce el mismo resultado (idempotente)",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 8,
+   "verificacion": "Fecha del último recálculo visible en la cabecera",
+   "ok": true,
+   "detalle": "Recalculado 02:45:57 p. m."
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Tabla cruzada: 10 equipos + OEE de línea × 12 meses + periodo",
+   "ok": true,
+   "detalle": "11 filas · 13 columnas"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Clic en celda abre el detalle correcto (autoclave, periodo: 79.17 %, cadena de tiempos)",
+   "ok": true,
+   "detalle": "Autoclave · periodo completo88.47 %Disponibilidad96.30 %Rendimiento92.92 %Calidad79.17 %OEEClasificación: Bueno · 167 fallas correctivasB. T"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Filtro «Periodo (desde Set-25)» afecta a los seis bloques",
+   "ok": true,
+   "detalle": "cambian: kpi, cruz, ev, per, conf, par"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Filtro «Turno 2» afecta a los seis bloques",
+   "ok": true,
+   "detalle": "cambian: kpi, cruz, ev, per, conf, par"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Filtro «Topología serie» afecta a los seis bloques",
+   "ok": true,
+   "detalle": "cambian: kpi, cruz, ev, per, conf, par"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Filtro «Etapa Prensado» afecta a los seis bloques",
+   "ok": true,
+   "detalle": "cambian: kpi, cruz, ev, per, conf, par"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Filtro «Equipos: extrusora y autoclave» afecta a los seis bloques",
+   "ok": true,
+   "detalle": "cambian: kpi, cruz, ev, per, conf, par"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Limpiar filtros restaura los valores",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b1 a XLSX",
+   "ok": true,
+   "detalle": "Indicadores_de_linea_2026-09-23-14-46.xlsx · 7875 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b1 a PNG",
+   "ok": true,
+   "detalle": "Indicadores_de_linea_2026-09-23-14-46.png · 33148 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b2 a XLSX",
+   "ok": true,
+   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-14-46.xlsx · 14095 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b2 a PNG",
+   "ok": true,
+   "detalle": "OEE_por_maquina_y_por_mes_2026-09-23-14-46.png · 107346 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b3 a XLSX",
+   "ok": true,
+   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-14-46.xlsx · 9226 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b3 a PNG",
+   "ok": true,
+   "detalle": "Evolucion_mensual_del_OEE_de_linea_2026-09-23-14-46.png · 41578 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b4 a XLSX",
+   "ok": true,
+   "detalle": "Composicion_de_perdidas_horas_de_linea_2026-09-23-14-46.xlsx · 10689 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b4 a PNG",
+   "ok": true,
+   "detalle": "Composicion_de_perdidas_horas_de_linea_2026-09-23-14-46.png · 40304 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b5 a XLSX",
+   "ok": true,
+   "detalle": "Confiabilidad_por_equipo_2026-09-23-14-46.xlsx · 11590 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b5 a PNG",
+   "ok": true,
+   "detalle": "Confiabilidad_por_equipo_2026-09-23-14-46.png · 70206 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b6 a XLSX",
+   "ok": true,
+   "detalle": "Pareto_de_causas_por_horas_perdidas_2026-09-23-14-46.xlsx · 9154 bytes"
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Exportación b6 a PNG",
+   "ok": true,
+   "detalle": "Pareto_de_causas_por_horas_perdidas_2026-09-23-14-46.png · 83816 bytes"
+  },
+  {
+   "auditoria": 10,
+   "verificacion": "Integridad · correctivo: suma de registros = tablero (± 0.1 h)",
+   "ok": true,
+   "detalle": "Registros 699.9 h · tablero 699.9 h · diferencia 0.0000 h"
+  },
+  {
+   "auditoria": 10,
+   "verificacion": "Integridad · setup: suma de registros = tablero (± 0.1 h)",
+   "ok": true,
+   "detalle": "Registros 292.5 h · tablero 292.5 h · diferencia 0.0000 h"
+  },
+  {
+   "auditoria": 10,
+   "verificacion": "Integridad · reuniones: suma de registros = tablero (± 0.1 h)",
+   "ok": true,
+   "detalle": "Registros 144.0 h · tablero 144.0 h · diferencia 0.0000 h"
+  },
+  {
+   "auditoria": 10,
+   "verificacion": "Integridad · auxiliares: suma de registros = tablero (± 0.1 h)",
+   "ok": true,
+   "detalle": "Registros 91.5 h · tablero 91.5 h · diferencia 0.0000 h"
+  },
+  {
+   "auditoria": 10,
+   "verificacion": "Integridad · microparadas: suma de registros = tablero (± 0.1 h)",
+   "ok": true,
+   "detalle": "Registros 160.2 h · tablero 160.2 h · diferencia 0.0000 h"
+  },
+  {
+   "auditoria": 10,
+   "verificacion": "Integridad · calidad: suma de registros = tablero (± 0.1 h)",
+   "ok": true,
+   "detalle": "Registros 554.8 h · tablero 554.8 h · diferencia 0.0000 h"
+  },
+  {
+   "auditoria": 10,
+   "verificacion": "Recálculo idempotente (dos ejecuciones idénticas)",
+   "ok": true,
+   "detalle": "Huellas 543507 / 543507 caracteres"
+  },
+  {
+   "auditoria": 10,
+   "verificacion": "Cadena de tiempos cerrada: carga − pérdidas = valor añadido",
+   "ok": true,
+   "detalle": "Diferencia 2.27e-13 h"
+  },
+  {
+   "auditoria": 10,
+   "verificacion": "Producción = valor añadido × capacidad del cuello de botella",
+   "ok": true,
+   "detalle": "20,237 láminas"
+  },
+  {
+   "auditoria": 11,
+   "verificacion": "Distribuciones ajustadas y tabla de bondad de ajuste visible",
+   "ok": true,
+   "detalle": "43 ajustes"
+  },
+  {
+   "auditoria": 11,
+   "verificacion": "Advertencia permanente por validez limitada o insuficiente",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 13,
+   "verificacion": "Escenarios de mejora bloqueados antes de validar",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 12,
+   "verificacion": "Worker de simulación: línea base ejecutada sin bloquear la interfaz",
+   "ok": true,
+   "detalle": "4.7 s · 30 réplicas"
+  },
+  {
+   "auditoria": 12,
+   "verificacion": "El autoclave es el recurso de mayor utilización",
+   "ok": true,
+   "detalle": "Autoclave 60.1 % · Acabado 52.3 % · Molino 50.1 % · Prensa 1 49.2 % · Extruder 47.2 % · Prensa 2 42.6 % · Prensa 3 39.5 % · Prensa 4 38.8 % · Prensa 5 38.0 %"
+  },
+  {
+   "auditoria": 12,
+   "verificacion": "Balance de tiempos por recurso = tiempo de carga (± 0.1 %)",
+   "ok": true,
+   "detalle": "Desviación máxima 0.0000 %"
+  },
+  {
+   "auditoria": 12,
+   "verificacion": "Sin entidades bloqueadas indefinidamente (interbloqueo)",
+   "ok": true,
+   "detalle": "0 réplicas con más de 5 días sin producción"
+  },
+  {
+   "auditoria": 13,
+   "verificacion": "OEE de línea dentro de tolerancia",
+   "ok": true,
+   "detalle": "desvío -0.08 pp · IC contiene el real"
+  },
+  {
+   "auditoria": 13,
+   "verificacion": "Disponibilidad dentro de tolerancia",
+   "ok": true,
+   "detalle": "desvío -0.00 pp · IC contiene el real"
+  },
+  {
+   "auditoria": 13,
+   "verificacion": "Rendimiento dentro de tolerancia",
+   "ok": true,
+   "detalle": "desvío -0.25 pp · IC no contiene el real"
+  },
+  {
+   "auditoria": 13,
+   "verificacion": "Calidad dentro de tolerancia",
+   "ok": true,
+   "detalle": "desvío 0.14 pp · IC contiene el real"
+  },
+  {
+   "auditoria": 13,
+   "verificacion": "Producción (láminas) dentro de tolerancia",
+   "ok": true,
+   "detalle": "desvío -0.15 % · IC contiene el real"
+  },
+  {
+   "auditoria": 13,
+   "verificacion": "Horas de parada por correctivo (línea) dentro de tolerancia",
+   "ok": true,
+   "detalle": "desvío 1.41 % · IC contiene el real"
+  },
+  {
+   "auditoria": 13,
+   "verificacion": "Validación aprobada habilita los escenarios",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 14,
+   "verificacion": "Tabla comparativa con los siete escenarios",
+   "ok": true,
+   "detalle": "E0  55.60 % Δ— — | E1  59.37 % Δ+3.77 pp Sí | E2  56.88 % Δ+1.29 pp Sí | E3  60.74 % Δ+5.14 pp Sí | E4  56.65 % Δ+1.06 pp Sí | E5  60.75 % Δ+5.15 pp Sí | E6  73.36 % Δ+17.76 pp Sí"
+  },
+  {
+   "auditoria": 14,
+   "verificacion": "Todas las mejoras E1–E6 significativas al 95 %",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": "P",
+   "verificacion": "Tras recargar, los registros y el OEE persisten (IndexedDB)",
+   "ok": true,
+   "detalle": "55.6776 %"
+  },
+  {
+   "auditoria": "P",
+   "verificacion": "Tras recargar, persisten los resultados de simulación",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": "P",
+   "verificacion": "Tras recargar, persiste el estado de los módulos heredados (usuario creado)",
+   "ok": true,
+   "detalle": ""
+  },
+  {
+   "auditoria": 9,
+   "verificacion": "Responsive: tableta 820 px sin desplazamiento horizontal de la página",
+   "ok": true,
+   "detalle": "0 px"
+  },
+  {
+   "auditoria": "JS",
+   "verificacion": "Sin errores de JavaScript en la consola durante toda la prueba",
+   "ok": true,
+   "detalle": ""
+  }
+ ]
+}
