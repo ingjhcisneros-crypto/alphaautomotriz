@@ -226,6 +226,9 @@ export function replica(M, semilla) {
         if (enVentana(ahora)) diasVentana++;
         const cambio = r() < M.probCambio;
         if (cambio && enVentana(ahora)) setupsVentana++;
+        let tipoCambio = null;
+        if (cambio && M.tiposCambio && M.tiposCambio.length) { let u = r(); tipoCambio = M.tiposCambio[M.tiposCambio.length - 1].tipo; for (const t of M.tiposCambio) { if (u < t.p) { tipoCambio = t.tipo; break; } u -= t.p; } }
+        const distSetup = id => { const s = M.setup[id]; return (tipoCambio && s.porTipo && s.porTipo[tipoCambio]) ? s.porTipo[tipoCambio].dist : s.dist; };
         if (rigido) {
           /* Arranque de jornada: la línea espera el camino crítico (retraso + caldero + máx. de proceso). */
           parar(lineaProc, 'vacio', vacioLineaMin, null);
@@ -233,7 +236,7 @@ export function replica(M, semilla) {
             let maxSerie = 0;
             M.estaciones.forEach(e => {
               if (!M.setup[e.id]) return;
-              const h = muestrear(M.setup[e.id].dist, r) * setupF;
+              const h = muestrear(distSetup(e.id), r) * setupF;
               if (e.topologia === 'serie') { maxSerie = Math.max(maxSerie, h); cuenta('setup', h, h * e.fD); }
               else parar([e.id], 'setup', h * 60, () => { cuenta('setup', h, h * e.fD); parar([e.id], 'vacio', e.post, null); });
             });
@@ -242,7 +245,7 @@ export function replica(M, semilla) {
         } else {
           M.estaciones.forEach(e => {
             parar([e.id], 'vacio', v0(e), null);
-            if (cambio && M.setup[e.id]) { const h = muestrear(M.setup[e.id].dist, r) * setupF; parar([e.id], 'setup', h * 60, () => { cuenta('setup', h, h * e.fD); parar([e.id], 'vacio', e.post, null); }); }
+            if (cambio && M.setup[e.id]) { const h = muestrear(distSetup(e.id), r) * setupF; parar([e.id], 'setup', h * 60, () => { cuenta('setup', h, h * e.fD); parar([e.id], 'vacio', e.post, null); }); }
           });
         }
         if (M.preventivo && x.d > 0 && x.d % Math.max(1, Math.round(M.dias / 12)) === 0)

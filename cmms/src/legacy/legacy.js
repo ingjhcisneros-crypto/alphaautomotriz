@@ -74,10 +74,10 @@ const ALCANCE = {
   'Operador de línea':'Cierre de rutinas autónomas y reporte de anomalías'
 };
 let USUARIOS = [
-  {nombre:'Gutierrez y Cisneros', user:'gutierres&cisneros@upc.pe', pass:'grupo29', rol:'Administrador'},
-  {nombre:'Ing. de mantenimiento', user:'ing@lexacaucho.pe', pass:'ing29', rol:'Ingeniero de mantenimiento'},
-  {nombre:'Téc. de mantenimiento', user:'tec@lexacaucho.pe', pass:'tec29', rol:'Técnico de mantenimiento'},
-  {nombre:'Operador de línea', user:'ope@lexacaucho.pe', pass:'ope29', rol:'Operador de línea'}
+  {nombre:'Gutierrez y Cisneros', user:'gutierres&cisneros@upc.pe', hash:'76e842564f293386e8ba02c4c021ceb630d02a36669d03c98188676e66ef72c0', rol:'Administrador'},
+  {nombre:'Ing. de mantenimiento', user:'ing@lexacaucho.pe', hash:'f5a7ec3774acd6d948b7075e0bab60a0ca2e41857e969646c2ad6f7f46cfe3f8', rol:'Ingeniero de mantenimiento'},
+  {nombre:'Téc. de mantenimiento', user:'tec@lexacaucho.pe', hash:'5a44d86c3ad4b82d13f9218e998ffdee1ca10b85479b16631b45e40daedc3621', rol:'Técnico de mantenimiento'},
+  {nombre:'Operador de línea', user:'ope@lexacaucho.pe', hash:'815dcae52e322271bdf8dbeb705f97f3826527cc9255e4f8e85640445029720e', rol:'Operador de línea'}
 ];
 let SESION = null, LOGOS = {upc:null, emp:null, fav:null}, verClaves = false;
 $('btnEntrar').onclick = entrar;

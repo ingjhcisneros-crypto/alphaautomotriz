@@ -156,6 +156,29 @@ export async function guardarListas(obj) { E.listas = obj; await BD.ponerVarios(
 export async function guardarEscenario(e) { await BD.poner('escenarios', e); E.escenarios = (await BD.todos('escenarios')).sort((a, b) => a.id < b.id ? -1 : 1); emitir('escenarios'); }
 export async function borrarEscenario(id) { await BD.borrar('escenarios', id); await BD.borrar('resultados_sim', id); delete E.resultadosSim[id]; E.escenarios = E.escenarios.filter(e => e.id !== id); emitir('escenarios'); }
 
+/* ===== Periodos ===== */
+export const periodos = () => BD.todos('periodos');
+export async function crearPeriodo(p) {
+  const todos = await BD.todos('periodos');
+  if (todos.some(x => x.id === p.id)) throw new Error('Ya existe un periodo con ese identificador');
+  for (const x of todos) if (x.activo) { x.activo = false; await BD.poner('periodos', x); }
+  p.activo = true; await BD.poner('periodos', p);
+  await bitacora('Periodo', 'Creado y activado ' + p.nombre + ' (' + p.fecha_inicio + ' a ' + p.fecha_fin + ')');
+  await cambioDePeriodo(p);
+}
+export async function activarPeriodo(id) {
+  const todos = await BD.todos('periodos'); let act = null;
+  for (const x of todos) { x.activo = x.id === id; if (x.activo) act = x; await BD.poner('periodos', x); }
+  if (!act) throw new Error('Periodo inexistente');
+  await bitacora('Periodo', 'Activado ' + act.nombre);
+  await cambioDePeriodo(act);
+}
+async function cambioDePeriodo(p) {
+  E.periodo = p; E.filtros = {};
+  E.versionDatos++; E.estado.versionDatos = E.versionDatos; await BD.poner('config', E.estado);
+  recalcular('periodo'); emitir('config'); emitir('datos', null);
+}
+
 /* ===== Simulación ===== */
 export async function ajustarModelo() {
   const m = construirModelo(Object.assign(ctx(), { registros: registrosPeriodo() }), E.sim);

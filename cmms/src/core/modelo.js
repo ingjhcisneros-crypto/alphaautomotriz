@@ -2,7 +2,7 @@
    datos propios: toda distribución se ajusta aquí desde los registros, con prueba de bondad de ajuste. */
 import { calcularOEE, vacioLinea, validez, factorLinea } from './oee.js';
 import { horasOperativasEntre, aMin } from './calendario.js';
-import { ajustar, media } from './estadistica.js';
+import { ajustar, media, escalarDist } from './estadistica.js';
 import { agrupar, normCmp, suma, huella } from './util.js';
 
 const CANDIDATOS = ['exponencial', 'weibull', 'lognormal', 'gamma', 'triangular'];
@@ -67,12 +67,24 @@ export function construirModelo(ctx, simParams) {
   const porEvento = agrupar(interno, r => r.equipo_id + '|' + r.n_cambio);
   const cambios = new Set(cf.map(r => r.n_cambio)).size;
   const setup = {};
+  /* Tipo de cambio = formato saliente → entrante. Se ajusta una triangular por equipo y por tipo cuando hay al
+     menos 3 cambios de ese tipo; si no, se usa la del equipo. La simulación sortea el tipo de cada cambio con
+     la frecuencia observada en el registro. */
+  const tipoDe = r => (r.formato_saliente || '?') + ' → ' + (r.formato_entrante || '?');
+  const tipoEvento = {}; cf.forEach(r => tipoEvento[r.n_cambio] = tipoDe(r));
+  const frecTipos = {}; Object.values(tipoEvento).forEach(t => frecTipos[t] = (frecTipos[t] || 0) + 1);
+  const tiposCambio = Object.entries(frecTipos).map(([tipo, n]) => ({ tipo, p: n / (cambios || 1), n }));
   act.forEach(e => {
     const vals = Object.keys(porEvento).filter(k => k.split('|')[0] === e.id).map(k => suma(porEvento[k], r => r.duracion_actividad_h));
     if (!vals.length) return;
     const tri = ajustar(vals, ['triangular'], { minimo: 1 });
-    const d = tri ? { tipo: 'triangular', params: tri.mejor.params } : { tipo: 'deterministica', params: { valor: media(vals) } };
-    setup[e.id] = { dist: d, media: media(vals) };
+    /* La triangular (mín, moda, máx) se reescala a la media observada para conservar las horas de setup del registro. */
+    const d = escalarDist(tri ? { tipo: tri.mejor.tipo, params: tri.mejor.params } : { tipo: 'deterministica', params: { valor: media(vals) } }, media(vals));
+    setup[e.id] = { dist: d, media: media(vals), porTipo: {} };
+    tiposCambio.forEach(t => {
+      const vt = Object.keys(porEvento).filter(k => k.split('|')[0] === e.id && tipoEvento[k.slice(k.indexOf('|') + 1)] === t.tipo).map(k => suma(porEvento[k], r => r.duracion_actividad_h));
+      if (vt.length >= 3) { const tt = ajustar(vt, ['triangular'], { minimo: 1 }); if (tt) setup[e.id].porTipo[t.tipo] = { dist: escalarDist({ tipo: tt.mejor.tipo, params: tt.mejor.params }, media(vt)), n: vt.length, media: media(vt) }; }
+    });
     reg(e.nombre, 'Setup interno por cambio (h)', { n: vals.length, validez: validez(vals.length, umbral), tratamiento: 'Triangular (mín, moda, máx del registro)', dist: d, ks: tri ? tri.mejor.ks : null, p: tri ? tri.mejor.p : null, mediaMuestral: media(vals), muestra: vals });
   });
   const smedAct = suma(interno, r => r.duracion_actividad_h);
@@ -140,7 +152,7 @@ export function construirModelo(ctx, simParams) {
   const modelo = {
     creado: new Date().toISOString(), periodo: periodo.id, carga, dias, cargaDia: carga / dias, cap: +periodo.capacidad_cuello_botella, masa: +periodo.masa_unitaria_kg,
     margen: +periodo.margen_unitario, proceso, estaciones, soportes: soportes.map(e => e.id),
-    grupos, setup, probCambio: dias ? cambios / dias : 0, cambios, vacio: { retraso: vl.retraso, caldero: vl.caldero, lineaArranque: vl.arranque, lineaPost: vl.postSetup },
+    grupos, setup, tiposCambio, probCambio: dias ? cambios / dias : 0, cambios, vacio: { retraso: vl.retraso, caldero: vl.caldero, lineaArranque: vl.arranque, lineaPost: vl.postSetup },
     reuniones, auxiliares, micro, calidad, factorAux: config.factor_auxiliares_linea != null ? +config.factor_auxiliares_linea : 1,
     smed: { actual: smedAct, propuesta: smedProp, reduccion: smedAct > 0 ? 1 - smedProp / smedAct : 0 },
     calidadTermica: { horas: ncH, termica: ncTer, proporcion: ncH > 0 ? ncTer / ncH : 0 },

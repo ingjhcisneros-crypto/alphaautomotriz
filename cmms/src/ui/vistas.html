@@ -169,7 +169,10 @@
       <!-- PARÁMETROS -->
       <section class="vista stack" id="v-param">
         <div class="panel">
-          <header><h2>Parámetros del periodo</h2><div class="fila"><button class="btn btn-primary" id="parGuardar"><i class="fas fa-floppy-disk"></i> Guardar y recalcular</button></div></header>
+          <header><h2>Parámetros del periodo</h2><div class="fila"><select id="parPeriodoSel" style="width:230px" title="Periodo activo"></select>
+            <button class="btn btn-ghost" id="parNuevoPer"><i class="fas fa-calendar-plus"></i> Nuevo periodo</button>
+            <button class="btn btn-primary" id="parGuardar"><i class="fas fa-floppy-disk"></i> Guardar y recalcular</button></div></header>
+          <p class="nota" style="margin-top:0">Cada registro pertenece a un periodo. Al activar otro periodo, el tablero, el cálculo y la simulación trabajan solo con sus registros; los del periodo anterior se conservan.</p>
           <div class="rejilla c4" id="parPeriodo"></div>
           <div class="banda chica" id="parCalendario" style="margin-top:var(--s4)"></div>
         </div>

@@ -1,6 +1,8 @@
 /* Parámetros editables: periodo, feriados, equipos, factores topológicos, simulación y catálogos. */
 import { $, esc, h1, n0, aviso, confirmar } from './comun.js';
-import { E, escuchar, guardarPeriodo, guardarEquipos, guardarConfig, guardarSim, guardarListas } from '../servicio.js';
+import { E, escuchar, guardarPeriodo, guardarEquipos, guardarConfig, guardarSim, guardarListas, periodos, crearPeriodo, activarPeriodo } from '../servicio.js';
+import { feriadosPeru } from '../../core/calendario.js';
+import { dialogo } from './comun.js';
 import { calendarioOEE } from '../../core/oee.js';
 import { copia } from '../../core/util.js';
 
@@ -72,6 +74,27 @@ export function montar() {
     if (Object.values(o).some(v => !v.length)) return aviso('Ninguna lista puede quedar vacía', 'bad');
     if (await confirmar('Guardar catálogos', '<p>Los cambios afectan las validaciones de carga y las plantillas nuevas. Los registros ya cargados no se modifican.</p>')) { await guardarListas(o); aviso('Catálogos guardados'); }
   };
+  $('parPeriodoSel').onchange = async () => {
+    if (!puede()) return aviso('Su perfil no permite cambiar el periodo', 'warn');
+    const id = $('parPeriodoSel').value;
+    if (id === E.periodo.id) return;
+    if (await confirmar('Cambiar de periodo', '<p>El tablero, el cálculo y la simulación pasarán a usar solo los registros del periodo seleccionado. Los registros del periodo actual se conservan.</p>', 'Activar')) { await activarPeriodo(id); aviso('Periodo activado; OEE recalculado'); pintar(); }
+    else $('parPeriodoSel').value = E.periodo.id;
+  };
+  $('parNuevoPer').onclick = async () => {
+    if (!puede()) return aviso('Su perfil no permite crear periodos', 'warn');
+    const f0 = E.periodo.fecha_fin, ini = new Date(Date.UTC(+f0.slice(0, 4), +f0.slice(5, 7) - 1, +f0.slice(8, 10) + 1)).toISOString().slice(0, 10);
+    const fin = new Date(Date.UTC(+ini.slice(0, 4) + 1, +ini.slice(5, 7) - 1, +ini.slice(8, 10) - 1)).toISOString().slice(0, 10);
+    const v = await dialogo('Nuevo periodo', '<div class="rejilla c3"><div class="campo"><label>Nombre</label><input id="npNom" value="Periodo ' + ini.slice(0, 4) + '–' + fin.slice(0, 4) + '"></div>' +
+      '<div class="campo"><label>Inicio</label><input type="date" id="npIni" value="' + ini + '"></div><div class="campo"><label>Fin</label><input type="date" id="npFin" value="' + fin + '"></div></div>' +
+      '<p class="nota">Se copian los parámetros del periodo activo (jornada, capacidades, márgenes, benchmark) y se generan los feriados nacionales del nuevo rango, editables después.</p>',
+      [{ t: 'Cancelar', v: null }, { t: 'Crear y activar', v: c => ({ nombre: c.querySelector('#npNom').value.trim(), ini: c.querySelector('#npIni').value, fin: c.querySelector('#npFin').value }) }]);
+    if (!v) return;
+    if (!v.nombre || !v.ini || !v.fin || v.ini > v.fin) return aviso('Datos del periodo no válidos', 'bad');
+    const p = copia(E.periodo);
+    Object.assign(p, { id: 'P' + v.ini.replace(/-/g, ''), nombre: v.nombre, fecha_inicio: v.ini, fecha_fin: v.fin, feriados: feriadosPeru(v.ini, v.fin) });
+    try { await crearPeriodo(p); aviso('Periodo creado y activado. Cargue sus registros en «Registros y carga».'); pintar(); } catch (e) { aviso(e.message, 'bad'); }
+  };
   escuchar('config', () => { if ($('v-param').classList.contains('on')) pintar(); });
 }
 
@@ -84,8 +107,10 @@ function leerPeriodo() {
   return p;
 }
 
-export function pintar() {
+export async function pintar() {
   borrador = null;
+  const ps = (await periodos()).sort((a, b) => a.fecha_inicio < b.fecha_inicio ? -1 : 1);
+  $('parPeriodoSel').innerHTML = ps.map(p => '<option value="' + esc(p.id) + '"' + (p.id === E.periodo.id ? ' selected' : '') + '>' + esc(p.nombre) + (p.activo ? ' · activo' : '') + '</option>').join('');
   const P = E.periodo;
   $('parPeriodo').innerHTML = CAMPOS_PERIODO.map(([k, n, t]) => '<div class="campo"><label>' + n + '</label>' +
     (t === 'equipo' ? '<select data-k="' + k + '">' + E.equipos.map(e => '<option value="' + e.id + '"' + (e.id === P[k] ? ' selected' : '') + '>' + esc(e.nombre) + '</option>').join('') + '</select>'

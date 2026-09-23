@@ -6,7 +6,7 @@ Entregable: **`dist/cmms_lexacaucho_v6.html`**. Es un solo archivo de 1.2 MB y f
 npm install            # solo para desarrollar
 npm run build          # regenera dist/cmms_lexacaucho_v6.html
 npm test               # auditorías del núcleo (178 verificaciones)
-node tests/e2e.mjs     # auditorías en Chromium sobre el HTML (84 verificaciones)
+node tests/e2e.mjs     # auditorías en Chromium sobre el HTML (89 verificaciones)
 ```
 
 Las pruebas necesitan los diez Excel de especificación en `DIR_REF` (variable de entorno). Esos archivos se usan solo para armar datos de prueba y obtener los valores de referencia. **El sistema no siembra ningún registro operativo.**
@@ -57,9 +57,10 @@ tests/         auditorias.mjs, e2e.mjs, informe/ (JSON y capturas)
 | 9 | Los 5 filtros cambian los 6 bloques. Tabla cruzada de 10 equipos × 12 meses más la línea. El clic abre el detalle correcto. 12 exportaciones (Excel y PNG). Tableta de 820 px sin desbordes |
 | 10 | Suma de los registros = tablero, con diferencia de 0.000 h en las 6 categorías |
 | 11 | Autoclave (167) y extrusora (126): suficiente, con K-S sobre 5 candidatos. Molino (5): limitada. Prensas y calderos individuales: insuficiente. Prensas agregadas (7 eventos, 9.3 h) y calderos agregados (4 eventos, 4.7 h) |
-| 12 | El autoclave tiene la mayor utilización (59.9 %). El balance de tiempos cierra al 0.0000 %. Sin interbloqueos |
-| 13 | 30 réplicas. OEE 55.42 % [55.01–55.82], D 76.33 % [75.88–76.77], C 87.84 % [87.65–88.04], producción 20,142 [19,994–20,290] y correctivo 686.3 h: todos dentro de tolerancia y con un IC que contiene el valor real. **Rendimiento 82.65 % [82.51–82.78]: dentro de tolerancia (−0.21 pp), pero su IC no contiene el 82.86 %** |
-| 14 | E1 +4.14 pp · E2 +2.00 · E3 +5.58 · E4 +1.01 · E5 +5.31 (vacío 454.2 → 181.7 h) · E6 **+18.18 pp**, distinto de la suma de los individuales. Todas las mejoras son significativas (t pareada, 95 %). Margen de S/ 180 por lámina: E6 ≈ S/ 1.14 millones |
+| 12 | El autoclave tiene la mayor utilización (≈ 60 %). El balance de tiempos cierra al 0.0000 %. Sin interbloqueos |
+| 13 | 30 réplicas. OEE **55.64 %** [55.28–55.99], D 76.50 % [76.12–76.88], C 87.90 % [87.69–88.11], producción **20,222** [20,094–20,350] y correctivo 687.3 h: todos dentro de tolerancia y con un IC que contiene el valor real. **Rendimiento 82.73 % [82.63–82.83]: dentro de tolerancia (−0.12 pp); su IC queda a 0.03 pp de contener el 82.86 %** |
+| 14 | E1 +3.76 pp · E2 +1.43 · E3 +5.13 · E4 +0.99 · E5 +5.13 (vacío 454.2 → 181.7 h) · E6 **+17.94 pp**, distinto de la suma de los individuales (16.44). Todas las mejoras son significativas (t pareada, 95 %). Margen de S/ 180 por lámina: E6 ≈ **S/ 1.12 millones** al año |
+| Mejoras finales | El portal ya no muestra credenciales. El PDF de resultados se imprime desde un marco interno, sin ventana emergente. Los gráficos se repintan al cambiar de tema. Hay gestión de periodos y setup simulado por tipo de cambio |
 | Seguridad | Las claves se guardan como SHA-256 (usuario:clave); ninguna queda en texto plano en la base. Crear o eliminar usuarios exige perfil de administrador; restablecer una clave exige la clave del usuario principal |
 
 ## Decisiones y discrepancias que conviene conocer
@@ -75,5 +76,7 @@ tests/         auditorias.mjs, e2e.mjs, informe/ (JSON y capturas)
    - Las tres opciones son configurables. En modo «flujo con buffers», el modelo sobreestima la producción en un +18 %.
 6. **Duplicados en el registro SMED.** Allí una fila corresponde a una actividad, así que el criterio de duplicado también incluye el N° de cambio y la actividad.
 7. **SheetJS 0.18.5** (npm). La versión 0.20 del CDN oficial estuvo bloqueada por la red del entorno. La 0.18.5 solo se usa para leer archivos que el propio usuario sube.
-8. **Sesgo residual del rendimiento simulado (−0.2 pp).** Es sistemático: el modelo calibra la velocidad con la capacidad demostrada del autoclave y absorbe físicamente los setups simultáneos, que la contabilidad de referencia suma. No se forzó un ajuste adicional para no sobreajustar el modelo.
-9. El portal sigue mostrando las credenciales de demostración (así lo traía el avance); en producción conviene retirarlas de `src/legacy/markup.html`.
+8. **Sesgo residual del rendimiento simulado (−0.12 pp).** Es sistemático: el modelo calibra la velocidad con la capacidad demostrada del autoclave y absorbe físicamente los setups simultáneos, que la contabilidad de referencia suma. No se forzó un ajuste adicional para no sobreajustar el modelo.
+9. **Periodos.** En *Parámetros* se crea un periodo nuevo (copia los parámetros del activo y genera los feriados nacionales) y se cambia el periodo activo. Cada registro pertenece a su periodo; al volver a uno anterior, sus registros siguen intactos.
+10. **Setup simulado por tipo de cambio.** Cada cambio de formato sortea su tipo (saliente → entrante) según la frecuencia del registro y usa una triangular por equipo y tipo cuando hay 3 o más cambios de ese tipo.
+11. **Limitaciones conocidas:** solo probado en Chrome/Edge (en Firefox, un archivo abierto desde el disco puede no conservar los datos); un equipo por base local, sin acceso multiusuario simultáneo; el calendario de la simulación reparte el tiempo de carga por día sin modelar por separado almuerzos y capacitación (los totales coinciden); SheetJS 0.18.5 tiene vulnerabilidades conocidas y solo lee archivos del propio usuario.

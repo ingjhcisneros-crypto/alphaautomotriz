@@ -45,6 +45,8 @@ async function arrancar() {
   Tablero.poblarFiltros(true);
   montarExportadores();
   listo = true; chip(); guardarLegado(true);
+  /* Al cambiar de tema, los gráficos toman los colores nuevos repintando la vista activa. */
+  const tema = $('btnTema'); if (tema) tema.addEventListener('click', () => setTimeout(() => globalThis.CMMS.alIniciarSesion(), 30));
   setInterval(() => guardarLegado(false), 4000);
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') guardarLegado(false); });
   window.addEventListener('beforeunload', () => guardarLegado(false));

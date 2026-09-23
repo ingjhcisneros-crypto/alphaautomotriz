@@ -58,7 +58,7 @@ function pintarConfig() {
     [P.acople_serie === 'flujo' ? 'Flujo con buffers' : 'Rígido', 'Acople de equipos en serie'], [P.replicas + ' – ' + P.replicas_max, 'Réplicas (mín – tope)']
   ].map(x => '<div class="m"><div class="v" style="font-size:1rem">' + x[0] + '</div><div class="k">' + x[1] + '</div></div>').join('') + '</div>' +
     '<p class="nota">Flujo: molino ' + P.molino_lote_kg + ' kg / ' + P.molino_ciclo_min + ' min → extrusora ' + P.extrusora_kg_h + ' kg/h → ' + m.estaciones.filter(e => e.topologia === 'paralelo').length + ' prensas de ' + P.prensa_ciclo_min +
-    ' min → buffer de ' + P.buffer_curado + ' → autoclave ' + P.autoclave_lote + ' láminas → acabado ' + P.acabado_lam_h + ' lám/h. Probabilidad diaria de cambio de formato ' + pc(m.probCambio) + ' (' + m.cambios + ' cambios). SMED: interno ' + h1(m.smed.actual) + ' h → ' + h1(m.smed.propuesta) + ' h propuesto (' + pc(m.smed.reduccion) + ' de reducción). Calidad atribuible a variación térmica del vapor: ' + pc(m.calidadTermica.proporcion) + ' de las horas.</p>';
+    ' min → buffer de ' + P.buffer_curado + ' → autoclave ' + P.autoclave_lote + ' láminas → acabado ' + P.acabado_lam_h + ' lám/h. Probabilidad diaria de cambio de formato ' + pc(m.probCambio) + ' (' + m.cambios + ' cambios; ' + (m.tiposCambio ? m.tiposCambio.length : 0) + ' tipos de cambio sorteados según su frecuencia, con setup triangular por equipo y tipo cuando hay 3 o más cambios de ese tipo). SMED: interno ' + h1(m.smed.actual) + ' h → ' + h1(m.smed.propuesta) + ' h propuesto (' + pc(m.smed.reduccion) + ' de reducción). Calidad atribuible a variación térmica del vapor: ' + pc(m.calidadTermica.proporcion) + ' de las horas.</p>';
   $('simDist').innerHTML = '<div class="tabla-caja alta"><table><thead><tr><th>Equipo o grupo</th><th>Variable</th><th class="num">Eventos</th><th>Validez</th><th>Tratamiento</th><th>Distribución</th><th>Parámetros</th><th class="num">K-S D</th><th class="num">p-valor</th><th>Candidatos (D)</th></tr></thead><tbody>' +
     m.ajustes.map(a => { const cls = a.validez === 'Suficiente' ? 'm-ok' : a.validez === 'Limitada' ? 'm-warn' : 'm-bad';
       const par = a.distribucion && DISTRIBUCIONES[a.distribucion] ? DISTRIBUCIONES[a.distribucion].texto(a.params) : a.distribucion === 'bernoulli' ? 'p = ' + a.params.p.toFixed(4) : '—';
@@ -221,7 +221,9 @@ function pintarRecursos() {
 /* PDF: documento imprimible con la comparación, la validación y los recursos (el navegador lo guarda en PDF). */
 function pdf() {
   const f = filasComparacion(); if (!f) return aviso('Sin resultados para exportar', 'warn');
-  const w = window.open('', '_blank'); if (!w) return aviso('El navegador bloqueó la ventana emergente', 'bad');
+  const marco = document.createElement('iframe'); marco.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+  document.body.appendChild(marco);
+  const w = { document: marco.contentWindow.document };
   const v = E.validacion;
   const tabla = (enc, filas) => '<table><thead><tr>' + enc.map(h => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' + filas.map(r => '<tr>' + r.map(c => '<td>' + esc(c) + '</td>').join('') + '</tr>').join('') + '</tbody></table>';
   w.document.write('<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Resultados de simulación</title><style>body{font-family:Arial,sans-serif;font-size:10pt;color:#16202b;margin:14mm}h1{font-size:15pt;color:#1f5c10}h2{font-size:11pt;margin-top:8mm;color:#1f5c10}table{border-collapse:collapse;width:100%;font-size:8.5pt}th,td{border:1px solid #ccd;padding:3px 5px;text-align:left}th{background:#eef7ea}@page{size:A4 landscape;margin:10mm}</style></head><body>' +
@@ -229,6 +231,7 @@ function pdf() {
     (v ? '<h2>Validación de la línea base</h2>' + tabla(['Indicador', 'Real', 'Simulado', 'IC 95 %', 'Desviación', 'Tolerancia', 'Resultado'], v.filas.map(x => [x.indicador, x.unidad === 'pp' ? (x.real * 100).toFixed(2) + ' %' : Math.round(x.real), x.unidad === 'pp' ? (x.simulado * 100).toFixed(2) + ' %' : Math.round(x.simulado), x.unidad === 'pp' ? (x.li * 100).toFixed(2) + ' – ' + (x.ls * 100).toFixed(2) + ' %' : Math.round(x.li) + ' – ' + Math.round(x.ls), x.desvio.toFixed(2) + ' ' + x.unidad, '± ' + x.tolerancia + ' ' + x.unidad, x.ok ? 'Cumple' : 'No cumple'])) : '') +
     '<h2>Comparación contra la línea base</h2>' + tabla(f.enc, f.filas) +
     (E.modelo ? '<h2>Advertencias de validez estadística</h2><ul>' + E.modelo.advertencias.map(a => '<li>' + esc(a) + '</li>').join('') + '</ul>' : '') +
-    '<script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>');
+    '</body></html>');
   w.document.close();
+  setTimeout(() => { marco.contentWindow.focus(); marco.contentWindow.print(); setTimeout(() => marco.remove(), 60000); }, 300);
 }

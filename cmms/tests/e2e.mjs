@@ -44,6 +44,7 @@ check(5, 'Base sin registros operativos al instalar', Object.values(conteos).eve
 const listas = await E(() => CMMS.servicio.E.listas);
 check(5, 'Catálogos sembrados = hojas «Listas» de los adjuntos', Object.keys(LISTAS_SEMILLA).every(k => JSON.stringify(listas[k]) === JSON.stringify(LISTAS_SEMILLA[k])), Object.keys(listas).length + ' listas');
 check(5, 'Catálogo de equipos y parámetros del periodo sembrados', await E(() => CMMS.servicio.E.equipos.length === 10 && CMMS.servicio.E.periodo.feriados.length === 16), '10 equipos · 16 feriados');
+check(5, 'El portal no muestra credenciales', !/grupo29|ing29|tec29|ope29/.test(await P.content()), '');
 check(5, 'El tablero indica «Sistema sin registros operativos»', await P.isVisible('#tabVacio'), '');
 await P.screenshot({ path: path.join(SHOTS, '01_instalacion_vacia.png') });
 await ir(P, 'param');
@@ -175,6 +176,24 @@ const comp = await P.$$eval('#simComp tbody tr', t => t.map(r => Array.from(r.ce
 check(14, 'Tabla comparativa con los siete escenarios', comp.length === 7, comp.map(c => c[0].slice(0, 3) + ' ' + c[2] + ' Δ' + c[4] + ' ' + c[6]).join(' | '));
 check(14, 'Todas las mejoras E1–E6 significativas al 95 %', comp.slice(1).every(c => c[6] === 'Sí'), '');
 await P.screenshot({ path: path.join(SHOTS, '07_resultados.png'), fullPage: true });
+
+console.log('\nMejoras finales · PDF, tema, periodos y portal');
+await P.click('#simPdf'); await P.waitForTimeout(800);
+check('F', 'PDF de resultados sin ventana emergente (documento imprimible en marco interno)', await E(() => { const f = document.querySelector('iframe'); return !!f && /Comparación contra la línea base/.test(f.contentWindow.document.body.textContent); }), '');
+await ir(P, 'tablero'); await P.waitForTimeout(200);
+const colorAntes = await E(() => Chart.getChart('gEvol').options.scales.x.ticks.color);
+await P.click('#btnTema'); await P.waitForTimeout(300);
+const colorDespues = await E(() => Chart.getChart('gEvol').options.scales.x.ticks.color);
+check('F', 'Al cambiar de tema los gráficos se repintan con los colores nuevos', colorAntes !== colorDespues, colorAntes + ' → ' + colorDespues);
+await P.click('#btnTema'); await P.waitForTimeout(200);
+await ir(P, 'param'); await P.waitForTimeout(300);
+await P.click('#parNuevoPer'); await P.waitForSelector('#npIni');
+const npIni = await P.inputValue('#npIni'), npFin = await P.inputValue('#npFin');
+await P.click('.capa.abierta .btn-primary'); await P.waitForTimeout(600);
+const nuevoP = await E(() => ({ id: CMMS.servicio.E.periodo.id, dias: CMMS.servicio.E.total.cal.total.dias, fer: CMMS.servicio.E.periodo.feriados.length, reg: Object.values(CMMS.servicio.E.total.conteos).reduce((a, b) => a + b, 0) }));
+check('F', 'Nuevo periodo creado y activado, con feriados generados y sin registros', nuevoP.reg === 0 && nuevoP.fer >= 14 && npIni === '2026-06-01', npIni + ' a ' + npFin + ' · ' + nuevoP.dias + ' días · ' + nuevoP.fer + ' feriados');
+await P.selectOption('#parPeriodoSel', 'P2025'); await P.waitForSelector('.capa.abierta'); await P.click('.capa.abierta .btn-primary'); await P.waitForTimeout(600);
+check('F', 'Al volver al periodo 2025–2026 sus registros siguen intactos (OEE 55.68 %)', (await oee()).OEE === o0.OEE, ((await oee()).OEE * 100).toFixed(4) + ' %');
 
 console.log('\nPersistencia · cierre y reapertura del navegador');
 await ir(P, 'marca'); await P.fill('#nuNombre', 'Prueba Persistencia'); await P.fill('#nuUser', 'persistencia@lexacaucho.pe'); await P.fill('#nuPass', 'clave1'); await P.click('#nuAdd');
